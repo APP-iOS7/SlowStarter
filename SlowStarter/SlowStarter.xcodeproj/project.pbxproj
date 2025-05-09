@@ -1,0 +1,594 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 70;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		28397643D2AE009F5E8DF64C /* SlowStarterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C9E1C00FD424D65740EFBCE /* SlowStarterTests.swift */; };
+		4E7FE3B753DE1CC1BCCF7EC9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 44A1D090A5042A8B2B3713D2 /* Preview Assets.xcassets */; };
+		624F76852DCDD6F600566252 /* StructureDocument.md in Resources */ = {isa = PBXBuildFile; fileRef = 624F76842DCDD6F600566252 /* StructureDocument.md */; };
+		A60B99B46936D4F1170978F2 /* TuistAssets+SlowStarter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612E9BD71849190DF3EA05F9 /* TuistAssets+SlowStarter.swift */; };
+		DB65EB0C5EBCF87F2422B871 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 239417795BA77EA87C51C4E1 /* Assets.xcassets */; };
+		F5667D41A0810E4C9E2B8175 /* TuistBundle+SlowStarter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8C9FF54E481F28957F31AA /* TuistBundle+SlowStarter.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D25B5B83F74634ABA4B7CFF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D2F843AE8E6128B954DF37B1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C8D3DADE00826212D8D07A41;
+			remoteInfo = SlowStarter;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		15CAA188424DB9F9455C6F22 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3A63650511E33346A4E3BBAE /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		0901990EAA4B9D3C5E29CC0F /* SlowStarter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SlowStarter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		239417795BA77EA87C51C4E1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		44A1D090A5042A8B2B3713D2 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		612E9BD71849190DF3EA05F9 /* TuistAssets+SlowStarter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TuistAssets+SlowStarter.swift"; sourceTree = "<group>"; };
+		624F76842DCDD6F600566252 /* StructureDocument.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = StructureDocument.md; sourceTree = "<group>"; };
+		7EE73BB25EF60BE39650F29D /* SlowStarter-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "SlowStarter-Info.plist"; sourceTree = "<group>"; };
+		9C9E1C00FD424D65740EFBCE /* SlowStarterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlowStarterTests.swift; sourceTree = "<group>"; };
+		A30F07739FFC49EC37B06F51 /* SlowStarterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SlowStarterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA8C9FF54E481F28957F31AA /* TuistBundle+SlowStarter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TuistBundle+SlowStarter.swift"; sourceTree = "<group>"; };
+		F3C8BD3B7CBD48C6C58828A3 /* SlowStarterTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "SlowStarterTests-Info.plist"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		624F765E2DCDCB4B00566252 /* Domain */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Domain; sourceTree = "<group>"; };
+		624F765F2DCDCB5500566252 /* Data */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Data; sourceTree = "<group>"; };
+		624F76602DCDCB5C00566252 /* Presentation */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Presentation; sourceTree = "<group>"; };
+		624F76612DCDCB6700566252 /* Config */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Config; sourceTree = "<group>"; };
+		624F76722DCDCCB700566252 /* App */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = App; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3FD010657062BFFA5DFEA19E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DF5A476CD1C86D68EE848578 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		212C185E9360F1EBDED472A4 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				44A1D090A5042A8B2B3713D2 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		3A54647156E9CB25B70028EA = {
+			isa = PBXGroup;
+			children = (
+				A41A5467EAA1BC27C817DD93 /* Project */,
+				D730D3075A80854F27D6E378 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		61D51B94F42814E7EA5148C7 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				612E9BD71849190DF3EA05F9 /* TuistAssets+SlowStarter.swift */,
+				AA8C9FF54E481F28957F31AA /* TuistBundle+SlowStarter.swift */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		73CC91BF3C91A4E3DEB4149B /* Derived */ = {
+			isa = PBXGroup;
+			children = (
+				ACB01F397D8F3A914BE46C2B /* InfoPlists */,
+				61D51B94F42814E7EA5148C7 /* Sources */,
+			);
+			path = Derived;
+			sourceTree = "<group>";
+		};
+		7F192818D86FC24AE9410781 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				212C185E9360F1EBDED472A4 /* Preview Content */,
+				239417795BA77EA87C51C4E1 /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		858303BBFE36713A61FCC673 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				9C9E1C00FD424D65740EFBCE /* SlowStarterTests.swift */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		A41A5467EAA1BC27C817DD93 /* Project */ = {
+			isa = PBXGroup;
+			children = (
+				73CC91BF3C91A4E3DEB4149B /* Derived */,
+				ED293F57A5AE89C78AAD3FD4 /* SlowStarter */,
+			);
+			name = Project;
+			sourceTree = "<group>";
+		};
+		ACB01F397D8F3A914BE46C2B /* InfoPlists */ = {
+			isa = PBXGroup;
+			children = (
+				7EE73BB25EF60BE39650F29D /* SlowStarter-Info.plist */,
+				F3C8BD3B7CBD48C6C58828A3 /* SlowStarterTests-Info.plist */,
+			);
+			path = InfoPlists;
+			sourceTree = "<group>";
+		};
+		D730D3075A80854F27D6E378 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0901990EAA4B9D3C5E29CC0F /* SlowStarter.app */,
+				A30F07739FFC49EC37B06F51 /* SlowStarterTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		ED293F57A5AE89C78AAD3FD4 /* SlowStarter */ = {
+			isa = PBXGroup;
+			children = (
+				624F76722DCDCCB700566252 /* App */,
+				7F192818D86FC24AE9410781 /* Resources */,
+				FD32B36A3ED8A2D590DA01BA /* Sources */,
+				858303BBFE36713A61FCC673 /* Tests */,
+			);
+			path = SlowStarter;
+			sourceTree = "<group>";
+		};
+		FD32B36A3ED8A2D590DA01BA /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				624F76612DCDCB6700566252 /* Config */,
+				624F76602DCDCB5C00566252 /* Presentation */,
+				624F765F2DCDCB5500566252 /* Data */,
+				624F765E2DCDCB4B00566252 /* Domain */,
+				624F76842DCDD6F600566252 /* StructureDocument.md */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3785E74C4662DA652E47D1FE /* SlowStarterTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9FBF123134BDD31305DEC9C1 /* Build configuration list for PBXNativeTarget "SlowStarterTests" */;
+			buildPhases = (
+				3DFDF6EBE0CE8D008F1B008A /* Sources */,
+				1DD8867398AD51136AA4FD44 /* Resources */,
+				3FD010657062BFFA5DFEA19E /* Frameworks */,
+				15CAA188424DB9F9455C6F22 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4A6B1A07C4C4C5290A288EFF /* PBXTargetDependency */,
+			);
+			name = SlowStarterTests;
+			packageProductDependencies = (
+			);
+			productName = SlowStarterTests;
+			productReference = A30F07739FFC49EC37B06F51 /* SlowStarterTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		C8D3DADE00826212D8D07A41 /* SlowStarter */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 31686629FDDB61FB1D139187 /* Build configuration list for PBXNativeTarget "SlowStarter" */;
+			buildPhases = (
+				9731C6B16CD79C96B9EF973F /* SwiftLint */,
+				80BC28AF0B646DEE3AB9EA09 /* Sources */,
+				BDF1F43A8437581A5CBCAB9E /* Resources */,
+				DF5A476CD1C86D68EE848578 /* Frameworks */,
+				3A63650511E33346A4E3BBAE /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				624F765E2DCDCB4B00566252 /* Domain */,
+				624F765F2DCDCB5500566252 /* Data */,
+				624F76602DCDCB5C00566252 /* Presentation */,
+				624F76612DCDCB6700566252 /* Config */,
+				624F76722DCDCCB700566252 /* App */,
+			);
+			name = SlowStarter;
+			packageProductDependencies = (
+			);
+			productName = SlowStarter;
+			productReference = 0901990EAA4B9D3C5E29CC0F /* SlowStarter.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D2F843AE8E6128B954DF37B1 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				TargetAttributes = {
+					3785E74C4662DA652E47D1FE = {
+						TestTargetID = C8D3DADE00826212D8D07A41;
+					};
+				};
+			};
+			buildConfigurationList = D02A84666D3BFC212EF2A75E /* Build configuration list for PBXProject "SlowStarter" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 3A54647156E9CB25B70028EA;
+			productRefGroup = D730D3075A80854F27D6E378 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C8D3DADE00826212D8D07A41 /* SlowStarter */,
+				3785E74C4662DA652E47D1FE /* SlowStarterTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1DD8867398AD51136AA4FD44 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BDF1F43A8437581A5CBCAB9E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DB65EB0C5EBCF87F2422B871 /* Assets.xcassets in Resources */,
+				4E7FE3B753DE1CC1BCCF7EC9 /* Preview Assets.xcassets in Resources */,
+				624F76852DCDD6F600566252 /* StructureDocument.md in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		9731C6B16CD79C96B9EF973F /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# SwiftLint가 설치되어 있고 PATH에 잡히는지 확인\nif SWIFTLINT_PATH=$(which swiftlint); then\n  echo \"SwiftLint found at: $SWIFTLINT_PATH\"\n  # which swiftlint로 찾은 경로를 사용하여 실행\n  \"$SWIFTLINT_PATH\" # 따옴표로 감싸서 경로에 공백이 있어도 안전하게 처리\nelse\n  echo \"warning: SwiftLint not installed or not in PATH. Install or check PATH.\"\n  echo \"Attempting to locate SwiftLint in common Homebrew paths...\"\n\n  # Apple Silicon Homebrew 경로 시도\n  if [ -f \"/opt/homebrew/bin/swiftlint\" ]; then\n    echo \"SwiftLint found at /opt/homebrew/bin/swiftlint\"\n    /opt/homebrew/bin/swiftlint\n  # Intel Homebrew 경로 시도\n  elif [ -f \"/usr/local/bin/swiftlint\" ]; then\n    echo \"SwiftLint found at /usr/local/bin/swiftlint\"\n    /usr/local/bin/swiftlint\n  else\n    echo \"warning: SwiftLint still not found. Download from https://github.com/realm/SwiftLint\"\n    # exit 1 # 필요하다면 린트 실패 시 빌드도 실패하도록 설정\n  fi\nfi";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3DFDF6EBE0CE8D008F1B008A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				28397643D2AE009F5E8DF64C /* SlowStarterTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		80BC28AF0B646DEE3AB9EA09 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A60B99B46936D4F1170978F2 /* TuistAssets+SlowStarter.swift in Sources */,
+				F5667D41A0810E4C9E2B8175 /* TuistBundle+SlowStarter.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4A6B1A07C4C4C5290A288EFF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SlowStarter;
+			target = C8D3DADE00826212D8D07A41 /* SlowStarter */;
+			targetProxy = D25B5B83F74634ABA4B7CFF9 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0A30142A175ECC6DBF5D7852 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		3464057247BFC2D947FC6085 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "Derived/InfoPlists/SlowStarter-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = ThreeIdiots.SlowStarter;
+				PRODUCT_NAME = SlowStarter;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		4BD8ABD033140A6866CFB0EF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = "Derived/InfoPlists/SlowStarterTests-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = ThreeIdiots.SlowStarterTests;
+				PRODUCT_NAME = SlowStarterTests;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
+				SWIFT_COMPILATION_MODE = singlefile;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SlowStarter.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SlowStarter";
+				TEST_TARGET_NAME = SlowStarter;
+			};
+			name = Debug;
+		};
+		61AE7CA6C4DE5E073E385542 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = "Derived/InfoPlists/SlowStarterTests-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = ThreeIdiots.SlowStarterTests;
+				PRODUCT_NAME = SlowStarterTests;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SlowStarter.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SlowStarter";
+				TEST_TARGET_NAME = SlowStarter;
+			};
+			name = Release;
+		};
+		B013F4039D6F1488A9F4C2DB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		F47704B4FF34DC1C9621EF9B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "Derived/InfoPlists/SlowStarter-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = ThreeIdiots.SlowStarter;
+				PRODUCT_NAME = SlowStarter;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
+				SWIFT_COMPILATION_MODE = singlefile;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		31686629FDDB61FB1D139187 /* Build configuration list for PBXNativeTarget "SlowStarter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F47704B4FF34DC1C9621EF9B /* Debug */,
+				3464057247BFC2D947FC6085 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9FBF123134BDD31305DEC9C1 /* Build configuration list for PBXNativeTarget "SlowStarterTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4BD8ABD033140A6866CFB0EF /* Debug */,
+				61AE7CA6C4DE5E073E385542 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D02A84666D3BFC212EF2A75E /* Build configuration list for PBXProject "SlowStarter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0A30142A175ECC6DBF5D7852 /* Debug */,
+				B013F4039D6F1488A9F4C2DB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D2F843AE8E6128B954DF37B1 /* Project object */;
+}
