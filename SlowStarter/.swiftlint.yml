@@ -1,0 +1,77 @@
+disabled_rules:
+    - identifier_name
+    - line_length
+    - trailing_whitespace  # 이 줄을 추가하여 trailing_whitespace를 비활성화
+
+opt_in_rules:
+    - empty_count
+    - empty_string
+    - force_unwrapping
+
+included: # 린트 과정에 포함할 파일 경로. 이 항목이 존재하면 `--path`는 무시됨
+
+excluded: # 린트 과정에서 무시할 파일 경로. `included`보다 우선순위 높음
+    - Pods
+
+## 한 줄의 최대 길이를 150으로 설정합니다.
+#line_length:
+#  warning: 150
+
+# 콜론(:) 오른쪽에 공백을 두지 않도록 설정합니다.
+colon:
+    apply_to_parameters: false
+    apply_to_function_declaration: true
+    apply_to_function_call: false
+
+# 강제 타입 캐스팅을 경고 수준으로 설정합니다.
+force_cast:
+    severity: warning
+
+vertical_whitespace:
+    max_empty_lines: 3
+
+# 강제 언래핑을 경고 수준으로 설정합니다.
+force_unwrapping:
+    severity: warning
+
+# 복잡성 측정을 위한 순환 복잡성 경고 수준을 10으로 설정합니다.
+cyclomatic_complexity:
+    warning: 10
+
+# 중첩된 if-else 문 수준을 3으로 설정합니다.
+nesting:
+    type: "if_else"
+    levels: 3
+
+# 함수의 파라미터 개수 경고 수준을 6으로 설정합니다.
+function_parameter_count:
+    warning: 6
+
+custom_rules:
+    # 클래스의 이름에는 UpperCamelCase를 사용하고, 클래스 이름에 접두사를 붙이지 않습니다.
+    no_class_prefix:
+        name: "No Class Prefix"
+        regex: "class\\s+Prefix[A-Z]"
+        severity: error
+        message: "Class names should use UpperCamelCase and should not have prefixes."
+
+    # 구조체의 이름에는 UpperCamelCase를 사용하고, 클래스 이름에 접두사를 붙이지 않습니다.
+    no_struct_prefix:
+        name: "No Struct Prefix"
+        regex: "struct\\s+Prefix[A-Z]"
+        severity: error
+        message: "Struct names should use UpperCamelCase and should not have prefixes."
+
+    # 열거형(enum)는 lowerCamelCase를 사용합니다.
+    enum_case_lowercase:
+        name: "Enum Case Lowercase"
+        regex: "[ ]{1,}case\\s+[A-Z].*"
+        severity: error
+        message: "Enum cases should use lowerCamelCase."
+
+    # 변수 이름은 lowerCamelCase를 사용해야 합니다.
+    variable_name_camel_case:
+        name: "Variable Name CamelCase"
+        regex: "\\b(var|let)\\s+[A-Z]"
+        message: "Variable names should use lowerCamelCase."
+        severity: error
