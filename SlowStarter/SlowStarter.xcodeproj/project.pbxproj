@@ -8,14 +8,23 @@
 
 /* Begin PBXBuildFile section */
 		0137BC5A363C35ED9ECCA91C /* LectureListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7DDDC2A04CD45BEA183B3B /* LectureListViewController.swift */; };
+		04C1C35FD5673075B002F9DE /* DeleteThisFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DCD422457C7EDB0F572B0DA /* DeleteThisFile.swift */; };
+		059063C94AAE56A31FD84D15 /* DeleteThisFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFCBA3117796EA71CACC2A4A /* DeleteThisFile.swift */; };
+		190EEC6D367E876242809AB8 /* DeleteThisFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = B281B82E8A33327755567EE9 /* DeleteThisFile.swift */; };
 		28397643D2AE009F5E8DF64C /* SlowStarterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C9E1C00FD424D65740EFBCE /* SlowStarterTests.swift */; };
 		2C10AAB96733687DBDA1620A /* ExampleCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F9F16CD397EEB8A542BDFE5 /* ExampleCoordinator.swift */; };
+		31683829A259E096AFCC00B8 /* example.swift in Sources */ = {isa = PBXBuildFile; fileRef = C02A2C888A9401D7BD7A2ED3 /* example.swift */; };
 		31936A1BE18BBD71C89CEBB7 /* DeleteThisFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = A433E82D4714D2ECEFEDE6F3 /* DeleteThisFile.swift */; };
 		3E53D92B991F50D645F16604 /* ExampleStyleFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C0BD199F8FE3BD7AA8F567 /* ExampleStyleFile.swift */; };
 		4E7FE3B753DE1CC1BCCF7EC9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 44A1D090A5042A8B2B3713D2 /* Preview Assets.xcassets */; };
 		55BDEA6D6B3F3EB8268E2B84 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B376081E27F834E2C8FCA509 /* AppDelegate.swift */; };
+		69CA9B7040BAF9DE9116681A /* DeleteThisFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DF4DDA02C4675F29B5136F2 /* DeleteThisFile.swift */; };
+		6B8D9F05E76CB209ED2E8EF9 /* DeleteThisFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ED0A9CA57DAA1CC5C37A133 /* DeleteThisFile.swift */; };
+		81257473D39DED8927869276 /* DeleteThisFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 284CC290223A14991EE74689 /* DeleteThisFile.swift */; };
+		818AC1B463E36E88147D3CB5 /* DeleteThisFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE90DD119DC589122B36BEF /* DeleteThisFile.swift */; };
 		A60B99B46936D4F1170978F2 /* TuistAssets+SlowStarter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612E9BD71849190DF3EA05F9 /* TuistAssets+SlowStarter.swift */; };
 		A9196861A28CA8557DC5696B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F1515CCD4E341AB12B82853 /* SceneDelegate.swift */; };
+		A93C65333479589E237E4D98 /* DeleteThisFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18D6E8FF3F218908BA42EAAC /* DeleteThisFile.swift */; };
 		B7CE945231C7A31F6274B8F0 /* LectureListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6783DF8CECD10B7EFE810A4 /* LectureListViewModel.swift */; };
 		D68403C3DAE5BD8A453BA20E /* Protocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 497D39447D05E8E139420FC5 /* Protocol.swift */; };
 		DB65EB0C5EBCF87F2422B871 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 239417795BA77EA87C51C4E1 /* Assets.xcassets */; };
@@ -58,20 +67,29 @@
 /* Begin PBXFileReference section */
 		0901990EAA4B9D3C5E29CC0F /* SlowStarter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SlowStarter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C7DDDC2A04CD45BEA183B3B /* LectureListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LectureListViewController.swift; sourceTree = "<group>"; };
+		18D6E8FF3F218908BA42EAAC /* DeleteThisFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteThisFile.swift; sourceTree = "<group>"; };
+		1DF4DDA02C4675F29B5136F2 /* DeleteThisFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteThisFile.swift; sourceTree = "<group>"; };
 		1F9F16CD397EEB8A542BDFE5 /* ExampleCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleCoordinator.swift; sourceTree = "<group>"; };
 		239417795BA77EA87C51C4E1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		284CC290223A14991EE74689 /* DeleteThisFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteThisFile.swift; sourceTree = "<group>"; };
 		44A1D090A5042A8B2B3713D2 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		497D39447D05E8E139420FC5 /* Protocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocol.swift; sourceTree = "<group>"; };
 		4F1515CCD4E341AB12B82853 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		59C0BD199F8FE3BD7AA8F567 /* ExampleStyleFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleStyleFile.swift; sourceTree = "<group>"; };
 		612E9BD71849190DF3EA05F9 /* TuistAssets+SlowStarter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TuistAssets+SlowStarter.swift"; sourceTree = "<group>"; };
+		7DCD422457C7EDB0F572B0DA /* DeleteThisFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteThisFile.swift; sourceTree = "<group>"; };
 		7EE73BB25EF60BE39650F29D /* SlowStarter-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "SlowStarter-Info.plist"; sourceTree = "<group>"; };
 		9C9E1C00FD424D65740EFBCE /* SlowStarterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlowStarterTests.swift; sourceTree = "<group>"; };
+		9ED0A9CA57DAA1CC5C37A133 /* DeleteThisFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteThisFile.swift; sourceTree = "<group>"; };
 		A30F07739FFC49EC37B06F51 /* SlowStarterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SlowStarterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A433E82D4714D2ECEFEDE6F3 /* DeleteThisFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteThisFile.swift; sourceTree = "<group>"; };
 		AA8C9FF54E481F28957F31AA /* TuistBundle+SlowStarter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TuistBundle+SlowStarter.swift"; sourceTree = "<group>"; };
+		B281B82E8A33327755567EE9 /* DeleteThisFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteThisFile.swift; sourceTree = "<group>"; };
 		B376081E27F834E2C8FCA509 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B6783DF8CECD10B7EFE810A4 /* LectureListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LectureListViewModel.swift; sourceTree = "<group>"; };
+		C02A2C888A9401D7BD7A2ED3 /* example.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = example.swift; sourceTree = "<group>"; };
+		DEE90DD119DC589122B36BEF /* DeleteThisFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteThisFile.swift; sourceTree = "<group>"; };
+		DFCBA3117796EA71CACC2A4A /* DeleteThisFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteThisFile.swift; sourceTree = "<group>"; };
 		F3C8BD3B7CBD48C6C58828A3 /* SlowStarterTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "SlowStarterTests-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -110,12 +128,47 @@
 			path = LectureListScene;
 			sourceTree = "<group>";
 		};
+		11C895F65B7BA3EE3F28B224 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				284CC290223A14991EE74689 /* DeleteThisFile.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		17149CA1B6DFC7D8EB5A4EAB /* Repository */ = {
+			isa = PBXGroup;
+			children = (
+				1DF4DDA02C4675F29B5136F2 /* DeleteThisFile.swift */,
+			);
+			path = Repository;
+			sourceTree = "<group>";
+		};
+		1F16DB7BDB4BF8BD0D410988 /* ValueObject */ = {
+			isa = PBXGroup;
+			children = (
+				7DCD422457C7EDB0F572B0DA /* DeleteThisFile.swift */,
+			);
+			path = ValueObject;
+			sourceTree = "<group>";
+		};
 		212C185E9360F1EBDED472A4 /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
 				44A1D090A5042A8B2B3713D2 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		284AA0A5FA59F63C65B1E8EF /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				11C895F65B7BA3EE3F28B224 /* Extension */,
+				F34EDA5F3B1D16EF025542CB /* Models */,
+				ADD3EB223001463F67BA4D2C /* Protocols */,
+				1F16DB7BDB4BF8BD0D410988 /* ValueObject */,
+			);
+			path = Domain;
 			sourceTree = "<group>";
 		};
 		3A54647156E9CB25B70028EA = {
@@ -132,6 +185,22 @@
 				A433E82D4714D2ECEFEDE6F3 /* DeleteThisFile.swift */,
 			);
 			path = Network;
+			sourceTree = "<group>";
+		};
+		431AC39673693479AAAD44B6 /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				9ED0A9CA57DAA1CC5C37A133 /* DeleteThisFile.swift */,
+			);
+			path = Persistence;
+			sourceTree = "<group>";
+		};
+		5C61E9E2242363D69D3FE214 /* Repository */ = {
+			isa = PBXGroup;
+			children = (
+				B281B82E8A33327755567EE9 /* DeleteThisFile.swift */,
+			);
+			path = Repository;
 			sourceTree = "<group>";
 		};
 		61D51B94F42814E7EA5148C7 /* Sources */ = {
@@ -178,6 +247,14 @@
 			path = Tests;
 			sourceTree = "<group>";
 		};
+		897E5E7AAB994F6FF5AABF3E /* Environment */ = {
+			isa = PBXGroup;
+			children = (
+				C02A2C888A9401D7BD7A2ED3 /* example.swift */,
+			);
+			path = Environment;
+			sourceTree = "<group>";
+		};
 		900D82715C290E92B056E905 /* App */ = {
 			isa = PBXGroup;
 			children = (
@@ -185,6 +262,14 @@
 				4F1515CCD4E341AB12B82853 /* SceneDelegate.swift */,
 			);
 			path = App;
+			sourceTree = "<group>";
+		};
+		9111A1549D76390D3312F0EC /* CommonView */ = {
+			isa = PBXGroup;
+			children = (
+				18D6E8FF3F218908BA42EAAC /* DeleteThisFile.swift */,
+			);
+			path = CommonView;
 			sourceTree = "<group>";
 		};
 		A0A49629374ED8AB68EC3FCA /* Styles */ = {
@@ -213,9 +298,27 @@
 			path = InfoPlists;
 			sourceTree = "<group>";
 		};
+		ADD3EB223001463F67BA4D2C /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				5C61E9E2242363D69D3FE214 /* Repository */,
+				C18A91FE0A14164200F5F47B /* UseCase */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
+		C18A91FE0A14164200F5F47B /* UseCase */ = {
+			isa = PBXGroup;
+			children = (
+				DEE90DD119DC589122B36BEF /* DeleteThisFile.swift */,
+			);
+			path = UseCase;
+			sourceTree = "<group>";
+		};
 		C3A09533AAC1D7D1F519710C /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				9111A1549D76390D3312F0EC /* CommonView */,
 				740239972403DF70A6E0E732 /* Coordinators */,
 				0010F233E23D08F96289CCD7 /* Scenes */,
 				A0A49629374ED8AB68EC3FCA /* Styles */,
@@ -236,8 +339,18 @@
 			isa = PBXGroup;
 			children = (
 				3B9FBBB8C810A56B08B3DC2A /* Network */,
+				431AC39673693479AAAD44B6 /* Persistence */,
+				17149CA1B6DFC7D8EB5A4EAB /* Repository */,
 			);
 			path = Data;
+			sourceTree = "<group>";
+		};
+		DA973A318EF784B48DE76AA4 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				897E5E7AAB994F6FF5AABF3E /* Environment */,
+			);
+			path = Config;
 			sourceTree = "<group>";
 		};
 		ED293F57A5AE89C78AAD3FD4 /* SlowStarter */ = {
@@ -250,11 +363,21 @@
 			path = SlowStarter;
 			sourceTree = "<group>";
 		};
+		F34EDA5F3B1D16EF025542CB /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				DFCBA3117796EA71CACC2A4A /* DeleteThisFile.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		FD32B36A3ED8A2D590DA01BA /* Sources */ = {
 			isa = PBXGroup;
 			children = (
 				900D82715C290E92B056E905 /* App */,
+				DA973A318EF784B48DE76AA4 /* Config */,
 				D8555048FCC7EB0D4C4706D7 /* Data */,
+				284AA0A5FA59F63C65B1E8EF /* Domain */,
 				C3A09533AAC1D7D1F519710C /* Presentation */,
 			);
 			path = Sources;
@@ -395,7 +518,16 @@
 				F5667D41A0810E4C9E2B8175 /* TuistBundle+SlowStarter.swift in Sources */,
 				55BDEA6D6B3F3EB8268E2B84 /* AppDelegate.swift in Sources */,
 				A9196861A28CA8557DC5696B /* SceneDelegate.swift in Sources */,
+				31683829A259E096AFCC00B8 /* example.swift in Sources */,
 				31936A1BE18BBD71C89CEBB7 /* DeleteThisFile.swift in Sources */,
+				6B8D9F05E76CB209ED2E8EF9 /* DeleteThisFile.swift in Sources */,
+				69CA9B7040BAF9DE9116681A /* DeleteThisFile.swift in Sources */,
+				81257473D39DED8927869276 /* DeleteThisFile.swift in Sources */,
+				059063C94AAE56A31FD84D15 /* DeleteThisFile.swift in Sources */,
+				190EEC6D367E876242809AB8 /* DeleteThisFile.swift in Sources */,
+				818AC1B463E36E88147D3CB5 /* DeleteThisFile.swift in Sources */,
+				04C1C35FD5673075B002F9DE /* DeleteThisFile.swift in Sources */,
+				A93C65333479589E237E4D98 /* DeleteThisFile.swift in Sources */,
 				2C10AAB96733687DBDA1620A /* ExampleCoordinator.swift in Sources */,
 				D68403C3DAE5BD8A453BA20E /* Protocol.swift in Sources */,
 				0137BC5A363C35ED9ECCA91C /* LectureListViewController.swift in Sources */,
