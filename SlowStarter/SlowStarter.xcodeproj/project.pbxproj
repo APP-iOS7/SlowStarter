@@ -20,6 +20,7 @@
 		55BDEA6D6B3F3EB8268E2B84 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B376081E27F834E2C8FCA509 /* AppDelegate.swift */; };
 		69CA9B7040BAF9DE9116681A /* DeleteThisFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DF4DDA02C4675F29B5136F2 /* DeleteThisFile.swift */; };
 		6B8D9F05E76CB209ED2E8EF9 /* DeleteThisFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ED0A9CA57DAA1CC5C37A133 /* DeleteThisFile.swift */; };
+		7F132729B27E7C4C92901474 /* example.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DCD2B7386DCA3A9AD5E8C1 /* example.swift */; };
 		81257473D39DED8927869276 /* DeleteThisFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 284CC290223A14991EE74689 /* DeleteThisFile.swift */; };
 		818AC1B463E36E88147D3CB5 /* DeleteThisFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE90DD119DC589122B36BEF /* DeleteThisFile.swift */; };
 		A60B99B46936D4F1170978F2 /* TuistAssets+SlowStarter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612E9BD71849190DF3EA05F9 /* TuistAssets+SlowStarter.swift */; };
@@ -79,6 +80,7 @@
 		612E9BD71849190DF3EA05F9 /* TuistAssets+SlowStarter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TuistAssets+SlowStarter.swift"; sourceTree = "<group>"; };
 		7DCD422457C7EDB0F572B0DA /* DeleteThisFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteThisFile.swift; sourceTree = "<group>"; };
 		7EE73BB25EF60BE39650F29D /* SlowStarter-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "SlowStarter-Info.plist"; sourceTree = "<group>"; };
+		86DCD2B7386DCA3A9AD5E8C1 /* example.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = example.swift; sourceTree = "<group>"; };
 		9C9E1C00FD424D65740EFBCE /* SlowStarterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlowStarterTests.swift; sourceTree = "<group>"; };
 		9ED0A9CA57DAA1CC5C37A133 /* DeleteThisFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteThisFile.swift; sourceTree = "<group>"; };
 		A30F07739FFC49EC37B06F51 /* SlowStarterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SlowStarterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -142,6 +144,14 @@
 				1DF4DDA02C4675F29B5136F2 /* DeleteThisFile.swift */,
 			);
 			path = Repository;
+			sourceTree = "<group>";
+		};
+		1E93E6E19D1ECC3F1683BA2B /* API */ = {
+			isa = PBXGroup;
+			children = (
+				86DCD2B7386DCA3A9AD5E8C1 /* example.swift */,
+			);
+			path = API;
 			sourceTree = "<group>";
 		};
 		1F16DB7BDB4BF8BD0D410988 /* ValueObject */ = {
@@ -348,6 +358,7 @@
 		DA973A318EF784B48DE76AA4 /* Config */ = {
 			isa = PBXGroup;
 			children = (
+				1E93E6E19D1ECC3F1683BA2B /* API */,
 				897E5E7AAB994F6FF5AABF3E /* Environment */,
 			);
 			path = Config;
@@ -518,6 +529,7 @@
 				F5667D41A0810E4C9E2B8175 /* TuistBundle+SlowStarter.swift in Sources */,
 				55BDEA6D6B3F3EB8268E2B84 /* AppDelegate.swift in Sources */,
 				A9196861A28CA8557DC5696B /* SceneDelegate.swift in Sources */,
+				7F132729B27E7C4C92901474 /* example.swift in Sources */,
 				31683829A259E096AFCC00B8 /* example.swift in Sources */,
 				31936A1BE18BBD71C89CEBB7 /* DeleteThisFile.swift in Sources */,
 				6B8D9F05E76CB209ED2E8EF9 /* DeleteThisFile.swift in Sources */,
