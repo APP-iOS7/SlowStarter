@@ -3,19 +3,20 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 55;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		0137BC5A363C35ED9ECCA91C /* LectureListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7DDDC2A04CD45BEA183B3B /* LectureListViewController.swift */; };
 		28397643D2AE009F5E8DF64C /* SlowStarterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C9E1C00FD424D65740EFBCE /* SlowStarterTests.swift */; };
 		2C10AAB96733687DBDA1620A /* ExampleCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F9F16CD397EEB8A542BDFE5 /* ExampleCoordinator.swift */; };
+		31936A1BE18BBD71C89CEBB7 /* DeleteThisFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = A433E82D4714D2ECEFEDE6F3 /* DeleteThisFile.swift */; };
 		3E53D92B991F50D645F16604 /* ExampleStyleFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C0BD199F8FE3BD7AA8F567 /* ExampleStyleFile.swift */; };
 		4E7FE3B753DE1CC1BCCF7EC9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 44A1D090A5042A8B2B3713D2 /* Preview Assets.xcassets */; };
+		55BDEA6D6B3F3EB8268E2B84 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B376081E27F834E2C8FCA509 /* AppDelegate.swift */; };
 		A60B99B46936D4F1170978F2 /* TuistAssets+SlowStarter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612E9BD71849190DF3EA05F9 /* TuistAssets+SlowStarter.swift */; };
 		A9196861A28CA8557DC5696B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F1515CCD4E341AB12B82853 /* SceneDelegate.swift */; };
 		B7CE945231C7A31F6274B8F0 /* LectureListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6783DF8CECD10B7EFE810A4 /* LectureListViewModel.swift */; };
-		BB47347B2DD1C910007DE7DB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB47347A2DD1C910007DE7DB /* AppDelegate.swift */; };
 		D68403C3DAE5BD8A453BA20E /* Protocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 497D39447D05E8E139420FC5 /* Protocol.swift */; };
 		DB65EB0C5EBCF87F2422B871 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 239417795BA77EA87C51C4E1 /* Assets.xcassets */; };
 		F5667D41A0810E4C9E2B8175 /* TuistBundle+SlowStarter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8C9FF54E481F28957F31AA /* TuistBundle+SlowStarter.swift */; };
@@ -67,9 +68,10 @@
 		7EE73BB25EF60BE39650F29D /* SlowStarter-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "SlowStarter-Info.plist"; sourceTree = "<group>"; };
 		9C9E1C00FD424D65740EFBCE /* SlowStarterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlowStarterTests.swift; sourceTree = "<group>"; };
 		A30F07739FFC49EC37B06F51 /* SlowStarterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SlowStarterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A433E82D4714D2ECEFEDE6F3 /* DeleteThisFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteThisFile.swift; sourceTree = "<group>"; };
 		AA8C9FF54E481F28957F31AA /* TuistBundle+SlowStarter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TuistBundle+SlowStarter.swift"; sourceTree = "<group>"; };
+		B376081E27F834E2C8FCA509 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B6783DF8CECD10B7EFE810A4 /* LectureListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LectureListViewModel.swift; sourceTree = "<group>"; };
-		BB47347A2DD1C910007DE7DB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F3C8BD3B7CBD48C6C58828A3 /* SlowStarterTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "SlowStarterTests-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -124,6 +126,14 @@
 			);
 			sourceTree = "<group>";
 		};
+		3B9FBBB8C810A56B08B3DC2A /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				A433E82D4714D2ECEFEDE6F3 /* DeleteThisFile.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
 		61D51B94F42814E7EA5148C7 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
@@ -171,8 +181,8 @@
 		900D82715C290E92B056E905 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				B376081E27F834E2C8FCA509 /* AppDelegate.swift */,
 				4F1515CCD4E341AB12B82853 /* SceneDelegate.swift */,
-				BB47347A2DD1C910007DE7DB /* AppDelegate.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -222,6 +232,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		D8555048FCC7EB0D4C4706D7 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				3B9FBBB8C810A56B08B3DC2A /* Network */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
 		ED293F57A5AE89C78AAD3FD4 /* SlowStarter */ = {
 			isa = PBXGroup;
 			children = (
@@ -236,6 +254,7 @@
 			isa = PBXGroup;
 			children = (
 				900D82715C290E92B056E905 /* App */,
+				D8555048FCC7EB0D4C4706D7 /* Data */,
 				C3A09533AAC1D7D1F519710C /* Presentation */,
 			);
 			path = Sources;
@@ -374,8 +393,9 @@
 			files = (
 				A60B99B46936D4F1170978F2 /* TuistAssets+SlowStarter.swift in Sources */,
 				F5667D41A0810E4C9E2B8175 /* TuistBundle+SlowStarter.swift in Sources */,
+				55BDEA6D6B3F3EB8268E2B84 /* AppDelegate.swift in Sources */,
 				A9196861A28CA8557DC5696B /* SceneDelegate.swift in Sources */,
-				BB47347B2DD1C910007DE7DB /* AppDelegate.swift in Sources */,
+				31936A1BE18BBD71C89CEBB7 /* DeleteThisFile.swift in Sources */,
 				2C10AAB96733687DBDA1620A /* ExampleCoordinator.swift in Sources */,
 				D68403C3DAE5BD8A453BA20E /* Protocol.swift in Sources */,
 				0137BC5A363C35ED9ECCA91C /* LectureListViewController.swift in Sources */,
@@ -496,7 +516,10 @@
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
+					"$(inherited)",
+					DEBUG,
+				);
 				SWIFT_COMPILATION_MODE = singlefile;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -602,7 +625,10 @@
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
+					"$(inherited)",
+					DEBUG,
+				);
 				SWIFT_COMPILATION_MODE = singlefile;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
