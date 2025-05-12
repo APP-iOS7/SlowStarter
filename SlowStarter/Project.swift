@@ -14,8 +14,8 @@ let project = Project(
                 with: [
                     "UILaunchScreen": [
                         "UIColorName": "",
-                        "UIImageName": "",
-                    ],
+                        "UIImageName": ""
+                    ]
                 ]
             ),
             sources: ["SlowStarter/Sources/**"],
@@ -61,6 +61,6 @@ let project = Project(
             sources: ["SlowStarter/Tests/**"],
             resources: [],
             dependencies: [.target(name: "SlowStarter")]
-        ),
+        )
     ]
 )
