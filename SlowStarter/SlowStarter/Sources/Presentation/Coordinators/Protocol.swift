@@ -1,6 +1,6 @@
 import UIKit
 
-//MARK: - Example
+// MARK: - Example
 
 protocol Coordinator {
     var navigationController: UINavigationController { get set }
