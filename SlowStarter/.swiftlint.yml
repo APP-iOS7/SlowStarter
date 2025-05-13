@@ -19,9 +19,9 @@ excluded: # 린트 과정에서 무시할 파일 경로. `included`보다 우선
 
 # 콜론(:) 오른쪽에 공백을 두지 않도록 설정합니다.
 colon:
-    apply_to_parameters: false
-    apply_to_function_declaration: true
-    apply_to_function_call: false
+    severity: warning
+    flexible_right_spacing: false
+    apply_to_dictionaries: true
 
 # 강제 타입 캐스팅을 경고 수준으로 설정합니다.
 force_cast:
@@ -40,8 +40,8 @@ cyclomatic_complexity:
 
 # 중첩된 if-else 문 수준을 3으로 설정합니다.
 nesting:
-    type: "if_else"
-    levels: 3
+    function_level:
+        warning: 3
 
 # 함수의 파라미터 개수 경고 수준을 6으로 설정합니다.
 function_parameter_count:

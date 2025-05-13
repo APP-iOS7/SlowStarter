@@ -4,17 +4,32 @@ let prefixBundleID: String = "ThreeIdiots"
 
 let project = Project(
     name: "SlowStarter",
+    settings: .settings(
+        base: [
+            "CODE_SIGN_IDENTITY": "Apple Development",
+            "DEVELOPMENT_TEAM": "59FP2PXRXK"
+        ]
+    ),
     targets: [
         .target(
             name: "SlowStarter",
             destinations: .iOS,
             product: .app,
             bundleId: "\(prefixBundleID).SlowStarter",
+            deploymentTargets: .iOS("17.0"),
             infoPlist: .extendingDefault(
                 with: [
-                    "UILaunchScreen": [
-                        "UIColorName": "",
-                        "UIImageName": ""
+                    "UILaunchStoryboardName": "LaunchScreen",
+                    "UIApplicationSceneManifest": [
+                        "UIApplicationSupportsMultipleScenes": true,
+                        "UISceneConfigurations": [
+                            "UIWindowSceneSessionRoleApplication": [
+                                [
+                                    "UISceneConfigurationName": "Default Configuration",
+                                    "UISceneDelegateClassName": "$(PRODUCT_MODULE_NAME).SceneDelegate"
+                                ]
+                            ]
+                        ]
                     ]
                 ]
             ),
