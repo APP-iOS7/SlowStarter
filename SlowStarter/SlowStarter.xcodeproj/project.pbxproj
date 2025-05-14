@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 55;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -25,6 +25,8 @@
 		A60B99B46936D4F1170978F2 /* TuistAssets+SlowStarter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612E9BD71849190DF3EA05F9 /* TuistAssets+SlowStarter.swift */; };
 		A9196861A28CA8557DC5696B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F1515CCD4E341AB12B82853 /* SceneDelegate.swift */; };
 		B7CE945231C7A31F6274B8F0 /* LectureListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6783DF8CECD10B7EFE810A4 /* LectureListViewModel.swift */; };
+		BBA5A13B2DD486BA00409B43 /* BasicVideoPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBA5A13A2DD486BA00409B43 /* BasicVideoPlayerViewController.swift */; };
+		BBA5A13D2DD48E3E00409B43 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = BBA5A13C2DD48E3E00409B43 /* .swiftlint.yml */; };
 		C09E5DB355D0728300E7A7DC /* DeleteThisFile7.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349C36D3E30A5B88B6A6AE42 /* DeleteThisFile7.swift */; };
 		C7C66C4456005A186F862718 /* DeleteThisFile6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B679A355A33AF73FB872691 /* DeleteThisFile6.swift */; };
 		D2424B093C2A02CF79E8DAE8 /* example2.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4ED5C0669F8323669BF9718 /* example2.swift */; };
@@ -104,6 +106,8 @@
 		AEF3152BFB7200AB6FAF3EC8 /* DeleteThisFile5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteThisFile5.swift; sourceTree = "<group>"; };
 		B376081E27F834E2C8FCA509 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B6783DF8CECD10B7EFE810A4 /* LectureListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LectureListViewModel.swift; sourceTree = "<group>"; };
+		BBA5A13A2DD486BA00409B43 /* BasicVideoPlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicVideoPlayerViewController.swift; sourceTree = "<group>"; };
+		BBA5A13C2DD48E3E00409B43 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		C88F541FB258FD70910F57E6 /* DeleteThisFile4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteThisFile4.swift; sourceTree = "<group>"; };
 		DAF5A0076012B0E1616ECE9D /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
 		E4ED5C0669F8323669BF9718 /* example2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = example2.swift; sourceTree = "<group>"; };
@@ -200,6 +204,7 @@
 		3A54647156E9CB25B70028EA = {
 			isa = PBXGroup;
 			children = (
+				BBA5A13C2DD48E3E00409B43 /* .swiftlint.yml */,
 				A41A5467EAA1BC27C817DD93 /* Project */,
 				D730D3075A80854F27D6E378 /* Products */,
 			);
@@ -396,6 +401,7 @@
 			isa = PBXGroup;
 			children = (
 				DAF5A0076012B0E1616ECE9D /* VideoPlayerView.swift */,
+				BBA5A13A2DD486BA00409B43 /* BasicVideoPlayerViewController.swift */,
 			);
 			path = VideoPlayer;
 			sourceTree = "<group>";
@@ -510,6 +516,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BBA5A13D2DD48E3E00409B43 /* .swiftlint.yml in Resources */,
 				DB65EB0C5EBCF87F2422B871 /* Assets.xcassets in Resources */,
 				4E7FE3B753DE1CC1BCCF7EC9 /* Preview Assets.xcassets in Resources */,
 				A1F366E59E917B5DF99B40A4 /* SnapKit_SnapKit.bundle in Resources */,
@@ -553,6 +560,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BBA5A13B2DD486BA00409B43 /* BasicVideoPlayerViewController.swift in Sources */,
 				A60B99B46936D4F1170978F2 /* TuistAssets+SlowStarter.swift in Sources */,
 				F5667D41A0810E4C9E2B8175 /* TuistBundle+SlowStarter.swift in Sources */,
 				55BDEA6D6B3F3EB8268E2B84 /* AppDelegate.swift in Sources */,
@@ -688,10 +696,7 @@
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
-					"$(inherited)",
-					DEBUG,
-				);
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
 				SWIFT_COMPILATION_MODE = singlefile;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -797,10 +802,7 @@
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
-					"$(inherited)",
-					DEBUG,
-				);
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
 				SWIFT_COMPILATION_MODE = singlefile;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;

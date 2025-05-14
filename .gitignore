@@ -51,3 +51,6 @@ xcuserdata/
 *.xcconfig
 .env
 *.env
+
+# Ignore Tuist build and dependency checkouts
+/Tuist/.build/
