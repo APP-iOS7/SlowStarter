@@ -7,6 +7,7 @@
 
 import UIKit
 
+// 반복학습 탭 뷰
 class LectureListViewController: UIViewController {
 
     override func viewDidLoad() {
