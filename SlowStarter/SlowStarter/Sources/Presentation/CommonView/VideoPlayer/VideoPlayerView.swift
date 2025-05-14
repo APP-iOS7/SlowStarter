@@ -5,17 +5,17 @@
 ////  Created by 이재용 on 5/13/25.
 ////
 //
-//import UIKit
-//import AVKit
-//import AVFoundation
-//import SnapKit
+// import UIKit
+// import AVKit
+// import AVFoundation
+// import SnapKit
 //
-//extension AVPlayer {
+// extension AVPlayer {
 //    var isPlaying: Bool {
 //        return rate != 0 && error == nil
 //    }
-//}
-//class CustomVideoPlayerController: UIViewController {
+// }
+// class CustomVideoPlayerController: UIViewController {
 //    // Video가 재생되는 뷰
 //    let videoBackView = UIView()
 //    

@@ -17,7 +17,7 @@ class BasicVideoPlayerViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         
-        
+        setupPlayButton()
     }
     
     private func setupPlayButton() {
