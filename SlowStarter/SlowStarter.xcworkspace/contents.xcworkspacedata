@@ -4,4 +4,11 @@
    <FileRef
       location = "group:SlowStarter.xcodeproj">
    </FileRef>
+   <Group
+      location = "container:"
+      name = "Dependencies">
+      <FileRef
+         location = "group:Tuist/.build/tuist-derived/SnapKit/SnapKit.xcodeproj">
+      </FileRef>
+   </Group>
 </Workspace>
