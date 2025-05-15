@@ -20,7 +20,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         
         let window = UIWindow(windowScene: windowScene)
-        window.rootViewController = UINavigationController(rootViewController: LectureListViewController())
+        let chatApiService: ChatAPIService = ChatAPIService()
+        let repository: ChatRepository = ChatRepositoryImpl(apiService: chatApiService)
+        let sendChatMessageUseCase: SendChatMessageUseCase = SendChatMessageUseCase(repository: repository)
+        let chatVM: ChatViewModel = ChatViewModel(useCase: sendChatMessageUseCase)
+        let chatVC: ChatViewController = ChatViewController(viewModel: chatVM)
+        
+        window.rootViewController = UINavigationController(rootViewController: chatVC)
         self.window = window
         window.makeKeyAndVisible()
         

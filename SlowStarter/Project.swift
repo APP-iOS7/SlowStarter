@@ -8,6 +8,10 @@ let project = Project(
         base: [
             "CODE_SIGN_IDENTITY": "Apple Development",
             "DEVELOPMENT_TEAM": "59FP2PXRXK"
+        ],
+        configurations: [
+            .debug(name: "Debug", xcconfig: .relativeToRoot("SlowStarter/Sources/Config/API/Secrets.xcconfig")),
+            .release(name: "Release", xcconfig: .relativeToRoot("SlowStarter/Sources/Config/API/Secrets.xcconfig"))
         ]
     ),
     targets: [
@@ -30,14 +34,15 @@ let project = Project(
                                 ]
                             ]
                         ]
-                    ]
+                    ],
+                    "GEMINI_API_KEY": "$(GEMINI_API_KEY)"
                 ]
             ),
             sources: ["SlowStarter/Sources/**"],
             resources: ["SlowStarter/Resources/**"],
             scripts: [
                 .pre(
-                  script: """
+                    script: """
                   # SwiftLint가 설치되어 있고 PATH에 잡히는지 확인
                   if SWIFTLINT_PATH=$(which swiftlint); then
                     echo "SwiftLint found at: $SWIFTLINT_PATH"
@@ -46,7 +51,7 @@ let project = Project(
                   else
                     echo "warning: SwiftLint not installed or not in PATH. Install or check PATH."
                     echo "Attempting to locate SwiftLint in common Homebrew paths..."
-
+                  
                     # Apple Silicon Homebrew 경로 시도
                     if [ -f "/opt/homebrew/bin/swiftlint" ]; then
                       echo "SwiftLint found at /opt/homebrew/bin/swiftlint"
@@ -61,8 +66,8 @@ let project = Project(
                     fi
                   fi
                   """,
-                  name: "SwiftLint",
-                  basedOnDependencyAnalysis: false
+                    name: "SwiftLint",
+                    basedOnDependencyAnalysis: false
                 )
             ],
             dependencies: []
