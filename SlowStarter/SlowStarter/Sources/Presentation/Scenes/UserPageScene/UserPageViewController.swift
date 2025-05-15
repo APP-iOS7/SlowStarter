@@ -1,5 +1,5 @@
 //
-//  LectureListViewController.swift
+//  UserPageViewController.swift
 //  SlowStarter
 //
 //  Created by sean on 5/15/25.
@@ -7,8 +7,7 @@
 
 import UIKit
 
-// 반복학습 탭 뷰
-class LectureListViewController: UIViewController {
+class UserPageViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()

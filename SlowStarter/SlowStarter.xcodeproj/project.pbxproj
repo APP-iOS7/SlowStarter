@@ -3,14 +3,46 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 55;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0137BC5A363C35ED9ECCA91C /* LectureListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7DDDC2A04CD45BEA183B3B /* LectureListViewController.swift */; };
+		0137BC5A363C35ED9ECCA91C /* LectureSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7DDDC2A04CD45BEA183B3B /* LectureSearchViewController.swift */; };
+		14DE030B2DD58C4F00325E51 /* LectureListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE030A2DD58C4F00325E51 /* LectureListViewController.swift */; };
+		14DE030D2DD5A1D800325E51 /* LectureDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE030C2DD5A1D800325E51 /* LectureDetailViewController.swift */; };
+		14DE030F2DD5A2BC00325E51 /* OtVodViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE030E2DD5A2BC00325E51 /* OtVodViewController.swift */; };
+		14DE03112DD5A2D400325E51 /* MeetingDateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE03102DD5A2D400325E51 /* MeetingDateViewController.swift */; };
+		14DE03132DD5A2EE00325E51 /* PaymentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE03122DD5A2EE00325E51 /* PaymentViewController.swift */; };
+		14DE032E2DD5AA0800325E51 /* LectureSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE032D2DD5AA0800325E51 /* LectureSearchViewModel.swift */; };
+		14DE03302DD5AA2E00325E51 /* PaymentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE032F2DD5AA2E00325E51 /* PaymentViewModel.swift */; };
+		14DE03322DD5AA3C00325E51 /* MeetingDateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE03312DD5AA3C00325E51 /* MeetingDateViewModel.swift */; };
+		14DE03342DD5AA4E00325E51 /* LectureDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE03332DD5AA4E00325E51 /* LectureDetailViewModel.swift */; };
+		14DE03362DD5AA5C00325E51 /* OtVodViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE03352DD5AA5C00325E51 /* OtVodViewModel.swift */; };
+		14DE03422DD5AEB800325E51 /* MissionListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE03412DD5AEB800325E51 /* MissionListViewController.swift */; };
+		14DE03442DD5AECB00325E51 /* MissionListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE03432DD5AECB00325E51 /* MissionListViewModel.swift */; };
+		14DE03462DD5AEE700325E51 /* PaymentListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE03452DD5AEE700325E51 /* PaymentListViewController.swift */; };
+		14DE03482DD5AF0A00325E51 /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE03472DD5AF0A00325E51 /* NotificationViewController.swift */; };
+		14DE034A2DD5AF1900325E51 /* LectureRecordDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE03492DD5AF1900325E51 /* LectureRecordDetailViewController.swift */; };
+		14DE034C2DD5AF2100325E51 /* LectureRecordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE034B2DD5AF2100325E51 /* LectureRecordViewController.swift */; };
+		14DE034E2DD5AF2F00325E51 /* BadgeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE034D2DD5AF2F00325E51 /* BadgeViewController.swift */; };
+		14DE03502DD5AF4100325E51 /* UserPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE034F2DD5AF4100325E51 /* UserPageViewController.swift */; };
+		14DE03522DD5AF4F00325E51 /* ChattingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE03512DD5AF4F00325E51 /* ChattingViewController.swift */; };
+		14DE03542DD5AF5A00325E51 /* ChatListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE03532DD5AF5A00325E51 /* ChatListViewController.swift */; };
+		14DE03562DD5AF6700325E51 /* MissionUploadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE03552DD5AF6700325E51 /* MissionUploadViewController.swift */; };
+		14DE03582DD5AF8100325E51 /* PaymentListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE03572DD5AF8100325E51 /* PaymentListViewModel.swift */; };
+		14DE035A2DD5AF9100325E51 /* NotificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE03592DD5AF9100325E51 /* NotificationViewModel.swift */; };
+		14DE035D2DD5AFF100325E51 /* NotificationControlViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE035C2DD5AFF100325E51 /* NotificationControlViewModel.swift */; };
+		14DE035F2DD5B00400325E51 /* NotificationControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE035E2DD5B00400325E51 /* NotificationControlViewController.swift */; };
+		14DE03612DD5B02F00325E51 /* LectureRecordDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE03602DD5B02F00325E51 /* LectureRecordDetailViewModel.swift */; };
+		14DE03632DD5B04300325E51 /* LectureRecordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE03622DD5B04300325E51 /* LectureRecordViewModel.swift */; };
+		14DE03652DD5B04F00325E51 /* BadgeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE03642DD5B04F00325E51 /* BadgeViewModel.swift */; };
+		14DE03672DD5B05800325E51 /* UserPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE03662DD5B05800325E51 /* UserPageViewModel.swift */; };
+		14DE03692DD5B06A00325E51 /* ChattingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE03682DD5B06A00325E51 /* ChattingViewModel.swift */; };
+		14DE036B2DD5B07300325E51 /* ChatListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE036A2DD5B07300325E51 /* ChatListViewModel.swift */; };
+		14DE036D2DD5B07F00325E51 /* MissionUploadViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DE036C2DD5B07F00325E51 /* MissionUploadViewModel.swift */; };
 		151C9628F6840763662207F2 /* DeleteThisFile9.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30ECE06E4390891DC1EB4874 /* DeleteThisFile9.swift */; };
 		28397643D2AE009F5E8DF64C /* SlowStarterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C9E1C00FD424D65740EFBCE /* SlowStarterTests.swift */; };
-		2C10AAB96733687DBDA1620A /* ExampleCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F9F16CD397EEB8A542BDFE5 /* ExampleCoordinator.swift */; };
+		2C10AAB96733687DBDA1620A /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F9F16CD397EEB8A542BDFE5 /* AppCoordinator.swift */; };
 		37A34EA9F135426A8026FFC4 /* DeleteThisFile1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CD3041AB15DC8F68F46941 /* DeleteThisFile1.swift */; };
 		3E53D92B991F50D645F16604 /* ExampleStyleFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C0BD199F8FE3BD7AA8F567 /* ExampleStyleFile.swift */; };
 		4D84365EC9D2AF78F9153C06 /* DeleteThisFile4.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88F541FB258FD70910F57E6 /* DeleteThisFile4.swift */; };
@@ -68,8 +100,40 @@
 /* Begin PBXFileReference section */
 		0901990EAA4B9D3C5E29CC0F /* SlowStarter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SlowStarter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C767C5C8C151540BEDC10D9 /* DeleteThisFile8.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteThisFile8.swift; sourceTree = "<group>"; };
-		0C7DDDC2A04CD45BEA183B3B /* LectureListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LectureListViewController.swift; sourceTree = "<group>"; };
-		1F9F16CD397EEB8A542BDFE5 /* ExampleCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleCoordinator.swift; sourceTree = "<group>"; };
+		0C7DDDC2A04CD45BEA183B3B /* LectureSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LectureSearchViewController.swift; sourceTree = "<group>"; };
+		14DE030A2DD58C4F00325E51 /* LectureListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LectureListViewController.swift; sourceTree = "<group>"; };
+		14DE030C2DD5A1D800325E51 /* LectureDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LectureDetailViewController.swift; sourceTree = "<group>"; };
+		14DE030E2DD5A2BC00325E51 /* OtVodViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtVodViewController.swift; sourceTree = "<group>"; };
+		14DE03102DD5A2D400325E51 /* MeetingDateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingDateViewController.swift; sourceTree = "<group>"; };
+		14DE03122DD5A2EE00325E51 /* PaymentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentViewController.swift; sourceTree = "<group>"; };
+		14DE032D2DD5AA0800325E51 /* LectureSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LectureSearchViewModel.swift; sourceTree = "<group>"; };
+		14DE032F2DD5AA2E00325E51 /* PaymentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentViewModel.swift; sourceTree = "<group>"; };
+		14DE03312DD5AA3C00325E51 /* MeetingDateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingDateViewModel.swift; sourceTree = "<group>"; };
+		14DE03332DD5AA4E00325E51 /* LectureDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LectureDetailViewModel.swift; sourceTree = "<group>"; };
+		14DE03352DD5AA5C00325E51 /* OtVodViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtVodViewModel.swift; sourceTree = "<group>"; };
+		14DE03412DD5AEB800325E51 /* MissionListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionListViewController.swift; sourceTree = "<group>"; };
+		14DE03432DD5AECB00325E51 /* MissionListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionListViewModel.swift; sourceTree = "<group>"; };
+		14DE03452DD5AEE700325E51 /* PaymentListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentListViewController.swift; sourceTree = "<group>"; };
+		14DE03472DD5AF0A00325E51 /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
+		14DE03492DD5AF1900325E51 /* LectureRecordDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LectureRecordDetailViewController.swift; sourceTree = "<group>"; };
+		14DE034B2DD5AF2100325E51 /* LectureRecordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LectureRecordViewController.swift; sourceTree = "<group>"; };
+		14DE034D2DD5AF2F00325E51 /* BadgeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeViewController.swift; sourceTree = "<group>"; };
+		14DE034F2DD5AF4100325E51 /* UserPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPageViewController.swift; sourceTree = "<group>"; };
+		14DE03512DD5AF4F00325E51 /* ChattingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChattingViewController.swift; sourceTree = "<group>"; };
+		14DE03532DD5AF5A00325E51 /* ChatListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListViewController.swift; sourceTree = "<group>"; };
+		14DE03552DD5AF6700325E51 /* MissionUploadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionUploadViewController.swift; sourceTree = "<group>"; };
+		14DE03572DD5AF8100325E51 /* PaymentListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentListViewModel.swift; sourceTree = "<group>"; };
+		14DE03592DD5AF9100325E51 /* NotificationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewModel.swift; sourceTree = "<group>"; };
+		14DE035C2DD5AFF100325E51 /* NotificationControlViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationControlViewModel.swift; sourceTree = "<group>"; };
+		14DE035E2DD5B00400325E51 /* NotificationControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationControlViewController.swift; sourceTree = "<group>"; };
+		14DE03602DD5B02F00325E51 /* LectureRecordDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LectureRecordDetailViewModel.swift; sourceTree = "<group>"; };
+		14DE03622DD5B04300325E51 /* LectureRecordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LectureRecordViewModel.swift; sourceTree = "<group>"; };
+		14DE03642DD5B04F00325E51 /* BadgeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeViewModel.swift; sourceTree = "<group>"; };
+		14DE03662DD5B05800325E51 /* UserPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPageViewModel.swift; sourceTree = "<group>"; };
+		14DE03682DD5B06A00325E51 /* ChattingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChattingViewModel.swift; sourceTree = "<group>"; };
+		14DE036A2DD5B07300325E51 /* ChatListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListViewModel.swift; sourceTree = "<group>"; };
+		14DE036C2DD5B07F00325E51 /* MissionUploadViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionUploadViewModel.swift; sourceTree = "<group>"; };
+		1F9F16CD397EEB8A542BDFE5 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
 		20FF5F424F18CE65CB8FC1FC /* DeleteThisFile3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteThisFile3.swift; sourceTree = "<group>"; };
 		239417795BA77EA87C51C4E1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2B679A355A33AF73FB872691 /* DeleteThisFile6.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteThisFile6.swift; sourceTree = "<group>"; };
@@ -116,18 +180,34 @@
 		0010F233E23D08F96289CCD7 /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
-				0B4B55C4752235403A2F48AD /* LectureListScene */,
+				14DE035B2DD5AFCE00325E51 /* NotificationControlScene */,
+				14DE03402DD5AE3200325E51 /* PaymentListScene */,
+				14DE033F2DD5AD6A00325E51 /* NotificationScene */,
+				14DE033E2DD5AD5500325E51 /* LectureRecordDetailScene */,
+				14DE033D2DD5AD3900325E51 /* LectureRecordScene */,
+				14DE033C2DD5AD1E00325E51 /* BadgeScene */,
+				14DE033B2DD5ACC500325E51 /* UserPageScene */,
+				14DE033A2DD5ABEB00325E51 /* ChattingScene */,
+				14DE03392DD5ABB600325E51 /* ChatListScene */,
+				14DE03382DD5AB9200325E51 /* MissionUploadScene */,
+				14DE03372DD5AB7400325E51 /* MissionListScene */,
+				14DE032B2DD5A79400325E51 /* PaymentScene */,
+				14DE032A2DD5A78700325E51 /* MeetingDateScene */,
+				0B4B55C4752235403A2F48AD /* LectureSearchScene */,
+				14DE03282DD5A74300325E51 /* LectureDetailScene */,
+				14DE03292DD5A76000325E51 /* OtVodScene */,
+				14DE032C2DD5A7AF00325E51 /* LectureListScene */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
 		};
-		0B4B55C4752235403A2F48AD /* LectureListScene */ = {
+		0B4B55C4752235403A2F48AD /* LectureSearchScene */ = {
 			isa = PBXGroup;
 			children = (
-				0C7DDDC2A04CD45BEA183B3B /* LectureListViewController.swift */,
-				B6783DF8CECD10B7EFE810A4 /* LectureListViewModel.swift */,
+				0C7DDDC2A04CD45BEA183B3B /* LectureSearchViewController.swift */,
+				14DE032D2DD5AA0800325E51 /* LectureSearchViewModel.swift */,
 			);
-			path = LectureListScene;
+			path = LectureSearchScene;
 			sourceTree = "<group>";
 		};
 		11C895F65B7BA3EE3F28B224 /* Extension */ = {
@@ -136,6 +216,150 @@
 				C88F541FB258FD70910F57E6 /* DeleteThisFile4.swift */,
 			);
 			path = Extension;
+			sourceTree = "<group>";
+		};
+		14DE03282DD5A74300325E51 /* LectureDetailScene */ = {
+			isa = PBXGroup;
+			children = (
+				14DE030C2DD5A1D800325E51 /* LectureDetailViewController.swift */,
+				14DE03332DD5AA4E00325E51 /* LectureDetailViewModel.swift */,
+			);
+			path = LectureDetailScene;
+			sourceTree = "<group>";
+		};
+		14DE03292DD5A76000325E51 /* OtVodScene */ = {
+			isa = PBXGroup;
+			children = (
+				14DE030E2DD5A2BC00325E51 /* OtVodViewController.swift */,
+				14DE03352DD5AA5C00325E51 /* OtVodViewModel.swift */,
+			);
+			path = OtVodScene;
+			sourceTree = "<group>";
+		};
+		14DE032A2DD5A78700325E51 /* MeetingDateScene */ = {
+			isa = PBXGroup;
+			children = (
+				14DE03102DD5A2D400325E51 /* MeetingDateViewController.swift */,
+				14DE03312DD5AA3C00325E51 /* MeetingDateViewModel.swift */,
+			);
+			path = MeetingDateScene;
+			sourceTree = "<group>";
+		};
+		14DE032B2DD5A79400325E51 /* PaymentScene */ = {
+			isa = PBXGroup;
+			children = (
+				14DE03122DD5A2EE00325E51 /* PaymentViewController.swift */,
+				14DE032F2DD5AA2E00325E51 /* PaymentViewModel.swift */,
+			);
+			path = PaymentScene;
+			sourceTree = "<group>";
+		};
+		14DE032C2DD5A7AF00325E51 /* LectureListScene */ = {
+			isa = PBXGroup;
+			children = (
+				14DE030A2DD58C4F00325E51 /* LectureListViewController.swift */,
+				B6783DF8CECD10B7EFE810A4 /* LectureListViewModel.swift */,
+			);
+			path = LectureListScene;
+			sourceTree = "<group>";
+		};
+		14DE03372DD5AB7400325E51 /* MissionListScene */ = {
+			isa = PBXGroup;
+			children = (
+				14DE03412DD5AEB800325E51 /* MissionListViewController.swift */,
+				14DE03432DD5AECB00325E51 /* MissionListViewModel.swift */,
+			);
+			path = MissionListScene;
+			sourceTree = "<group>";
+		};
+		14DE03382DD5AB9200325E51 /* MissionUploadScene */ = {
+			isa = PBXGroup;
+			children = (
+				14DE03552DD5AF6700325E51 /* MissionUploadViewController.swift */,
+				14DE036C2DD5B07F00325E51 /* MissionUploadViewModel.swift */,
+			);
+			path = MissionUploadScene;
+			sourceTree = "<group>";
+		};
+		14DE03392DD5ABB600325E51 /* ChatListScene */ = {
+			isa = PBXGroup;
+			children = (
+				14DE03532DD5AF5A00325E51 /* ChatListViewController.swift */,
+				14DE036A2DD5B07300325E51 /* ChatListViewModel.swift */,
+			);
+			path = ChatListScene;
+			sourceTree = "<group>";
+		};
+		14DE033A2DD5ABEB00325E51 /* ChattingScene */ = {
+			isa = PBXGroup;
+			children = (
+				14DE03512DD5AF4F00325E51 /* ChattingViewController.swift */,
+				14DE03682DD5B06A00325E51 /* ChattingViewModel.swift */,
+			);
+			path = ChattingScene;
+			sourceTree = "<group>";
+		};
+		14DE033B2DD5ACC500325E51 /* UserPageScene */ = {
+			isa = PBXGroup;
+			children = (
+				14DE034F2DD5AF4100325E51 /* UserPageViewController.swift */,
+				14DE03662DD5B05800325E51 /* UserPageViewModel.swift */,
+			);
+			path = UserPageScene;
+			sourceTree = "<group>";
+		};
+		14DE033C2DD5AD1E00325E51 /* BadgeScene */ = {
+			isa = PBXGroup;
+			children = (
+				14DE034D2DD5AF2F00325E51 /* BadgeViewController.swift */,
+				14DE03642DD5B04F00325E51 /* BadgeViewModel.swift */,
+			);
+			path = BadgeScene;
+			sourceTree = "<group>";
+		};
+		14DE033D2DD5AD3900325E51 /* LectureRecordScene */ = {
+			isa = PBXGroup;
+			children = (
+				14DE034B2DD5AF2100325E51 /* LectureRecordViewController.swift */,
+				14DE03622DD5B04300325E51 /* LectureRecordViewModel.swift */,
+			);
+			path = LectureRecordScene;
+			sourceTree = "<group>";
+		};
+		14DE033E2DD5AD5500325E51 /* LectureRecordDetailScene */ = {
+			isa = PBXGroup;
+			children = (
+				14DE03492DD5AF1900325E51 /* LectureRecordDetailViewController.swift */,
+				14DE03602DD5B02F00325E51 /* LectureRecordDetailViewModel.swift */,
+			);
+			path = LectureRecordDetailScene;
+			sourceTree = "<group>";
+		};
+		14DE033F2DD5AD6A00325E51 /* NotificationScene */ = {
+			isa = PBXGroup;
+			children = (
+				14DE03472DD5AF0A00325E51 /* NotificationViewController.swift */,
+				14DE03592DD5AF9100325E51 /* NotificationViewModel.swift */,
+			);
+			path = NotificationScene;
+			sourceTree = "<group>";
+		};
+		14DE03402DD5AE3200325E51 /* PaymentListScene */ = {
+			isa = PBXGroup;
+			children = (
+				14DE03452DD5AEE700325E51 /* PaymentListViewController.swift */,
+				14DE03572DD5AF8100325E51 /* PaymentListViewModel.swift */,
+			);
+			path = PaymentListScene;
+			sourceTree = "<group>";
+		};
+		14DE035B2DD5AFCE00325E51 /* NotificationControlScene */ = {
+			isa = PBXGroup;
+			children = (
+				14DE035C2DD5AFF100325E51 /* NotificationControlViewModel.swift */,
+				14DE035E2DD5B00400325E51 /* NotificationControlViewController.swift */,
+			);
+			path = NotificationControlScene;
 			sourceTree = "<group>";
 		};
 		17149CA1B6DFC7D8EB5A4EAB /* Repository */ = {
@@ -234,7 +458,7 @@
 		740239972403DF70A6E0E732 /* Coordinators */ = {
 			isa = PBXGroup;
 			children = (
-				1F9F16CD397EEB8A542BDFE5 /* ExampleCoordinator.swift */,
+				1F9F16CD397EEB8A542BDFE5 /* AppCoordinator.swift */,
 				497D39447D05E8E139420FC5 /* Protocol.swift */,
 			);
 			path = Coordinators;
@@ -525,26 +749,58 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				14DE035F2DD5B00400325E51 /* NotificationControlViewController.swift in Sources */,
+				14DE03112DD5A2D400325E51 /* MeetingDateViewController.swift in Sources */,
 				A60B99B46936D4F1170978F2 /* TuistAssets+SlowStarter.swift in Sources */,
+				14DE036B2DD5B07300325E51 /* ChatListViewModel.swift in Sources */,
+				14DE030F2DD5A2BC00325E51 /* OtVodViewController.swift in Sources */,
 				F5667D41A0810E4C9E2B8175 /* TuistBundle+SlowStarter.swift in Sources */,
+				14DE03612DD5B02F00325E51 /* LectureRecordDetailViewModel.swift in Sources */,
 				55BDEA6D6B3F3EB8268E2B84 /* AppDelegate.swift in Sources */,
 				A9196861A28CA8557DC5696B /* SceneDelegate.swift in Sources */,
 				7F132729B27E7C4C92901474 /* example.swift in Sources */,
+				14DE036D2DD5B07F00325E51 /* MissionUploadViewModel.swift in Sources */,
+				14DE03672DD5B05800325E51 /* UserPageViewModel.swift in Sources */,
 				D2424B093C2A02CF79E8DAE8 /* example2.swift in Sources */,
+				14DE03422DD5AEB800325E51 /* MissionListViewController.swift in Sources */,
+				14DE03322DD5AA3C00325E51 /* MeetingDateViewModel.swift in Sources */,
+				14DE030D2DD5A1D800325E51 /* LectureDetailViewController.swift in Sources */,
 				37A34EA9F135426A8026FFC4 /* DeleteThisFile1.swift in Sources */,
+				14DE03652DD5B04F00325E51 /* BadgeViewModel.swift in Sources */,
+				14DE03482DD5AF0A00325E51 /* NotificationViewController.swift in Sources */,
+				14DE03342DD5AA4E00325E51 /* LectureDetailViewModel.swift in Sources */,
+				14DE035A2DD5AF9100325E51 /* NotificationViewModel.swift in Sources */,
 				F2054AFB8C6CB5115979C624 /* DeleteThisFile2.swift in Sources */,
+				14DE03692DD5B06A00325E51 /* ChattingViewModel.swift in Sources */,
+				14DE03582DD5AF8100325E51 /* PaymentListViewModel.swift in Sources */,
 				92983BE5CA90D41712FA599E /* DeleteThisFile3.swift in Sources */,
 				4D84365EC9D2AF78F9153C06 /* DeleteThisFile4.swift in Sources */,
+				14DE03302DD5AA2E00325E51 /* PaymentViewModel.swift in Sources */,
 				87F68C9AD62BD15C96437AA8 /* DeleteThisFile5.swift in Sources */,
 				C7C66C4456005A186F862718 /* DeleteThisFile6.swift in Sources */,
 				C09E5DB355D0728300E7A7DC /* DeleteThisFile7.swift in Sources */,
+				14DE03522DD5AF4F00325E51 /* ChattingViewController.swift in Sources */,
+				14DE034A2DD5AF1900325E51 /* LectureRecordDetailViewController.swift in Sources */,
 				6057DDED538F20BA0976F4E2 /* DeleteThisFile8.swift in Sources */,
+				14DE03132DD5A2EE00325E51 /* PaymentViewController.swift in Sources */,
 				151C9628F6840763662207F2 /* DeleteThisFile9.swift in Sources */,
-				2C10AAB96733687DBDA1620A /* ExampleCoordinator.swift in Sources */,
+				14DE030B2DD58C4F00325E51 /* LectureListViewController.swift in Sources */,
+				14DE034C2DD5AF2100325E51 /* LectureRecordViewController.swift in Sources */,
+				14DE03562DD5AF6700325E51 /* MissionUploadViewController.swift in Sources */,
+				14DE03462DD5AEE700325E51 /* PaymentListViewController.swift in Sources */,
+				14DE03502DD5AF4100325E51 /* UserPageViewController.swift in Sources */,
+				14DE035D2DD5AFF100325E51 /* NotificationControlViewModel.swift in Sources */,
+				2C10AAB96733687DBDA1620A /* AppCoordinator.swift in Sources */,
+				14DE032E2DD5AA0800325E51 /* LectureSearchViewModel.swift in Sources */,
 				D68403C3DAE5BD8A453BA20E /* Protocol.swift in Sources */,
-				0137BC5A363C35ED9ECCA91C /* LectureListViewController.swift in Sources */,
+				0137BC5A363C35ED9ECCA91C /* LectureSearchViewController.swift in Sources */,
+				14DE03542DD5AF5A00325E51 /* ChatListViewController.swift in Sources */,
+				14DE034E2DD5AF2F00325E51 /* BadgeViewController.swift in Sources */,
+				14DE03362DD5AA5C00325E51 /* OtVodViewModel.swift in Sources */,
 				B7CE945231C7A31F6274B8F0 /* LectureListViewModel.swift in Sources */,
+				14DE03632DD5B04300325E51 /* LectureRecordViewModel.swift in Sources */,
 				3E53D92B991F50D645F16604 /* ExampleStyleFile.swift in Sources */,
+				14DE03442DD5AECB00325E51 /* MissionListViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -663,10 +919,7 @@
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
-					"$(inherited)",
-					DEBUG,
-				);
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
 				SWIFT_COMPILATION_MODE = singlefile;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -775,10 +1028,7 @@
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
-					"$(inherited)",
-					DEBUG,
-				);
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
 				SWIFT_COMPILATION_MODE = singlefile;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;

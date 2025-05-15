@@ -1,7 +1,7 @@
 import UIKit
 
 
-class ExampleCoordinator: Coordinator {
+class AppCoordinator: Coordinator {
     var navigationController: UINavigationController
     
     init(navigationController: UINavigationController) {
@@ -9,7 +9,9 @@ class ExampleCoordinator: Coordinator {
     }
     
     func goLectureListView() {
-        let lectureViewController = LectureListViewController()
+        // 초기 뷰 컨트롤러를 여기서 설정
+        // 스켈레톤 UI를 보여줄 LectureListViewController를 시작점으로 설정
+        let lectureViewController = LectureSearchViewController()
         navigationController.pushViewController(lectureViewController, animated: true)
     }
     
@@ -19,12 +21,12 @@ class ExampleCoordinator: Coordinator {
     }
     
     func goChatView() {
-        let lectureViewController = LectureListViewController()
+        let lectureViewController = LectureSearchViewController()
         navigationController.pushViewController(lectureViewController, animated: true)
     }
     
     func goMyPageView() {
-        let lectureViewController = LectureListViewController()
+        let lectureViewController = LectureSearchViewController()
         navigationController.pushViewController(lectureViewController, animated: true)
     }
 }

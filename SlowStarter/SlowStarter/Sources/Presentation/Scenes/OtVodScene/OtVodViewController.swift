@@ -1,5 +1,5 @@
 //
-//  LectureListViewController.swift
+//  OtVodViewController.swift
 //  SlowStarter
 //
 //  Created by sean on 5/15/25.
@@ -7,8 +7,7 @@
 
 import UIKit
 
-// 반복학습 탭 뷰
-class LectureListViewController: UIViewController {
+class OtVodViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
