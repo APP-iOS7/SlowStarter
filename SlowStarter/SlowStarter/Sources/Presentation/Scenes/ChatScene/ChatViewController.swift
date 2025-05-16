@@ -35,36 +35,40 @@ final class ChatViewController: UIViewController {
         return cv
     }()
     
-    private let sendedCellRegistration: UICollectionView.CellRegistration<SendedMessageCell, Message> = {
+    let sendedCellRegistration: UICollectionView.CellRegistration<SendedMessageCell, Message> = {
         UICollectionView.CellRegistration { cell, _, message in
             cell.chat = message
         }
     }()
     
-    private lazy var receivedCellRegistration: UICollectionView.CellRegistration<ReceivedMessageCell, Message> = {
-        UICollectionView.CellRegistration { cell, indexPath, message in
-            cell.chat = message
-            cell.summaryButtom.addAction(UIAction { [weak self] _ in
-                self?.viewModel.didTapSummaryButton(index: indexPath.row, message: message)
-            }, for: .touchUpInside)
-        }
-    }()
-    
     private lazy var dataSource: UICollectionViewDiffableDataSource<Section, Message> = {
+        let sendedCellRegistration: UICollectionView.CellRegistration<SendedMessageCell, Message> = {
+            UICollectionView.CellRegistration { cell, _, message in
+                cell.chat = message
+            }
+        }()
+        
+        let receivedCellRegistration: UICollectionView.CellRegistration<ReceivedMessageCell, Message> = {
+            UICollectionView.CellRegistration { [weak self] cell, indexPath, message in
+                cell.chat = message
+                cell.summaryButtom.addAction(UIAction { _ in
+                    self?.viewModel.didTapSummaryButton(index: indexPath.row, message: message)
+                }, for: .touchUpInside)
+            }
+        }()
+        
         let dataSource = UICollectionViewDiffableDataSource<Section, Message>(
             collectionView: collectionView
-        ) { [weak self] collectionView, indexPath, message -> UICollectionViewCell? in
-            guard let self = self else { return nil }
-            
+        ) { collectionView, indexPath, message -> UICollectionViewCell? in
             if message.isSended {
                 return collectionView.dequeueConfiguredReusableCell(
-                    using: self.sendedCellRegistration,
+                    using: sendedCellRegistration,
                     for: indexPath,
                     item: message
                 )
             } else {
                 return collectionView.dequeueConfiguredReusableCell(
-                    using: self.receivedCellRegistration,
+                    using: receivedCellRegistration,
                     for: indexPath,
                     item: message
                 )
