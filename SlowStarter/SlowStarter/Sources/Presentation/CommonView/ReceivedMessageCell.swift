@@ -130,5 +130,6 @@ final class ReceivedMessageCell: UICollectionViewCell {
         chat = nil
         messageLabel.text = nil
         timeLabel.text = nil
+        summaryButtom.removeTarget(nil, action: nil, for: .allEvents)
     }
 }
