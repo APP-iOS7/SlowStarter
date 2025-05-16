@@ -18,6 +18,11 @@ final class ChatViewModel: ObservableObject {
         return messages
     }
     
+    private var recentMessages: [String] {
+        let size: Int = min(10, messages.count) // 10개, 그보다 적다면 있는 만큼
+        return Array(messages[(messages.count - size)...]).map { $0.text } // 뒤에서부터 size 만큼 꺼냄
+    }
+    
     private var addMessageSubject: PassthroughSubject<Message.ID, ChatAPIError> = PassthroughSubject()
     var addMessagePublisher: AnyPublisher<Message.ID, ChatAPIError> {
         return addMessageSubject.eraseToAnyPublisher()
@@ -46,7 +51,9 @@ final class ChatViewModel: ObservableObject {
                 messages.append(myMessage)
                 addMessageSubject.send(myMessage.id)
                 
-                let newMessage = try await sendAndReceivedUsecase.execute(text: text)
+                // 대화의 맥락을 유지하기 위해 최근 메시지를 함께 보냄
+                let sendMessages: [String] = recentMessages
+                let newMessage = try await sendAndReceivedUsecase.execute(texts: sendMessages)
                 messages.append(newMessage)
                 addMessageSubject.send(newMessage.id)
             } catch {

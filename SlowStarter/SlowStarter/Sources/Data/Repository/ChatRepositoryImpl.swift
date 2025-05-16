@@ -14,13 +14,13 @@ final class ChatRepositoryImpl: ChatRepository {
         self.apiService = apiService
     }
     
-    func chat(text: String) async throws -> Message {
-        let reply: String = try await apiService.sendMessage(text)
+    func chat(texts: [String]) async throws -> Message {
+        let reply: String = try await apiService.sendMessage(texts)
         return Message(text: reply, isSended: false, timestamp: Date())
     }
     
-    func summary(text: String) async throws -> String {
-        let summaryText: String = try await apiService.sendMessage(text)
+    func summary(texts: [String]) async throws -> String {
+        let summaryText: String = try await apiService.sendMessage(texts)
         return summaryText
     }
 }

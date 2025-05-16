@@ -8,7 +8,7 @@
 struct SendAndReceiveMessageUseCase {
     let repository: ChatRepository
     
-    func execute(text: String) async throws -> Message {
-        return try await repository.chat(text: text)
+    func execute(texts: [String]) async throws -> Message {
+        return try await repository.chat(texts: texts)
     }
 }
