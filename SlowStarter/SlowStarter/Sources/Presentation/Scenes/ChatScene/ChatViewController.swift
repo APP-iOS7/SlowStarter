@@ -23,22 +23,20 @@ final class ChatViewController: UIViewController {
         return tap
     }()
     
-    private lazy var collectionView: UICollectionView = {
+    private let flowLayout: UICollectionViewFlowLayout = {
         let flowLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
         flowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize // Cell Self-Sizing
+        return flowLayout
+    }()
+    
+    private lazy var collectionView: UICollectionView = {
         let cv: UICollectionView = UICollectionView(frame: view.bounds, collectionViewLayout: flowLayout)
         cv.backgroundColor = .white
         cv.delaysContentTouches = false
         cv.translatesAutoresizingMaskIntoConstraints = false
         cv.addGestureRecognizer(collectionViewTapGesture) // 키보드 down 제스쳐 추가
-        cv.isUserInteractionEnabled = true
+        cv.isUserInteractionEnabled = true // 상호작용 허용
         return cv
-    }()
-    
-    let sendedCellRegistration: UICollectionView.CellRegistration<SendedMessageCell, Message> = {
-        UICollectionView.CellRegistration { cell, _, message in
-            cell.chat = message
-        }
     }()
     
     private lazy var dataSource: UICollectionViewDiffableDataSource<Section, Message> = {
