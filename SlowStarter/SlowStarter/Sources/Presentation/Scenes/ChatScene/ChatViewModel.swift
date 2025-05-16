@@ -14,13 +14,17 @@ final class ChatViewModel: ObservableObject {
     private let summaryUsecase: SummaryMessageUseCase
     private var messages: [Message] = []
     
-    private var addMessageSubject: PassthroughSubject<Message, ChatAPIError> = PassthroughSubject()
-    var addMessagePublisher: AnyPublisher<Message, ChatAPIError> {
+    var allMessages: [Message] {
+        return messages
+    }
+    
+    private var addMessageSubject: PassthroughSubject<Message.ID, ChatAPIError> = PassthroughSubject()
+    var addMessagePublisher: AnyPublisher<Message.ID, ChatAPIError> {
         return addMessageSubject.eraseToAnyPublisher()
     }
     
-    private var summaryMessageSubject: PassthroughSubject<Message, ChatAPIError> = PassthroughSubject()
-    var summaryMessagePublisher: AnyPublisher<Message, ChatAPIError> {
+    private var summaryMessageSubject: PassthroughSubject<Message.ID, ChatAPIError> = PassthroughSubject()
+    var summaryMessagePublisher: AnyPublisher<Message.ID, ChatAPIError> {
         return summaryMessageSubject.eraseToAnyPublisher()
     }
     
@@ -31,16 +35,20 @@ final class ChatViewModel: ObservableObject {
     }
     
     // MARK: - Functions
+    func message(with id: UUID) -> Message? {
+        return messages.first { $0.id == id }
+    }
+    
     func didTapSendButton(text: String) {
         Task {
             do {
                 let myMessage: Message = Message(text: text, isSended: true, timestamp: Date())
                 messages.append(myMessage)
-                addMessageSubject.send(myMessage)
+                addMessageSubject.send(myMessage.id)
                 
                 let newMessage = try await sendAndReceivedUsecase.execute(text: text)
                 messages.append(newMessage)
-                addMessageSubject.send(newMessage)
+                addMessageSubject.send(newMessage.id)
             } catch {
                 if let apiError = error as? ChatAPIError {
                     addMessageSubject.send(completion: .failure(apiError))
@@ -56,7 +64,7 @@ final class ChatViewModel: ObservableObject {
             do {
                 let summaryMessage: Message = try await summaryUsecase.execute(message: message)
                 messages[index] = summaryMessage
-                summaryMessageSubject.send(summaryMessage)
+                summaryMessageSubject.send(summaryMessage.id)
             } catch {
                 if let apiError = error as? ChatAPIError {
                     summaryMessageSubject.send(completion: .failure(apiError))

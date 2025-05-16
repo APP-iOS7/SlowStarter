@@ -9,7 +9,7 @@ struct SummaryMessageUseCase {
     let repository: ChatRepository
     
     func execute(message: Message) async throws -> Message {
-        let text: String = message.text + "이 내용을 아주 쉽고 간단하게 요약해줘"
+        let text: String = message.text + "이 내용을 아주 쉽고 간단하게 핵심만 요약해줘"
         let summaryText: String = try await repository.summary(text: text)
         let updatedMessage: Message = Message(
             id: message.id,

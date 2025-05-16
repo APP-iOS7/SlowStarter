@@ -39,7 +39,7 @@ final class ChatViewController: UIViewController {
         return cv
     }()
     
-    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, Message> = {
+    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, Message.ID> = {
         let sendedCellRegistration: UICollectionView.CellRegistration<SendedMessageCell, Message> = {
             UICollectionView.CellRegistration { cell, _, message in
                 cell.chat = message
@@ -55,9 +55,11 @@ final class ChatViewController: UIViewController {
             }
         }()
         
-        let dataSource = UICollectionViewDiffableDataSource<Section, Message>(
+        let dataSource = UICollectionViewDiffableDataSource<Section, Message.ID>(
             collectionView: collectionView
-        ) { collectionView, indexPath, message -> UICollectionViewCell? in
+        ) { [weak self] collectionView, indexPath, id -> UICollectionViewCell? in
+            guard let message: Message = self?.viewModel.message(with: id) else { return nil }
+            
             if message.isSended {
                 return collectionView.dequeueConfiguredReusableCell(
                     using: sendedCellRegistration,
@@ -175,8 +177,10 @@ final class ChatViewController: UIViewController {
         collectionView.dataSource = dataSource
         
         // 섹션 추가
-        var snapshot: NSDiffableDataSourceSnapshot<Section, Message> = dataSource.snapshot()
+        let messageIds: [Message.ID] = viewModel.allMessages.map { $0.id }
+        var snapshot: NSDiffableDataSourceSnapshot<Section, Message.ID> = dataSource.snapshot()
         snapshot.appendSections([.main])
+        snapshot.appendItems(messageIds)
         dataSource.apply(snapshot, animatingDifferences: false)
     }
     
@@ -187,8 +191,8 @@ final class ChatViewController: UIViewController {
                 if case let .failure(error) = completion {
                     print(error)
                 }
-            } receiveValue: { [weak self] message in
-                self?.applySnapshot([message])
+            } receiveValue: { [weak self] id in
+                self?.applySnapshot(id)
             }
             .store(in: &cancellables)
         
@@ -198,8 +202,8 @@ final class ChatViewController: UIViewController {
                 if case let .failure(error) = completion {
                     print(error)
                 }
-            } receiveValue: { [weak self] message in
-                self?.updateSnapshot([message])
+            } receiveValue: { [weak self] id in
+                self?.updateSnapshot(id)
             }
             .store(in: &cancellables)
     }
@@ -220,16 +224,16 @@ final class ChatViewController: UIViewController {
 // MARK: - Diffable DataSource
 extension ChatViewController {
     // 컬렉션뷰 데이터소스 추가
-    private func applySnapshot(_ messages: [Message], animating: Bool = true) {
-        var snapshot: NSDiffableDataSourceSnapshot<Section, Message> = dataSource.snapshot()
-        snapshot.appendItems(messages, toSection: .main)
+    private func applySnapshot(_ id: Message.ID, animating: Bool = true) {
+        var snapshot: NSDiffableDataSourceSnapshot<Section, Message.ID> = dataSource.snapshot()
+        snapshot.appendItems([id], toSection: .main)
         dataSource.apply(snapshot, animatingDifferences: animating)
     }
     
     // 컬렉션뷰 데이터소스 수정
-    private func updateSnapshot(_ messages: [Message], animating: Bool = true) {
-        var snapshot: NSDiffableDataSourceSnapshot<Section, Message> = dataSource.snapshot()
-        snapshot.reconfigureItems(messages)
+    private func updateSnapshot(_ id: Message.ID, animating: Bool = true) {
+        var snapshot: NSDiffableDataSourceSnapshot<Section, Message.ID> = dataSource.snapshot()
+        snapshot.reconfigureItems([id])
         dataSource.apply(snapshot, animatingDifferences: animating)
     }
 }

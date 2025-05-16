@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Message: Hashable {
+struct Message: Hashable, Identifiable {
     let id: UUID
     var text: String
     let isSended: Bool
