@@ -15,10 +15,6 @@ enum Section {
 final class ChatViewController: UIViewController {
     // MARK: - Properties
     private var viewModel: ChatViewModel
-    private var messages: [ChatMessage] = []
-    
-    private let sendedCellIdentifier: String = "SendedChatCell"
-    private let receivedCellIdentifier: String = "ReceivedChatCell"
     
     private var cancellables: Set<AnyCancellable> = Set()
     
@@ -32,43 +28,46 @@ final class ChatViewController: UIViewController {
         flowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize // Cell Self-Sizing
         let cv: UICollectionView = UICollectionView(frame: view.bounds, collectionViewLayout: flowLayout)
         cv.backgroundColor = .white
-        cv.register(SendedChatCell.self, forCellWithReuseIdentifier: sendedCellIdentifier)
-        cv.register(ReceivedChatCell.self, forCellWithReuseIdentifier: receivedCellIdentifier)
+        cv.delaysContentTouches = false
         cv.translatesAutoresizingMaskIntoConstraints = false
         cv.addGestureRecognizer(collectionViewTapGesture) // 키보드 down 제스쳐 추가
         cv.isUserInteractionEnabled = true
         return cv
     }()
     
-    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, ChatMessage> = {
-        let dataSource = UICollectionViewDiffableDataSource<Section, ChatMessage>(
+    private let sendedCellRegistration: UICollectionView.CellRegistration<SendedMessageCell, Message> = {
+        UICollectionView.CellRegistration { cell, _, message in
+            cell.chat = message
+        }
+    }()
+    
+    private lazy var receivedCellRegistration: UICollectionView.CellRegistration<ReceivedMessageCell, Message> = {
+        UICollectionView.CellRegistration { cell, indexPath, message in
+            cell.chat = message
+            cell.summaryButtom.addAction(UIAction { [weak self] _ in
+                self?.viewModel.didTapSummaryButton(index: indexPath.row, message: message)
+            }, for: .touchUpInside)
+        }
+    }()
+    
+    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, Message> = {
+        let dataSource = UICollectionViewDiffableDataSource<Section, Message>(
             collectionView: collectionView
-        ) { [weak self] collectionView, indexPath, chatMessage in
+        ) { [weak self] collectionView, indexPath, message -> UICollectionViewCell? in
+            guard let self = self else { return nil }
             
-            if chatMessage.isSended {
-                // SendedChatCell
-                guard let self = self,
-                      let cell = collectionView.dequeueReusableCell(
-                        withReuseIdentifier: self.sendedCellIdentifier,
-                        for: indexPath
-                      ) as? SendedChatCell else {
-                    return UICollectionViewCell()
-                }
-                
-                cell.chat = chatMessage
-                return cell
+            if message.isSended {
+                return collectionView.dequeueConfiguredReusableCell(
+                    using: self.sendedCellRegistration,
+                    for: indexPath,
+                    item: message
+                )
             } else {
-                // ReceivedChatCell
-                guard let self = self,
-                      let cell = collectionView.dequeueReusableCell(
-                        withReuseIdentifier: self.receivedCellIdentifier,
-                        for: indexPath
-                      ) as? ReceivedChatCell else {
-                    return UICollectionViewCell()
-                }
-                
-                cell.chat = chatMessage
-                return cell
+                return collectionView.dequeueConfiguredReusableCell(
+                    using: self.receivedCellRegistration,
+                    for: indexPath,
+                    item: message
+                )
             }
         }
         
@@ -174,48 +173,61 @@ final class ChatViewController: UIViewController {
         collectionView.dataSource = dataSource
         
         // 섹션 추가
-        var snapshot: NSDiffableDataSourceSnapshot<Section, ChatMessage> = dataSource.snapshot()
+        var snapshot: NSDiffableDataSourceSnapshot<Section, Message> = dataSource.snapshot()
         snapshot.appendSections([.main])
         dataSource.apply(snapshot, animatingDifferences: false)
     }
     
     private func bindViewModel() {
-        viewModel.chatPublisher
+        viewModel.addMessagePublisher
             .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { completion in
+            .sink { completion in
                 if case let .failure(error) = completion {
-                    let errorMessage: ChatMessage = ChatMessage(
-                        text: error.localizedDescription,
-                        isSended: false, timestamp: Date()
-                    )
-                    self.messages.append(errorMessage)
-                    self.applySnapshot(messages: [errorMessage])
+                    print(error)
                 }
-            }, receiveValue: { [weak self] newMessage in
-                guard let self = self else { return }
-                self.messages.append(newMessage)
-                self.applySnapshot(messages: [newMessage])
-            })
-        
+            } receiveValue: { [weak self] message in
+                self?.applySnapshot([message])
+            }
             .store(in: &cancellables)
-    }
-    
-    // 컬렉션뷰 데이터소스 갱신
-    private func applySnapshot(messages: [ChatMessage], animating: Bool = true) {
-        var snapshot: NSDiffableDataSourceSnapshot<Section, ChatMessage> = dataSource.snapshot()
-        snapshot.appendItems(messages, toSection: .main)
-        dataSource.apply(snapshot, animatingDifferences: animating)
+        
+        viewModel.summaryMessagePublisher
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                if case let .failure(error) = completion {
+                    print(error)
+                }
+            } receiveValue: { [weak self] message in
+                self?.updateSnapshot([message])
+            }
+            .store(in: &cancellables)
     }
     
     private func tappedSendButton() {
         guard let text: String = inputTextField.text else { return }
         inputTextField.text = ""
         inputTextField.resignFirstResponder()
-        viewModel.didTapSendButton(message: text)
+        viewModel.didTapSendButton(text: text)
     }
     
     // MARK: - Selectors
     @objc private func tappedCollectionView() {
         view.endEditing(true) // 키보드 down
+    }
+}
+
+// MARK: - Diffable DataSource
+extension ChatViewController {
+    // 컬렉션뷰 데이터소스 추가
+    private func applySnapshot(_ messages: [Message], animating: Bool = true) {
+        var snapshot: NSDiffableDataSourceSnapshot<Section, Message> = dataSource.snapshot()
+        snapshot.appendItems(messages, toSection: .main)
+        dataSource.apply(snapshot, animatingDifferences: animating)
+    }
+    
+    // 컬렉션뷰 데이터소스 수정
+    private func updateSnapshot(_ messages: [Message], animating: Bool = true) {
+        var snapshot: NSDiffableDataSourceSnapshot<Section, Message> = dataSource.snapshot()
+        snapshot.reconfigureItems(messages)
+        dataSource.apply(snapshot, animatingDifferences: animating)
     }
 }

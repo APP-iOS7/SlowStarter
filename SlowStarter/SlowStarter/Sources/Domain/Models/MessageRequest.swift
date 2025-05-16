@@ -15,6 +15,6 @@ struct Content: Codable {
     let parts: [Part]
 }
 
-struct ChatRequest: Codable {
+struct MessageRequest: Codable {
     let contents: [Content]
 }

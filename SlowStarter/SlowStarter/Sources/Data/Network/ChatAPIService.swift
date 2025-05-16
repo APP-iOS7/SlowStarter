@@ -60,7 +60,7 @@ final class ChatAPIService {
         request.addValue("application", forHTTPHeaderField: "Content-Type")
         
         do {
-            let body: ChatRequest = ChatRequest(contents: [Content(parts: [Part(text: message)])])
+            let body: MessageRequest = MessageRequest(contents: [Content(parts: [Part(text: message)])])
             request.httpBody = try JSONEncoder().encode(body)
         } catch {
             print("JSON 인코딩 에러: \(error.localizedDescription)")

@@ -7,8 +7,8 @@
 
 import UIKit
 
-final class ReceivedChatCell: UICollectionViewCell {
-    var chat: ChatMessage? {
+final class ReceivedMessageCell: UICollectionViewCell {
+    var chat: Message? {
         didSet {
             configure()
         }
@@ -41,6 +41,16 @@ final class ReceivedChatCell: UICollectionViewCell {
         label.textColor = .lightGray
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
+    }()
+    
+    lazy var summaryButtom: UIButton = {
+        let button: UIButton = UIButton(type: .system)
+        button.setTitle("요약", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 12)
+        button.setTitleColor(.black, for: .normal)
+        button.backgroundColor = .systemGray6
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
     }()
     
     private let cellMargin: CGFloat = 8.0
@@ -84,24 +94,29 @@ final class ReceivedChatCell: UICollectionViewCell {
     private func setupUI() {
         contentView.addSubview(messageView)
         contentView.addSubview(timeLabel)
+        contentView.addSubview(summaryButtom)
         messageView.addSubview(messageLabel)
         
         NSLayoutConstraint.activate([
             messageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
             messageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
             messageView.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -12),
-            messageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4),
+            messageView.bottomAnchor.constraint(equalTo: summaryButtom.topAnchor, constant: -4),
             
             messageLabel.topAnchor.constraint(equalTo: messageView.topAnchor, constant: 8),
             messageLabel.leadingAnchor.constraint(equalTo: messageView.leadingAnchor, constant: 12),
             messageLabel.trailingAnchor.constraint(equalTo: messageView.trailingAnchor, constant: -12),
             messageLabel.bottomAnchor.constraint(equalTo: messageView.bottomAnchor, constant: -8),
             
+            summaryButtom.trailingAnchor.constraint(equalTo: messageView.trailingAnchor, constant: -4),
+            summaryButtom.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4),
+            
             timeLabel.leadingAnchor.constraint(equalTo: messageView.trailingAnchor, constant: 5),
             timeLabel.bottomAnchor.constraint(equalTo: messageView.bottomAnchor, constant: -5)
         ])
         
         messageView.layer.cornerRadius = 8
+        summaryButtom.layer.cornerRadius = 8
     }
     
     private func configure() {
@@ -112,6 +127,8 @@ final class ReceivedChatCell: UICollectionViewCell {
     // 재사용을 위해 내용물 초기화
     override func prepareForReuse() {
         super.prepareForReuse()
+        chat = nil
         messageLabel.text = nil
+        timeLabel.text = nil
     }
 }

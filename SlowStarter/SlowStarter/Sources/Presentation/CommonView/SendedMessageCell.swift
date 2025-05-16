@@ -7,8 +7,8 @@
 
 import UIKit
 
-final class SendedChatCell: UICollectionViewCell {
-    var chat: ChatMessage? {
+final class SendedMessageCell: UICollectionViewCell {
+    var chat: Message? {
         didSet {
             configure()
         }
