@@ -12,6 +12,7 @@ included: # 린트 과정에 포함할 파일 경로. 이 항목이 존재하면
 
 excluded: # 린트 과정에서 무시할 파일 경로. `included`보다 우선순위 높음
     - Pods
+    - Tuist/.build/checkouts
 
 ## 한 줄의 최대 길이를 150으로 설정합니다.
 #line_length:
