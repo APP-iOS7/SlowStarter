@@ -12,8 +12,8 @@ final class ChatViewModel: ObservableObject {
     // MARK: - Properties
     private var messages: [Message] = []
     
-    private let sendAndReceivedUsecase: SendAndReceiveMessageUseCase
-    private let summaryUsecase: SummaryMessageUseCase
+    private let chatUseCase: DefaultChatUseCase
+    private let summaryUseCase: DefaultSummaryUseCase
     
     private let saveMessageUseCase: SaveMessageUseCase
     private let fetchMessagesUseCase: FetchMessageUseCase
@@ -40,11 +40,11 @@ final class ChatViewModel: ObservableObject {
     }
     
     // MARK: - Initializer
-    init(sendAndReceive: SendAndReceiveMessageUseCase, summary: SummaryMessageUseCase,
+    init(chat: DefaultChatUseCase, summary: DefaultSummaryUseCase,
          save: SaveMessageUseCase, fetch: FetchMessageUseCase,
          delete: DeleteMessageUseCase, update: UpdateMessageUseCase) {
-        self.sendAndReceivedUsecase = sendAndReceive
-        self.summaryUsecase = summary
+        self.chatUseCase = chat
+        self.summaryUseCase = summary
         self.saveMessageUseCase = save
         self.fetchMessagesUseCase = fetch
         self.deleteMessageUseCase = delete
@@ -79,7 +79,7 @@ final class ChatViewModel: ObservableObject {
                 
                 // 대화의 맥락을 유지하기 위해 최근 메시지를 함께 보냄
                 let sendMessages: [String] = recentMessages
-                let newMessage = try await sendAndReceivedUsecase.execute(texts: sendMessages) // 답장 받아오기
+                let newMessage = try await chatUseCase.execute(texts: sendMessages) // 답장 받아오기
                 messages.append(newMessage)
                 addMessageSubject.send(newMessage.id) // Controller에 답장 발행
                 try await saveMessageUseCase.execute(newMessage) // CoreData에 답장 저장
@@ -96,7 +96,7 @@ final class ChatViewModel: ObservableObject {
     func didTapSummaryButton(index: Int, message: Message) {
         Task {
             do {
-                let summaryMessage: Message = try await summaryUsecase.execute(message: message)
+                let summaryMessage: Message = try await summaryUseCase.execute(message: message)
                 messages[index] = summaryMessage
                 summaryMessageSubject.send(summaryMessage.id) // Controller에 요약된 메시지 발행
                 try await updateMessageUseCase.execute(summaryMessage)

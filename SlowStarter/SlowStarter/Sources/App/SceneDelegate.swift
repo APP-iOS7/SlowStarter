@@ -11,9 +11,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let window = UIWindow(windowScene: windowScene)
         let chatApiService: ChatAPIService = ChatAPIService()
-        let chatRepository: ChatRepository = ChatRepositoryImpl(apiService: chatApiService)
-        let sendAndReceiveMessageUseCase: SendAndReceiveMessageUseCase = SendAndReceiveMessageUseCase(repository: chatRepository)
-        let summaryMessageUseCase: SummaryMessageUseCase = SummaryMessageUseCase(repository: chatRepository)
+        let chatRepository: ChatRepository = ChatRepositoryImplementation(apiService: chatApiService)
+        let chatUseCase: DefaultChatUseCase = DefaultChatUseCase(repository: chatRepository)
+        let summaryMessageUseCase: DefaultSummaryUseCase = DefaultSummaryUseCase(repository: chatRepository)
         
         let coreDataMessageRepository: CoreDataMessageRepository =
             CoreDataMessageRepositoryImplementation(context: CoreDataStack.shared.viewContext)
@@ -23,7 +23,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let updateUseCase: UpdateMessageUseCase = DefaultUpdateMessageUseCase(repository: coreDataMessageRepository)
         
         let chatVM: ChatViewModel = ChatViewModel(
-            sendAndReceive: sendAndReceiveMessageUseCase,
+            chat: chatUseCase,
             summary: summaryMessageUseCase,
             save: saveUseCase,
             fetch: fetchUseCase,

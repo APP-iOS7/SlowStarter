@@ -10,7 +10,7 @@
 		0137BC5A363C35ED9ECCA91C /* LectureListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7DDDC2A04CD45BEA183B3B /* LectureListViewController.swift */; };
 		077E73A9F1BB9D36B8310BAC /* CoreDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F8EDD61F73159FE061F9A4D4 /* CoreDataModel.xcdatamodeld */; };
 		1F1B0A17404C716CE371638D /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB398BDF287AB68A444762BF /* CoreDataStack.swift */; };
-		209C4065F4A0A1B91BFE6B3D /* ChatRepositoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A5655DB7B7CA1533D55862 /* ChatRepositoryImpl.swift */; };
+		209C4065F4A0A1B91BFE6B3D /* ChatRepositoryImplementation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A5655DB7B7CA1533D55862 /* ChatRepositoryImplementation.swift */; };
 		28397643D2AE009F5E8DF64C /* SlowStarterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C9E1C00FD424D65740EFBCE /* SlowStarterTests.swift */; };
 		2C10AAB96733687DBDA1620A /* ExampleCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F9F16CD397EEB8A542BDFE5 /* ExampleCoordinator.swift */; };
 		383EDEA636E09F49EB1BDAA5 /* ReceivedMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E17A8AB658D8D3DBA45101B /* ReceivedMessageCell.swift */; };
@@ -32,10 +32,8 @@
 		C75AC6BCD5779BA266A336CE /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59CA977CB60C2E0698B9C82F /* Message.swift */; };
 		C784424F9C5A6570961862B8 /* SendedMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A174400711C5015FFC6AD020 /* SendedMessageCell.swift */; };
 		D2424B093C2A02CF79E8DAE8 /* example2.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4ED5C0669F8323669BF9718 /* example2.swift */; };
-		D60037CD8EC3D6C79A7ACB9B /* SummaryMessageUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8FA0DBE5C70AB7023CEBE1 /* SummaryMessageUseCase.swift */; };
 		D68403C3DAE5BD8A453BA20E /* Protocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 497D39447D05E8E139420FC5 /* Protocol.swift */; };
 		DB65EB0C5EBCF87F2422B871 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 239417795BA77EA87C51C4E1 /* Assets.xcassets */; };
-		E013E07565473F209224E993 /* SendAndReceiveMessageUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605ECE5CA4678D4C2C1E8FF0 /* SendAndReceiveMessageUseCase.swift */; };
 		E276C273E1D23D3D20B5471A /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99078FCCF0917D5BBF956B35 /* ChatViewController.swift */; };
 		F5667D41A0810E4C9E2B8175 /* TuistBundle+SlowStarter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8C9FF54E481F28957F31AA /* TuistBundle+SlowStarter.swift */; };
 /* End PBXBuildFile section */
@@ -85,7 +83,6 @@
 		4F1515CCD4E341AB12B82853 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		59C0BD199F8FE3BD7AA8F567 /* ExampleStyleFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleStyleFile.swift; sourceTree = "<group>"; };
 		59CA977CB60C2E0698B9C82F /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
-		605ECE5CA4678D4C2C1E8FF0 /* SendAndReceiveMessageUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendAndReceiveMessageUseCase.swift; sourceTree = "<group>"; };
 		612E9BD71849190DF3EA05F9 /* TuistAssets+SlowStarter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TuistAssets+SlowStarter.swift"; sourceTree = "<group>"; };
 		745725C9249C2975A1BEE4F2 /* ChatRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRepository.swift; sourceTree = "<group>"; };
 		7EE73BB25EF60BE39650F29D /* SlowStarter-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "SlowStarter-Info.plist"; sourceTree = "<group>"; };
@@ -93,7 +90,6 @@
 		99078FCCF0917D5BBF956B35 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		9A7F0CF23410417DA4F06D91 /* CoreDataMessageRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataMessageRepository.swift; sourceTree = "<group>"; };
 		9C9E1C00FD424D65740EFBCE /* SlowStarterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlowStarterTests.swift; sourceTree = "<group>"; };
-		9D8FA0DBE5C70AB7023CEBE1 /* SummaryMessageUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryMessageUseCase.swift; sourceTree = "<group>"; };
 		A174400711C5015FFC6AD020 /* SendedMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendedMessageCell.swift; sourceTree = "<group>"; };
 		A30F07739FFC49EC37B06F51 /* SlowStarterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SlowStarterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A462E44E092D7E3586C2A02E /* MessageRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageRequest.swift; sourceTree = "<group>"; };
@@ -104,7 +100,7 @@
 		B7B96F4D2258E988451B0B6E /* APIConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIConstants.swift; sourceTree = "<group>"; };
 		BA8385A28307086FC529628B /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
 		BB398BDF287AB68A444762BF /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
-		C2A5655DB7B7CA1533D55862 /* ChatRepositoryImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRepositoryImpl.swift; sourceTree = "<group>"; };
+		C2A5655DB7B7CA1533D55862 /* ChatRepositoryImplementation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRepositoryImplementation.swift; sourceTree = "<group>"; };
 		C88F541FB258FD70910F57E6 /* DeleteThisFile4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteThisFile4.swift; sourceTree = "<group>"; };
 		CC48747CC773AE89224C26B2 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 		D59B0468FB77C1337A65D86B /* CoreDataMessageRepositoryImplementation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataMessageRepositoryImplementation.swift; sourceTree = "<group>"; };
@@ -114,6 +110,7 @@
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		71A93D872DDB55A2001EDB3C /* CoreDataMessage */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = CoreDataMessage; sourceTree = "<group>"; };
+		71A93D8A2DDB5F71001EDB3C /* Chat */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Chat; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,7 +160,7 @@
 		17149CA1B6DFC7D8EB5A4EAB /* Repository */ = {
 			isa = PBXGroup;
 			children = (
-				C2A5655DB7B7CA1533D55862 /* ChatRepositoryImpl.swift */,
+				C2A5655DB7B7CA1533D55862 /* ChatRepositoryImplementation.swift */,
 				D59B0468FB77C1337A65D86B /* CoreDataMessageRepositoryImplementation.swift */,
 			);
 			path = Repository;
@@ -356,9 +353,8 @@
 		C18A91FE0A14164200F5F47B /* UseCase */ = {
 			isa = PBXGroup;
 			children = (
+				71A93D8A2DDB5F71001EDB3C /* Chat */,
 				71A93D872DDB55A2001EDB3C /* CoreDataMessage */,
-				605ECE5CA4678D4C2C1E8FF0 /* SendAndReceiveMessageUseCase.swift */,
-				9D8FA0DBE5C70AB7023CEBE1 /* SummaryMessageUseCase.swift */,
 			);
 			path = UseCase;
 			sourceTree = "<group>";
@@ -473,6 +469,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				71A93D872DDB55A2001EDB3C /* CoreDataMessage */,
+				71A93D8A2DDB5F71001EDB3C /* Chat */,
 			);
 			name = SlowStarter;
 			packageProductDependencies = (
@@ -575,15 +572,13 @@
 				9A402AAD84E31C05DD3F2041 /* APIConstants.swift in Sources */,
 				5C860AD97966DDBE998ABD24 /* ChatAPIService.swift in Sources */,
 				1F1B0A17404C716CE371638D /* CoreDataStack.swift in Sources */,
-				209C4065F4A0A1B91BFE6B3D /* ChatRepositoryImpl.swift in Sources */,
+				209C4065F4A0A1B91BFE6B3D /* ChatRepositoryImplementation.swift in Sources */,
 				64D140230A41CA4E53A86582 /* CoreDataMessageRepositoryImplementation.swift in Sources */,
 				4D84365EC9D2AF78F9153C06 /* DeleteThisFile4.swift in Sources */,
 				C75AC6BCD5779BA266A336CE /* Message.swift in Sources */,
 				BD8F0CBFE2732EACEA616161 /* MessageRequest.swift in Sources */,
 				96407C4C3602CD683DB7C253 /* ChatRepository.swift in Sources */,
 				6D0F349078EB73E7AE9FF9BB /* CoreDataMessageRepository.swift in Sources */,
-				E013E07565473F209224E993 /* SendAndReceiveMessageUseCase.swift in Sources */,
-				D60037CD8EC3D6C79A7ACB9B /* SummaryMessageUseCase.swift in Sources */,
 				6057DDED538F20BA0976F4E2 /* DeleteThisFile8.swift in Sources */,
 				383EDEA636E09F49EB1BDAA5 /* ReceivedMessageCell.swift in Sources */,
 				C784424F9C5A6570961862B8 /* SendedMessageCell.swift in Sources */,

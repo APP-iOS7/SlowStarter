@@ -5,7 +5,11 @@
 //  Created by 멘태 on 5/16/25.
 //
 
-struct SummaryMessageUseCase {
+protocol SummaryUseCase {
+    func execute(message: Message) async throws -> Message
+}
+
+struct DefaultSummaryUseCase: SummaryUseCase {
     let repository: ChatRepository
     
     func execute(message: Message) async throws -> Message {

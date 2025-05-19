@@ -76,8 +76,7 @@ final class ChatAPIService {
                 throw ChatAPIError.invalidResponse
             }
             
-            let chatMessage = try parseChatMessage(from: data)
-            return chatMessage
+            return String(data: data, encoding: .utf8) ?? ""
         } catch let urlError as URLError {
             switch urlError.code {
             case .notConnectedToInternet:
@@ -90,19 +89,5 @@ final class ChatAPIService {
         } catch {
             throw ChatAPIError.unknown
         }
-    }
-    
-    private func parseChatMessage(from data: Data) throws -> String {
-        guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
-              let candidates = json["candidates"] as? [[String: Any]],
-              let firstCandidate = candidates.first,
-              let content = firstCandidate["content"] as? [String: Any],
-              let parts = content["parts"] as? [[String: Any]],
-              let firstPart = parts.first,
-              let text = firstPart["text"] as? String else {
-            throw ChatAPIError.parsingFailed
-        }
-        
-        return text
     }
 }
