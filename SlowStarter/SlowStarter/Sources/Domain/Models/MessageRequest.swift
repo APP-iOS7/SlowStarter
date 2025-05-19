@@ -12,6 +12,7 @@ struct Part: Codable {
 }
 
 struct Content: Codable {
+    let role: String
     let parts: [Part]
 }
 

@@ -104,6 +104,7 @@ final class ChatViewModel: ObservableObject {
                 if let apiError = error as? ChatAPIError {
                     summaryMessageSubject.send(completion: .failure(apiError))
                 } else {
+                    print(error.localizedDescription)
                     summaryMessageSubject.send(completion: .failure(.unknown))
                 }
             }

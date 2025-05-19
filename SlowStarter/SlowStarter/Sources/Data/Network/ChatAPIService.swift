@@ -45,7 +45,7 @@ extension ChatAPIError: LocalizedError {
 }
 
 final class ChatAPIService {
-    func sendMessage(_ messageTexts: [String]) async throws -> String {
+    func sendMessage(_ systemPrompt: String, _ messageTexts: [String]) async throws -> String {
         guard let apiKey: String = Bundle.main.object(forInfoDictionaryKey: "GEMINI_API_KEY") as? String else {
             throw ChatAPIError.missingAPIKey
         }
@@ -59,9 +59,14 @@ final class ChatAPIService {
         request.httpMethod = "POST"
         request.addValue("application", forHTTPHeaderField: "Content-Type")
         
+        var contents: [Content] = [Content(role: "user", parts: [Part(text: systemPrompt)])]
+        for (index, text) in messageTexts.enumerated() {
+            let role: String = index % 2 == 0 ? "user" : "model" //
+            contents.append(Content(role: role, parts: [Part(text: text)]))
+        }
+        
         do {
-            let parts: [Part] = messageTexts.map { Part(text: $0) }
-            let body: MessageRequest = MessageRequest(contents: [Content(parts: parts)])
+            let body = MessageRequest(contents: contents)
             request.httpBody = try JSONEncoder().encode(body)
         } catch {
             print("JSON 인코딩 에러: \(error.localizedDescription)")
