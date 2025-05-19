@@ -65,7 +65,10 @@ let project = Project(
                   basedOnDependencyAnalysis: false
                 )
             ],
-            dependencies: []
+            dependencies: [
+                .external(name: "SnapKit", condition: .none),
+                .external(name: "Supabase", condition: .none),
+            ]
         ),
         .target(
             name: "SlowStarterTests",
