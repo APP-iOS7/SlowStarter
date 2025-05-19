@@ -1,39 +1,41 @@
+//////
+//////  VideoPlayerView.swift
+//////  SlowStarter
+//////
+//////  Created by 이재용 on 5/13/25.
+//////
 ////
-////  VideoPlayerView.swift
-////  SlowStarter
-////
-////  Created by 이재용 on 5/13/25.
-////
+//import UIKit
+//import AVKit
+//import AVFoundation
+//import SnapKit
 //
-// import UIKit
-// import AVKit
-// import AVFoundation
-// import SnapKit
-//
-// extension AVPlayer {
+//extension AVPlayer {
 //    var isPlaying: Bool {
 //        return rate != 0 && error == nil
 //    }
-// }
-// class CustomVideoPlayerController: UIViewController {
-//    // Video가 재생되는 뷰
-//    let videoBackView = UIView()
+//}
+//class CustomVideoPlayerController: UIViewController {
+//    
 //    
 //    // MARK: - UI 컴포넌트 선언
-//    let totalButtonsView = UIView()
-//    let timeLineSlider = UISlider()
-//    let timeLineLabel = UILabel()
-//    let playButton = UIButton(type: .system)
-//    let speedDisplayLabel = UILabel()
-//    let fullScreenButton = UIButton(type: .system)
-//    let loadingIndicator = UIActivityIndicatorView(style: .large)
-//    let errorLabel = UILabel()
+//    private let totalButtonsView = UIView()
+//    private let timeLineSlider = UISlider()
+//    private let timeLineLabel = UILabel()
+//    private let playButton = UIButton(type: .system)
+//    private let speedDisplayLabel = UILabel()
+//    private let fullScreenButton = UIButton(type: .system)
+//    private let loadingIndicator = UIActivityIndicatorView(style: .large)
+//    private let errorLabel = UILabel()
 //    
 //    // MARK: - Properties
-//    var videoPlayer: AVPlayer?
-//    var uiTimer: Timer?
-//    var timeObserver: Any?
-//    var speedMode = 2
+//    
+//    // Video가 재생되는 뷰
+//    private let videoBackView = UIView()
+//    private var videoPlayer: AVPlayer?
+//    private var uiTimer: Timer?
+//    private var timeObserver: Any?
+//    private var speedMode = 2
 //    
 //    override func viewDidLoad() {
 //        super.viewDidLoad()
@@ -238,10 +240,6 @@
 //            break
 //        }
 //    }
-//    
-//    
-//    
-//    
 //}
 //
 //

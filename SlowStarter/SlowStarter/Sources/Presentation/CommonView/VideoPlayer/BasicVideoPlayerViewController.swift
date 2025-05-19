@@ -27,6 +27,17 @@ class BasicVideoPlayerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        title = "Basic Video Player"
+        
+        // MARK: - 무음모드 소리재생
+        do {
+            let audioSession = AVAudioSession.sharedInstance()
+            try audioSession.setCategory(.playback, mode: .moviePlayback)
+            try audioSession.setActive(true)
+        } catch {
+            print("Error in Config Audio Session: \(error.localizedDescription)")
+        }
+        
         
         // UI 설정 전에 playerBaseView를 추가
         view.addSubview(playerBaseView)
@@ -42,6 +53,13 @@ class BasicVideoPlayerViewController: UIViewController {
         
         // 플레이어 준비 상태에 따라 UI 업데이트 (예: 버튼 활성화/비활성화)
         updateUIForPlayerState()
+    }
+    
+    private func configNavigationBarAppearance() {
+        let appearance = UINavigationBarAppearance()
+        appearance.largeTitleTextAttributes = [
+            .font: UIFont.systemFont(ofSize: 36, weight: .bold)
+        ]
     }
     
     // 비디오 URL 설정 및 AVPlayer 인스턴스 생성
@@ -67,7 +85,6 @@ class BasicVideoPlayerViewController: UIViewController {
     private func setupUI() {
         // playerBaseView 제약
         playerBaseView.backgroundColor = .lightGray // 확인을 위해 색상 변경
-        playerBaseView.translatesAutoresizingMaskIntoConstraints = false // SnapKit 사용 시 필수
         
         playerBaseView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top) // safeArea 기준으로 변경
@@ -186,8 +203,8 @@ class BasicVideoPlayerViewController: UIViewController {
     }
 }
 
-// #Preview를 사용하려면 Xcode 15 이상과 적절한 시뮬레이터 환경이 필요합니다.
-// Preview가 크래시나 문제를 일으킨다면 주석 처리하거나 실제 기기/시뮬레이터로 테스트하세요.
-//#Preview {
-//    BasicVideoPlayerViewController()
-//}
+
+#Preview {
+    UINavigationController(rootViewController: BasicVideoPlayerViewController())
+    
+}
