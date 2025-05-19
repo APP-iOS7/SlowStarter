@@ -8,26 +8,6 @@
 import Foundation
 import Supabase
 
-
-enum UserUpdateField {
-    case email(String)
-    case phoneNumber(String)
-    case password(String)
-}
-
-enum LoginManagerError: Error {
-    case userNotFound
-    case invalidCredentials
-    case emailNotConfirmed
-    case userAlreadyExists
-    case invalidPhoneNumber
-    case rateLimitExceeded
-    case missingEmailOrPhone
-    case invalidRefreshToken
-    case invalidClaim
-    case unknownError(message: String)
-}
-
 class LoginManager: LoginManagerProtocol {
     private var client: SupabaseClient
     private let auth: AuthClient

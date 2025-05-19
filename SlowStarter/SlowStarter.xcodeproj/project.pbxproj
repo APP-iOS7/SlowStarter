@@ -25,6 +25,7 @@
 		62CD36332DDAF3B300F799C7 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CD36322DDAF3B300F799C7 /* DatabaseManager.swift */; };
 		62CD365F2DDB028700F799C7 /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CD365E2DDB028700F799C7 /* StorageManager.swift */; };
 		62CD36612DDB029100F799C7 /* LoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CD36602DDB029100F799C7 /* LoginManager.swift */; };
+		62CD36652DDB10E100F799C7 /* SupabaseEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CD36642DDB10E100F799C7 /* SupabaseEnum.swift */; };
 		761520280242C916368D3DB9 /* ConcurrencyExtras.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07CF55D27CC2486DAB0674CE /* ConcurrencyExtras.framework */; };
 		7B7F2AF4AD08F0EB09815443 /* PostgREST.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B65AED5D2039F3C0C51E16F1 /* PostgREST.framework */; };
 		7F132729B27E7C4C92901474 /* example.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DCD2B7386DCA3A9AD5E8C1 /* example.swift */; };
@@ -119,6 +120,7 @@
 		62CD36322DDAF3B300F799C7 /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		62CD365E2DDB028700F799C7 /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StorageManager.swift; path = /Users/yohns/StorageManager.swift; sourceTree = "<absolute>"; };
 		62CD36602DDB029100F799C7 /* LoginManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginManager.swift; sourceTree = "<group>"; };
+		62CD36642DDB10E100F799C7 /* SupabaseEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseEnum.swift; sourceTree = "<group>"; };
 		7EE73BB25EF60BE39650F29D /* SlowStarter-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "SlowStarter-Info.plist"; sourceTree = "<group>"; };
 		86DCD2B7386DCA3A9AD5E8C1 /* example.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = example.swift; sourceTree = "<group>"; };
 		88EA49479A49A8601583F099 /* Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -230,6 +232,7 @@
 			isa = PBXGroup;
 			children = (
 				62CD36302DDAF35500F799C7 /* Encoder.swift */,
+				62CD36642DDB10E100F799C7 /* SupabaseEnum.swift */,
 			);
 			path = ValueObject;
 			sourceTree = "<group>";
@@ -653,6 +656,7 @@
 				D68403C3DAE5BD8A453BA20E /* Protocol.swift in Sources */,
 				62CD36612DDB029100F799C7 /* LoginManager.swift in Sources */,
 				0137BC5A363C35ED9ECCA91C /* LectureListViewController.swift in Sources */,
+				62CD36652DDB10E100F799C7 /* SupabaseEnum.swift in Sources */,
 				B7CE945231C7A31F6274B8F0 /* LectureListViewModel.swift in Sources */,
 				62CD36312DDAF35500F799C7 /* Encoder.swift in Sources */,
 				3E53D92B991F50D645F16604 /* ExampleStyleFile.swift in Sources */,

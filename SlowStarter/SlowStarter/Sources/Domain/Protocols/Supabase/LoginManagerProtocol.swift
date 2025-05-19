@@ -7,3 +7,4 @@ protocol LoginManagerProtocol {
     func logout() async throws
     func updateUser(_ field: UserUpdateField) async throws
 }
+

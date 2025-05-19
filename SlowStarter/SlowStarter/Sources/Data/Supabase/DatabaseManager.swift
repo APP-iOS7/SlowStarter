@@ -1,16 +1,6 @@
 import Foundation
 import Supabase
 
-enum DatabaseError: Error {
-    case invalidURL
-    case decodingFailed
-    case encodingFailed
-    case unauthorized
-    case notFound
-    case unknown
-    case unsupportedType(String)
-}
-
 public final class DataBaseManager: DataBaseManagerProtocol {
     private var client: SupabaseClient
     
