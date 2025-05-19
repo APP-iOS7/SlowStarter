@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreData
 
 struct Message: Hashable, Identifiable {
     let id: UUID
@@ -32,5 +33,29 @@ struct Message: Hashable, Identifiable {
     
     static func == (lhs: Self, rhs: Self) -> Bool {
         return lhs.id == rhs.id
+    }
+}
+
+extension Message {
+    // Message -> MessageEntity
+    func toManagedObject(in context: NSManagedObjectContext) -> MessageEntity {
+        let entity: MessageEntity = MessageEntity(context: context)
+        entity.id = id
+        entity.text = text
+        entity.isSended = isSended
+        entity.timestamp = timestamp
+        return entity
+    }
+    
+    // MessageEntity -> Message
+    static func from(_ entity: MessageEntity) -> Message? {
+        guard let id = entity.id,
+              let text = entity.text,
+              let timestamp = entity.timestamp else {
+            return nil
+        }
+        
+        let item: Message = Message(id: id, text: text, isSended: entity.isSended, timestamp: timestamp)
+        return item
     }
 }

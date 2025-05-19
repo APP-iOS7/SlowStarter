@@ -39,7 +39,10 @@ let project = Project(
                 ]
             ),
             sources: ["SlowStarter/Sources/**"],
-            resources: ["SlowStarter/Resources/**"],
+            resources: [
+                "SlowStarter/Resources/**",
+                "SlowStarter/Sources/Data/Persistence/CoreDataModel.xcdatamodeld"
+            ],
             scripts: [
                 .pre(
                     script: """
