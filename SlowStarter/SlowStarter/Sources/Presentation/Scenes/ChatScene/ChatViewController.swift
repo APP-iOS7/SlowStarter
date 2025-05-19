@@ -132,6 +132,7 @@ final class ChatViewController: UIViewController {
         setConstraints()
         setCollectionView()
         bindViewModel()
+        fetchMessages()
     }
     
     // MARK: Functions
@@ -206,6 +207,10 @@ final class ChatViewController: UIViewController {
                 self?.updateSnapshot(id)
             }
             .store(in: &cancellables)
+    }
+    
+    private func fetchMessages() {
+        viewModel.fetchMessages()
     }
     
     private func tappedSendButton() {
