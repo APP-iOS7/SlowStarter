@@ -43,9 +43,6 @@ class BasicVideoPlayerViewController: UIViewController {
         // 비디오 URL 및 AVPlayer 인스턴스 설정
         setVideoURLAndPlayer()
 
-        // 썸네일 설정 (비디오 URL 설정 후)
-        setupThumbnail()
-
         // 임베드된 AVPlayerViewController 설정 (AVPlayer 인스턴스 생성 후)
         setupEmbeddedPlayerViewController()
 
@@ -106,39 +103,6 @@ class BasicVideoPlayerViewController: UIViewController {
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top) // 상단 여백 추가
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(playerBaseView.snp.width).multipliedBy(9.0/16.0) // 16:9 비율
-        }
-    }
-
-    private func setupThumbnail() {
-        thumbnailImageView = UIImageView()
-        thumbnailImageView.contentMode = .scaleAspectFill
-        thumbnailImageView.clipsToBounds = true
-        thumbnailImageView.backgroundColor = .black // 썸네일 로딩 전 배경색
-        thumbnailImageView.isUserInteractionEnabled = false // 터치 이벤트 방지
-
-        playerBaseView.addSubview(thumbnailImageView)
-        thumbnailImageView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
-
-        // 영상 URL이 있으면 썸네일 생성 시도
-        if let videoURL = videoURL {
-            generateThumbnail(for: videoURL) { [weak self] image in
-                DispatchQueue.main.async {
-                    if let image = image {
-                        self?.thumbnailImageView.image = image
-                    } else {
-                        // 썸네일 생성 실패 시 기본 이미지 또는 에러 메시지 표시
-                        self?.thumbnailImageView.image = UIImage(systemName: "film") // SF Symbols 예시
-                        self?.thumbnailImageView.tintColor = .darkGray
-                        print("Thumbnail generation failed or video URL was invalid.")
-                    }
-                }
-            }
-        } else {
-            thumbnailImageView.image = UIImage(systemName: "film.fill") // SF Symbols 예시
-            thumbnailImageView.tintColor = .darkGray
-            print("Error: Video URL is nil, cannot generate thumbnail.")
         }
     }
 
