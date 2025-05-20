@@ -1,4 +1,3 @@
-
 import UIKit
 import CoreData
 
@@ -6,6 +5,16 @@ import CoreData
 class AppDelegate: UIResponder, UIApplicationDelegate {
     lazy var persistentConfigContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "Config")
+        container.loadPersistentStores { storeDescription, error in
+            if let error = error as NSError? {
+                fatalError("Unresolved error \(error), \(error.userInfo)")
+            }
+        }
+        return container
+    }()
+    
+    lazy var persistentMessageContainer: NSPersistentContainer = {
+        let container = NSPersistentContainer(name: "CoreDataModel")
         container.loadPersistentStores { storeDescription, error in
             if let error = error as NSError? {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
