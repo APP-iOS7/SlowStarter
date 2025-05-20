@@ -45,7 +45,7 @@ extension ChatAPIError: LocalizedError {
 }
 
 final class ChatAPIService {
-    func sendMessage(_ systemPrompt: String, _ messageTexts: [String]) async throws -> String {
+    func sendMessage(_ systemPrompt: String, _ messages: [Message]) async throws -> String {
         guard let apiKey: String = Bundle.main.object(forInfoDictionaryKey: "GEMINI_API_KEY") as? String else {
             throw ChatAPIError.missingAPIKey
         }
@@ -60,9 +60,9 @@ final class ChatAPIService {
         request.addValue("application", forHTTPHeaderField: "Content-Type")
         
         var contents: [Content] = [Content(role: "user", parts: [Part(text: systemPrompt)])]
-        for (index, text) in messageTexts.enumerated() {
-            let role: String = index % 2 == 0 ? "user" : "model" //
-            contents.append(Content(role: role, parts: [Part(text: text)]))
+        for message in messages {
+            let role: String = message.isSended ? "user" : "model" // 내가 보낸 메시지인지, AI 답변인지 구분
+            contents.append(Content(role: role, parts: [Part(text: message.text)]))
         }
         
         do {

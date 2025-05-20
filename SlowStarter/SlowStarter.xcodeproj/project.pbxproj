@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 55;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -18,8 +18,8 @@
 		28397643D2AE009F5E8DF64C /* SlowStarterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C9E1C00FD424D65740EFBCE /* SlowStarterTests.swift */; };
 		2C10AAB96733687DBDA1620A /* ExampleCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F9F16CD397EEB8A542BDFE5 /* ExampleCoordinator.swift */; };
 		2C8A74B025CA836FE0CFAB57 /* Lecture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825F32719B3B4C951D39AEDC /* Lecture.swift */; };
-		2DBFBDF99BE07331E9809971 /* ChatUseCase_1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C47DB959BBF719192E2B9D /* ChatUseCase_1.swift */; };
-		32B3FB8893A2D16D8911E5A0 /* SummaryUseCase_1.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2EDA9EBB90DD2417E807813 /* SummaryUseCase_1.swift */; };
+		2DBFBDF99BE07331E9809971 /* DefaultChatUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C47DB959BBF719192E2B9D /* DefaultChatUseCase.swift */; };
+		32B3FB8893A2D16D8911E5A0 /* DefaultSummaryUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2EDA9EBB90DD2417E807813 /* DefaultSummaryUseCase.swift */; };
 		32C094FA662E94B1529E962E /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66A156E3D698E3F2D515BB2D /* Item.swift */; };
 		34FAA757B1551B4687B9124B /* SummaryUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CEA2F34D7351C40153D88E2 /* SummaryUseCase.swift */; };
 		35CB35FEEAEC461E9E3314C5 /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 822E1E8A35A4E96B6ADF6CE5 /* ChatMessage.swift */; };
@@ -165,7 +165,7 @@
 		6226FB4378D57257E945D75A /* SnapKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SnapKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		66A156E3D698E3F2D515BB2D /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		7004C7E0D5F60AA89C69E2F2 /* CoreDataMessageRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataMessageRepository.swift; sourceTree = "<group>"; };
-		70C47DB959BBF719192E2B9D /* ChatUseCase_1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatUseCase_1.swift; sourceTree = "<group>"; };
+		70C47DB959BBF719192E2B9D /* DefaultChatUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultChatUseCase.swift; sourceTree = "<group>"; };
 		7A27AE015C317AC7020DD122 /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		7EE73BB25EF60BE39650F29D /* SlowStarter-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "SlowStarter-Info.plist"; sourceTree = "<group>"; };
 		822E1E8A35A4E96B6ADF6CE5 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
@@ -196,7 +196,7 @@
 		C9B926AAA2E21DFD5B70952F /* FetchMessageUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchMessageUseCase.swift; sourceTree = "<group>"; };
 		CB3DF8A596B15357E7EA7CE9 /* Helpers.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Helpers.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE07AA5BF7CB9E77B508E786 /* Auth.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Auth.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D2EDA9EBB90DD2417E807813 /* SummaryUseCase_1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryUseCase_1.swift; sourceTree = "<group>"; };
+		D2EDA9EBB90DD2417E807813 /* DefaultSummaryUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultSummaryUseCase.swift; sourceTree = "<group>"; };
 		D45F0C9CA62C0151DFB277EC /* XCTestDynamicOverlay.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = XCTestDynamicOverlay.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D87AAB55BBDA28FDEC8CFD49 /* IssueReporting.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IssueReporting.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DACF59C9F7039A36DA60347A /* Functions.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Functions.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -412,8 +412,8 @@
 		6EFE095AA9432A6CA08491FB /* Chat */ = {
 			isa = PBXGroup;
 			children = (
-				70C47DB959BBF719192E2B9D /* ChatUseCase_1.swift */,
-				D2EDA9EBB90DD2417E807813 /* SummaryUseCase_1.swift */,
+				70C47DB959BBF719192E2B9D /* DefaultChatUseCase.swift */,
+				D2EDA9EBB90DD2417E807813 /* DefaultSummaryUseCase.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -808,8 +808,8 @@
 				F5667D41A0810E4C9E2B8175 /* TuistBundle+SlowStarter.swift in Sources */,
 				55BDEA6D6B3F3EB8268E2B84 /* AppDelegate.swift in Sources */,
 				A9196861A28CA8557DC5696B /* SceneDelegate.swift in Sources */,
-				2DBFBDF99BE07331E9809971 /* ChatUseCase_1.swift in Sources */,
-				32B3FB8893A2D16D8911E5A0 /* SummaryUseCase_1.swift in Sources */,
+				2DBFBDF99BE07331E9809971 /* DefaultChatUseCase.swift in Sources */,
+				32B3FB8893A2D16D8911E5A0 /* DefaultSummaryUseCase.swift in Sources */,
 				9A402AAD84E31C05DD3F2041 /* APIConstants.swift in Sources */,
 				5C860AD97966DDBE998ABD24 /* ChatAPIService.swift in Sources */,
 				8736D36C830B20D5C9095122 /* CoreDataService.swift in Sources */,
@@ -980,10 +980,7 @@
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
-					"$(inherited)",
-					DEBUG,
-				);
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
 				SWIFT_COMPILATION_MODE = singlefile;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -1093,10 +1090,7 @@
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
-					"$(inherited)",
-					DEBUG,
-				);
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
 				SWIFT_COMPILATION_MODE = singlefile;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;

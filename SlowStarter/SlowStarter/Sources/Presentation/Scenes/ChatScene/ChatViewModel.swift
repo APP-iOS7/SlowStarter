@@ -24,9 +24,9 @@ final class ChatViewModel: ObservableObject {
         return messages
     }
     
-    private var recentMessages: [String] {
+    private var recentMessages: [Message] {
         let size: Int = min(10, messages.count) // 10개, 그보다 적다면 있는 만큼
-        return Array(messages[(messages.count - size)...]).map { $0.text } // 뒤에서부터 size 만큼 꺼냄
+        return Array(messages[(messages.count - size)...]) // 뒤에서부터 size 만큼 꺼냄
     }
     
     // MARK: - Initializer
@@ -64,8 +64,8 @@ final class ChatViewModel: ObservableObject {
                 try await saveMessageUseCase.execute(myMessage) // CoreData에 보낸 메시지 저장
                 
                 // 대화의 맥락을 유지하기 위해 최근 메시지를 함께 보냄
-                let sendMessages: [String] = recentMessages
-                let newMessage = try await chatUseCase.execute(texts: sendMessages) // 답장 받아오기
+                let sendMessages: [Message] = recentMessages
+                let newMessage = try await chatUseCase.execute(messages: sendMessages) // 답장 받아오기
                 messages.append(newMessage)
                 try await saveMessageUseCase.execute(newMessage) // CoreData에 답장 저장
             } catch {
