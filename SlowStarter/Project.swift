@@ -10,8 +10,8 @@ let project = Project(
             "DEVELOPMENT_TEAM": "59FP2PXRXK"
         ],
         configurations: [
-            .debug(name: "Debug"),
-            .release(name: "Release")
+            .debug(name: "Debug", xcconfig: "SlowStarter/Sources/Config/Environment/APIConfig.xcconfig"),
+            .release(name: "Release", xcconfig: "SlowStarter/Sources/Config/Environment/APIConfig.xcconfig")
         ]
     ),
     targets: [

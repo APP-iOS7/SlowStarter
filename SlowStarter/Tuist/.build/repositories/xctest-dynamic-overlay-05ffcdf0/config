@@ -4,9 +4,6 @@
 	bare = true
 	ignorecase = true
 	precomposeunicode = true
-	symlinks = true
-	fsmonitor = false
-	longpaths = true
 [remote "origin"]
 	url = https://github.com/pointfreeco/xctest-dynamic-overlay
 	fetch = +refs/*:refs/*

@@ -78,8 +78,11 @@ final class ChatAPIService {
             
             guard let httpResponse = response as? HTTPURLResponse,
                   (200...299).contains(httpResponse.statusCode) else {
+                print(String(data: data, encoding: .utf8), apiKey)
                 throw ChatAPIError.invalidResponse
             }
+            
+            
             
             return String(data: data, encoding: .utf8) ?? ""
         } catch let urlError as URLError {
@@ -92,6 +95,7 @@ final class ChatAPIService {
                 throw ChatAPIError.networkError(urlError)
             }
         } catch {
+            print(error.localizedDescription)
             throw ChatAPIError.unknown
         }
     }
