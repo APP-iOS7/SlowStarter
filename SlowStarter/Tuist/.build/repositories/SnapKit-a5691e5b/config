@@ -4,7 +4,11 @@
 	bare = true
 	ignorecase = true
 	precomposeunicode = true
+	symlinks = true
+	fsmonitor = false
+	longpaths = true
 [remote "origin"]
-	url = https://github.com/SnapKit/SnapKit
+	url = https://github.com/SnapKit/SnapKit.git
+	tagOpt = --no-tags
 	fetch = +refs/*:refs/*
 	mirror = true

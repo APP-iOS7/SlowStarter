@@ -275,6 +275,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 59A4EE6460D1819D1F89ACCB /* Build configuration list for PBXNativeTarget "SnapKit_SnapKit" */;
 			buildPhases = (
+				AD907D5F3EDBF6199C70CE32 /* Sources */,
 				B6322C63E442F8849FEC752C /* Resources */,
 				3B7FAB990BFB73750B3881CE /* Frameworks */,
 				A457B8CE2A797325E967ACC2 /* Embed Frameworks */,
@@ -319,6 +320,8 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 9999;
+				TargetAttributes = {
+				};
 			};
 			buildConfigurationList = 810BE97450AF5D432B4639A0 /* Build configuration list for PBXProject "SnapKit" */;
 			compatibilityVersion = "Xcode 14.0";
@@ -400,6 +403,13 @@
 				636FD682FCB7B4F719B7BB2E /* Typealiases.swift in Sources */,
 				F5030C496555B22485159A40 /* UILayoutSupport+Extensions.swift in Sources */,
 				36646B062EE718D5592803F7 /* TuistBundle+SnapKit.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AD907D5F3EDBF6199C70CE32 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -608,7 +618,7 @@
 				GENERATE_MASTER_OBJECT_FILE = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/../../tuist-derived/SnapKit_SnapKit/InfoPlists/SnapKit_SnapKit-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				PRODUCT_BUNDLE_IDENTIFIER = SnapKit.resources;
+				PRODUCT_BUNDLE_IDENTIFIER = SnapKit.generated.resources;
 				PRODUCT_NAME = SnapKit_SnapKit;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -618,6 +628,7 @@
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2,6";
+				VERSIONING_SYSTEM = "";
 			};
 			name = Release;
 		};
@@ -631,7 +642,7 @@
 				GENERATE_MASTER_OBJECT_FILE = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/../../tuist-derived/SnapKit_SnapKit/InfoPlists/SnapKit_SnapKit-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				PRODUCT_BUNDLE_IDENTIFIER = SnapKit.resources;
+				PRODUCT_BUNDLE_IDENTIFIER = SnapKit.generated.resources;
 				PRODUCT_NAME = SnapKit_SnapKit;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -645,6 +656,7 @@
 				SWIFT_COMPILATION_MODE = singlefile;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2,6";
+				VERSIONING_SYSTEM = "";
 			};
 			name = Debug;
 		};
