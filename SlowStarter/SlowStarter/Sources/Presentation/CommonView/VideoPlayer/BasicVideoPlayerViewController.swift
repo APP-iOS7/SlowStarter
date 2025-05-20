@@ -44,7 +44,6 @@ class BasicVideoPlayerViewController: UIViewController {
         setVideoURLAndPlayer()
 
         // 썸네일 설정 (비디오 URL 설정 후)
-        setupThumbnail()
 
         // 임베드된 AVPlayerViewController 설정 (AVPlayer 인스턴스 생성 후)
         setupEmbeddedPlayerViewController()
@@ -76,6 +75,7 @@ class BasicVideoPlayerViewController: UIViewController {
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
         navigationController?.navigationBar.prefersLargeTitles = true
     }
+    
 
     private func configureAudioSession() {
         do {
@@ -98,6 +98,49 @@ class BasicVideoPlayerViewController: UIViewController {
         self.videoURL = url
         self.player = AVPlayer(url: url)
     }
+    
+    private func generateThumbnail(url: URL, at timeSeconds: Double, maxRetries: Int, retryDelay: TimeInterval) async throws -> UIImage {
+        var currentAttempt = 0
+        
+        while currentAttempt <= maxRetries {
+            currentAttempt += 1
+            
+            let asset = AVURLAsset(url: url)
+            do {
+                let (isPlayable, duration, tracks) = try await asset.load(.isPlayable, .duration, .tracks)
+                
+                guard isPlayable else {
+                    print("Asset is not playalbe")
+                    if currentAttempt > maxRetries { throw ThumbnailError.assetNotPlayable}
+                    
+                    try await Task.sleep(nanoseconds: .init(retryDelay * 1_000_000_000))
+                    
+                    continue
+                }
+                guard !tracks.isEmpty, tracks.contains(where: {$0.mediaType == .video}) else {
+                    print("no video tracks")
+                    if currentAttempt > maxRetries {throw ThumbnailError.assetLoadingFailed(nil)}
+                    
+                    try await Task.sleep(nanoseconds: UInt64(retryDelay * 1_000_000_000))
+                    continue
+                }
+                
+                let imageGenerator = AVAssetImageGenerator(asset: asset)
+                imageGenerator.appliesPreferredTrackTransform = true
+                imageGenerator.maximumSize = CGSize(width: 300, height: 300)
+                let requestTime = CMTimeMakeWithSeconds(timeSeconds, preferredTimescale: 600)
+                
+                let cgImage: CGImage
+                cgImage = try await imageGenerator.image(at: requestTime).image
+                
+                let thumbnailImage = UIImage(cgImage: cgImage)
+                return thumbnailImage
+            } catch {
+                print("Error on attempting to generate thumbnail: \(error)")
+            }
+            
+        }
+    }
 
     // MARK: - UI Setup
     private func setupPlayerBaseViewConstraints() {
@@ -109,38 +152,6 @@ class BasicVideoPlayerViewController: UIViewController {
         }
     }
 
-    private func setupThumbnail() {
-        thumbnailImageView = UIImageView()
-        thumbnailImageView.contentMode = .scaleAspectFill
-        thumbnailImageView.clipsToBounds = true
-        thumbnailImageView.backgroundColor = .black // 썸네일 로딩 전 배경색
-        thumbnailImageView.isUserInteractionEnabled = false // 터치 이벤트 방지
-
-        playerBaseView.addSubview(thumbnailImageView)
-        thumbnailImageView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
-
-        // 영상 URL이 있으면 썸네일 생성 시도
-        if let videoURL = videoURL {
-            generateThumbnail(for: videoURL) { [weak self] image in
-                DispatchQueue.main.async {
-                    if let image = image {
-                        self?.thumbnailImageView.image = image
-                    } else {
-                        // 썸네일 생성 실패 시 기본 이미지 또는 에러 메시지 표시
-                        self?.thumbnailImageView.image = UIImage(systemName: "film") // SF Symbols 예시
-                        self?.thumbnailImageView.tintColor = .darkGray
-                        print("Thumbnail generation failed or video URL was invalid.")
-                    }
-                }
-            }
-        } else {
-            thumbnailImageView.image = UIImage(systemName: "film.fill") // SF Symbols 예시
-            thumbnailImageView.tintColor = .darkGray
-            print("Error: Video URL is nil, cannot generate thumbnail.")
-        }
-    }
 
     private func setupButtons() {
         // FullScreen Button
@@ -247,6 +258,6 @@ class BasicVideoPlayerViewController: UIViewController {
     }
 }
 
-#Preview {
-    UINavigationController(rootViewController: BasicVideoPlayerViewController())
-}
+//#Preview {
+//    UINavigationController(rootViewController: BasicVideoPlayerViewController())
+//}
