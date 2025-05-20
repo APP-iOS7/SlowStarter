@@ -4,6 +4,8 @@ import CoreData
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     
+    var dataManager: DataManager?
+    
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
  
         guard let windowScene = scene as? UIWindowScene else { return }
@@ -31,6 +33,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             update: updateUseCase
         )
         let chatVC: ChatViewController = ChatViewController(viewModel: chatVM)
+        
+        dataManager = DataManager()
         
         window.rootViewController = UINavigationController(rootViewController: chatVC)
         self.window = window
