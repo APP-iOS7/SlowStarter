@@ -74,7 +74,8 @@ let project = Project(
                 )
             ],
             dependencies: [
-                .external(name: "SnapKit", condition: .none)
+                .external(name: "SnapKit", condition: .none),
+                .external(name:"Supabase", condition: .none)
             ]
         ),
         .target(
