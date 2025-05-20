@@ -8,7 +8,7 @@
 import Foundation
 import Supabase
 
-class LoginManager: LoginManagerProtocol {
+public class LoginManager: LoginManagerProtocol {
     private var client: SupabaseClient
     private let auth: AuthClient
     
@@ -40,7 +40,7 @@ class LoginManager: LoginManagerProtocol {
     ///   - password: 사용자 비밀번호
     func login(email: String, password: String) async throws {
         do {
-            let session = try await auth.signIn(email: email, password: password)
+            let _ = try await auth.signIn(email: email, password: password)
         } catch {
             throw mapAuthError(error)
         }
@@ -58,7 +58,7 @@ class LoginManager: LoginManagerProtocol {
     }
     
     // MARK: - 사용자 삭제
-    //차후
+    //차후 delete 기능 추가
     
     // MARK: - 현재 사용자 정보 조회
     
@@ -158,5 +158,3 @@ class LoginManager: LoginManagerProtocol {
         return .unknownError(message: error.localizedDescription)
     }
 }
-
-

@@ -34,6 +34,8 @@
 		5D50A1A4E3C07140513765C2 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8385A28307086FC529628B /* ChatViewModel.swift */; };
 		601DA78EEDD7BAE71523CB53 /* UserItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E87328CE3BB0AB9214B208 /* UserItem.swift */; };
 		62CB49C73776755B81207110 /* VOD.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A134AA8C88DE33DB01DC3F /* VOD.swift */; };
+		62CD36CA2DDC370A00F799C7 /* StorageManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CD36C92DDC370A00F799C7 /* StorageManagerProtocol.swift */; };
+		62CD37092DDC3A5F00F799C7 /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CD37082DDC3A5F00F799C7 /* StorageManager.swift */; };
 		669D6FF3BC0A9F4F24E2E2AE /* SupabaseEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF17EE0E65E6ADE6076126C /* SupabaseEnum.swift */; };
 		67E22FAA44E6C308FBAEBFB3 /* DataBaseManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 163FD109562D1EAB6F38AEC4 /* DataBaseManagerProtocol.swift */; };
 		68839CCFBDCB1F396BF4A98E /* LoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFBC845600F0DCF149AD3B94 /* LoginManager.swift */; };
@@ -161,6 +163,8 @@
 		5F6B70B81FAC4F3BD0066890 /* LectureIntroVideo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LectureIntroVideo.swift; sourceTree = "<group>"; };
 		612E9BD71849190DF3EA05F9 /* TuistAssets+SlowStarter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TuistAssets+SlowStarter.swift"; sourceTree = "<group>"; };
 		6226FB4378D57257E945D75A /* SnapKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SnapKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		62CD36C92DDC370A00F799C7 /* StorageManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManagerProtocol.swift; sourceTree = "<group>"; };
+		62CD37082DDC3A5F00F799C7 /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
 		66A156E3D698E3F2D515BB2D /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		6DA9366E3499F77C7AB72BAF /* SaveMessageUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveMessageUseCase.swift; sourceTree = "<group>"; };
 		745725C9249C2975A1BEE4F2 /* ChatRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRepository.swift; sourceTree = "<group>"; };
@@ -214,6 +218,7 @@
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		62CD36C22DDC213D00F799C7 /* Chat */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Chat; sourceTree = "<group>"; };
+		62CD370A2DDC3C5D00F799C7 /* Config */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Config; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -476,6 +481,7 @@
 			children = (
 				7A27AE015C317AC7020DD122 /* DatabaseManager.swift */,
 				EFBC845600F0DCF149AD3B94 /* LoginManager.swift */,
+				62CD37082DDC3A5F00F799C7 /* StorageManager.swift */,
 			);
 			path = Supabase;
 			sourceTree = "<group>";
@@ -491,6 +497,7 @@
 		A41A5467EAA1BC27C817DD93 /* Project */ = {
 			isa = PBXGroup;
 			children = (
+				62CD370A2DDC3C5D00F799C7 /* Config */,
 				73CC91BF3C91A4E3DEB4149B /* Derived */,
 				ED293F57A5AE89C78AAD3FD4 /* SlowStarter */,
 			);
@@ -594,6 +601,7 @@
 			children = (
 				163FD109562D1EAB6F38AEC4 /* DataBaseManagerProtocol.swift */,
 				22F31490FB224A4621DF4C2E /* LoginManagerProtocol.swift */,
+				62CD36C92DDC370A00F799C7 /* StorageManagerProtocol.swift */,
 			);
 			path = Supabase;
 			sourceTree = "<group>";
@@ -703,6 +711,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				62CD36C22DDC213D00F799C7 /* Chat */,
+				62CD370A2DDC3C5D00F799C7 /* Config */,
 			);
 			name = SlowStarter;
 			packageProductDependencies = (
@@ -819,12 +828,14 @@
 				32C094FA662E94B1529E962E /* Item.swift in Sources */,
 				2C8A74B025CA836FE0CFAB57 /* Lecture.swift in Sources */,
 				B4E02D30FDEBEBDA10F81AD3 /* LectureIntroImage.swift in Sources */,
+				62CD36CA2DDC370A00F799C7 /* StorageManagerProtocol.swift in Sources */,
 				EF1BB640911A57F50C674F00 /* LectureIntroVideo.swift in Sources */,
 				9FAE5C0C83D60CB6423E3D76 /* Message.swift in Sources */,
 				6E7505EA1887143E21F93813 /* MessageRequest.swift in Sources */,
 				39AFBEE4CC06A810DEC53965 /* UserAssignment.swift in Sources */,
 				C32831240A76F817394AB120 /* UserAttendance.swift in Sources */,
 				897257C41CE57098B9D938A0 /* UserDetail.swift in Sources */,
+				62CD37092DDC3A5F00F799C7 /* StorageManager.swift in Sources */,
 				601DA78EEDD7BAE71523CB53 /* UserItem.swift in Sources */,
 				93F8E969EA7C6E977D3E3F3A /* UserPayment.swift in Sources */,
 				86E64D5F905E67065181502B /* UserPointLog.swift in Sources */,

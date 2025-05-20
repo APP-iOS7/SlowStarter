@@ -1,10 +1,10 @@
 import Foundation
 import Supabase
 
-public final class DataBaseManager: DataBaseManagerProtocol {
+public class DataBaseManager: DataBaseManagerProtocol {
     private var client: SupabaseClient
     
-    init(client: SupabaseClient) {
+    required init(client: SupabaseClient) {
         self.client = client
     }
     
@@ -23,8 +23,7 @@ public final class DataBaseManager: DataBaseManagerProtocol {
         let tableName: String
         do {
             tableName = try self.tableName(for: type)
-        }
-        catch {
+        } catch {
             throw error
         }
         
