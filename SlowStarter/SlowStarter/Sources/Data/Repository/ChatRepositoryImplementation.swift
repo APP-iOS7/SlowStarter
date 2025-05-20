@@ -39,11 +39,14 @@ final class ChatRepositoryImplementation: ChatRepository {
               let json = try JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
               let candidates = json["candidates"] as? [[String: Any]],
               let firstCandidate = candidates.first,
-              let content = firstCandidate["content"] as? [String: Any],
-              let parts = content["parts"] as? [[String: Any]],
+              let content = firstCandidate["content"] as? [String: Any] else {
+            throw ChatAPIError.parsingFailed
+        }
+
+        guard let parts = content["parts"] as? [[String: Any]],
               let firstPart = parts.first,
               let text = firstPart["text"] as? String else {
-            throw ChatAPIError.parsingFailed
+            return "질문을 이해하지 못했어요. 다시 질문해 주세요."
         }
         
         return text
