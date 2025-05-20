@@ -16,7 +16,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let summaryMessageUseCase: DefaultSummaryUseCase = DefaultSummaryUseCase(repository: chatRepository)
         
         let coreDataMessageRepository: CoreDataMessageRepository =
-            CoreDataMessageRepositoryImplementation(context: CoreDataStack.shared.viewContext)
+            CoreDataMessageRepositoryImplementation(context: CoreDataService.shared.viewContext)
         let saveUseCase: SaveMessageUseCase = DefaultSaveMessageUseCase(repository: coreDataMessageRepository)
         let fetchUseCase: FetchMessageUseCase = DefaultFetchMessageUseCase(repository: coreDataMessageRepository)
         let deleteUseCase: DeleteMessageUseCase = DefaultDeleteMessageUseCase(repository: coreDataMessageRepository)

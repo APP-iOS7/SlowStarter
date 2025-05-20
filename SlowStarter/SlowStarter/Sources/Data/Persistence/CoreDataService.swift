@@ -8,8 +8,8 @@
 import Foundation
 import CoreData
 
-final class CoreDataStack {
-    static let shared: CoreDataStack = CoreDataStack()
+final class CoreDataService {
+    static let shared: CoreDataService = CoreDataService()
     
     private let container: NSPersistentContainer
     var viewContext: NSManagedObjectContext {
@@ -21,16 +21,6 @@ final class CoreDataStack {
         container.loadPersistentStores { _, error in
             if let error = error as NSError? {
                 fatalError("CoreData 로드 실패: \(error.userInfo)")
-            }
-        }
-    }
-    
-    func saveContext() {
-        if viewContext.hasChanges {
-            do {
-                try viewContext.save()
-            } catch {
-                print("CoreData 저장 에러: \(error.localizedDescription)")
             }
         }
     }

@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		0137BC5A363C35ED9ECCA91C /* LectureListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7DDDC2A04CD45BEA183B3B /* LectureListViewController.swift */; };
 		077E73A9F1BB9D36B8310BAC /* CoreDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F8EDD61F73159FE061F9A4D4 /* CoreDataModel.xcdatamodeld */; };
-		1F1B0A17404C716CE371638D /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB398BDF287AB68A444762BF /* CoreDataStack.swift */; };
+		1F1B0A17404C716CE371638D /* CoreDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB398BDF287AB68A444762BF /* CoreDataService.swift */; };
 		209C4065F4A0A1B91BFE6B3D /* ChatRepositoryImplementation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A5655DB7B7CA1533D55862 /* ChatRepositoryImplementation.swift */; };
 		28397643D2AE009F5E8DF64C /* SlowStarterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C9E1C00FD424D65740EFBCE /* SlowStarterTests.swift */; };
 		2C10AAB96733687DBDA1620A /* ExampleCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F9F16CD397EEB8A542BDFE5 /* ExampleCoordinator.swift */; };
@@ -99,7 +99,7 @@
 		B6938258AC961E53E043CF7F /* CoreDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CoreDataModel.xcdatamodel; sourceTree = "<group>"; };
 		B7B96F4D2258E988451B0B6E /* APIConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIConstants.swift; sourceTree = "<group>"; };
 		BA8385A28307086FC529628B /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
-		BB398BDF287AB68A444762BF /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
+		BB398BDF287AB68A444762BF /* CoreDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataService.swift; sourceTree = "<group>"; };
 		C2A5655DB7B7CA1533D55862 /* ChatRepositoryImplementation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRepositoryImplementation.swift; sourceTree = "<group>"; };
 		C88F541FB258FD70910F57E6 /* DeleteThisFile4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteThisFile4.swift; sourceTree = "<group>"; };
 		CC48747CC773AE89224C26B2 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
@@ -222,7 +222,7 @@
 			isa = PBXGroup;
 			children = (
 				F8EDD61F73159FE061F9A4D4 /* CoreDataModel.xcdatamodeld */,
-				BB398BDF287AB68A444762BF /* CoreDataStack.swift */,
+				BB398BDF287AB68A444762BF /* CoreDataService.swift */,
 			);
 			path = Persistence;
 			sourceTree = "<group>";
@@ -571,7 +571,7 @@
 				D2424B093C2A02CF79E8DAE8 /* example2.swift in Sources */,
 				9A402AAD84E31C05DD3F2041 /* APIConstants.swift in Sources */,
 				5C860AD97966DDBE998ABD24 /* ChatAPIService.swift in Sources */,
-				1F1B0A17404C716CE371638D /* CoreDataStack.swift in Sources */,
+				1F1B0A17404C716CE371638D /* CoreDataService.swift in Sources */,
 				209C4065F4A0A1B91BFE6B3D /* ChatRepositoryImplementation.swift in Sources */,
 				64D140230A41CA4E53A86582 /* CoreDataMessageRepositoryImplementation.swift in Sources */,
 				4D84365EC9D2AF78F9153C06 /* DeleteThisFile4.swift in Sources */,
