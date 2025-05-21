@@ -6,5 +6,5 @@
 //
 
 protocol SummaryUseCase {
-    func execute(message: Message) async throws -> Message
+    func execute(message: Messages) async throws -> Messages
 }

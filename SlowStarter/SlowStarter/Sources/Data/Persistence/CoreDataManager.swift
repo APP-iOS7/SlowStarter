@@ -42,7 +42,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
     /// 메시지를 저장.
     /// - Parameter message: 저장할 메시지 객체
     /// - Throws: Core Data 저장 중 발생할 수 있는 오류
-    func saveMessage(_ message: Message) async throws {
+    func saveMessage(_ message: Messages) async throws {
         // 메시지를 관리 객체로 변환하여 컨텍스트에 추가
         _ = message.toManagedObject(in: messageContext)
         // 변경 사항을 저장
@@ -73,10 +73,10 @@ final class CoreDataManager: CoreDataManagerProtocol {
     /// 저장된 모든 메시지를 비동기적으로 조회
     /// - Returns: 메시지 객체 배열
     /// - Throws: Core Data 조회 중 발생할 수 있는 오류
-    func fetchMessages() async throws -> [Message] {
+    func fetchMessages() async throws -> [Messages] {
         let request: NSFetchRequest<MessageEntity> = MessageEntity.fetchRequest()
         // 메시지 엔티티를 관리 객체로 변환하여 반환
-        let result = try messageContext.fetch(request).compactMap { Message.from($0) }
+        let result = try messageContext.fetch(request).compactMap { Messages.from($0) }
         return result
     }
     
@@ -107,7 +107,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
     /// 특정 메시지를 업데이트.
     /// - Parameter message: 업데이트할 메시지 객체
     /// - Throws: Core Data 업데이트 중 발생할 수 있는 오류
-    func updateMessage(_ message: Message) async throws {
+    func updateMessage(_ message: Messages) async throws {
         let request: NSFetchRequest<MessageEntity> = MessageEntity.fetchRequest()
         request.predicate = NSPredicate(format: "id = %@", message.id as CVarArg)
         
@@ -146,7 +146,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
     /// 특정 메시지를 삭제.
     /// - Parameter message: 삭제할 메시지 객체
     /// - Throws: Core Data 삭제 중 발생할 수 있는 오류
-    func deleteMessage(_ message: Message) async throws {
+    func deleteMessage(_ message: Messages) async throws {
         let request: NSFetchRequest<MessageEntity> = MessageEntity.fetchRequest()
         request.predicate = NSPredicate(format: "id = %@", message.id as CVarArg)
         

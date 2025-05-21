@@ -6,6 +6,6 @@
 //
 
 protocol ChatRepository {
-    func chat(messages: [Message]) async throws -> Message
+    func chat(messages: [Messages]) async throws -> Messages
     func summary(text: String) async throws -> String
 }

@@ -6,8 +6,8 @@
 //
 
 protocol CoreDataMessageRepository {
-    func saveMessage(_ message: Message) async throws
-    func fetchMessages() async throws -> [Message]
-    func deleteMessage(_ message: Message) async throws
-    func updateMessage(_ message: Message) async throws
+    func saveMessage(_ message: Messages) async throws
+    func fetchMessages() async throws -> [Messages]
+    func deleteMessage(_ message: Messages) async throws
+    func updateMessage(_ message: Messages) async throws
 }

@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-struct Message: Hashable, Identifiable {
+struct Messages: Hashable, Identifiable {
     let id: UUID
     var text: String
     let isSended: Bool
@@ -36,7 +36,7 @@ struct Message: Hashable, Identifiable {
     }
 }
 
-extension Message {
+extension Messages {
     // Message -> MessageEntity
     func toManagedObject(in context: NSManagedObjectContext) -> MessageEntity {
         let entity: MessageEntity = MessageEntity(context: context)
@@ -48,14 +48,14 @@ extension Message {
     }
     
     // MessageEntity -> Message
-    static func from(_ entity: MessageEntity) -> Message? {
+    static func from(_ entity: MessageEntity) -> Messages? {
         guard let id = entity.id,
               let text = entity.text,
               let timestamp = entity.timestamp else {
             return nil
         }
         
-        let item: Message = Message(id: id, text: text, isSended: entity.isSended, timestamp: timestamp)
+        let item: Messages = Messages(id: id, text: text, isSended: entity.isSended, timestamp: timestamp)
         return item
     }
 }
