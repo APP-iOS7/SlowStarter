@@ -3,39 +3,58 @@ import CoreData
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
+    var mainCoordinator: MainCoordinator?
+    
+    var dataManager: SupabaseDataManager?
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
  
         guard let windowScene = scene as? UIWindowScene else { return }
         
-        
         let window = UIWindow(windowScene: windowScene)
-        let chatApiService: ChatAPIService = ChatAPIService()
-        let chatRepository: ChatRepository = ChatRepositoryImplementation(apiService: chatApiService)
-        let chatUseCase: DefaultChatUseCase = DefaultChatUseCase(repository: chatRepository)
-        let summaryMessageUseCase: DefaultSummaryUseCase = DefaultSummaryUseCase(repository: chatRepository)
+//        let chatApiService: ChatAPIService = ChatAPIService()
+//        let chatRepository: ChatRepository = ChatRepositoryImplementation(apiService: chatApiService)
+//        let chatUseCase: DefaultChatUseCase = DefaultChatUseCase(repository: chatRepository)
+//        let summaryMessageUseCase: DefaultSummaryUseCase = DefaultSummaryUseCase(repository: chatRepository)
         
-        let coreDataMessageRepository: CoreDataMessageRepository =
-            CoreDataMessageRepositoryImplementation(context: CoreDataService.shared.viewContext)
-        let saveUseCase: SaveMessageUseCase = DefaultSaveMessageUseCase(repository: coreDataMessageRepository)
-        let fetchUseCase: FetchMessageUseCase = DefaultFetchMessageUseCase(repository: coreDataMessageRepository)
-        let deleteUseCase: DeleteMessageUseCase = DefaultDeleteMessageUseCase(repository: coreDataMessageRepository)
-        let updateUseCase: UpdateMessageUseCase = DefaultUpdateMessageUseCase(repository: coreDataMessageRepository)
+//        let coreDataMessageRepository: CoreDataMessageRepository =
+//            CoreDataMessageRepositoryImplementation(context: CoreDataService.shared.viewContext)
+//        let saveUseCase: SaveMessageUseCase = DefaultSaveMessageUseCase(repository: coreDataMessageRepository)
+//        let fetchUseCase: FetchMessageUseCase = DefaultFetchMessageUseCase(repository: coreDataMessageRepository)
+//        let deleteUseCase: DeleteMessageUseCase = DefaultDeleteMessageUseCase(repository: coreDataMessageRepository)
+//        let updateUseCase: UpdateMessageUseCase = DefaultUpdateMessageUseCase(repository: coreDataMessageRepository)
         
-        let chatVM: ChatViewModel = ChatViewModel(
-            chat: chatUseCase,
-            summary: summaryMessageUseCase,
-            save: saveUseCase,
-            fetch: fetchUseCase,
-            delete: deleteUseCase,
-            update: updateUseCase
-        )
-        let chatVC: ChatViewController = ChatViewController(viewModel: chatVM)
+        dataManager = SupabaseDataManager()
+        let coreDataManager = CoreDataManager.shared
+        self.window = window
+        let mainCoordinator = MainCoordinator(window: window, coreDataManager: coreDataManager)
+        self.mainCoordinator = mainCoordinator
+        mainCoordinator.start()
+
         let videoPlayerViewController = VideoPlayerViewController()
         
-        window.rootViewController = UINavigationController(rootViewController: videoPlayerViewController)
-        self.window = window
-        window.makeKeyAndVisible()
+        
+//        let chatVM: ChatViewModel = ChatViewModel(
+//            chat: chatUseCase,
+//            summary: summaryMessageUseCase,
+//            save: saveUseCase,
+//            fetch: fetchUseCase,
+//            delete: deleteUseCase,
+//            update: updateUseCase,
+//            coredataMaanger: coredataManager
+//        )
+        
+//        let chatVM: ChatViewModel = ChatViewModel(
+//            chat: chatUseCase,
+//            summary: summaryMessageUseCase,
+//            coredataMaanger: coredataManager
+//        )
+//        
+//        let chatVC: ChatViewController = ChatViewController(viewModel: chatVM)
+        
+//        window.rootViewController =/* UINavigationController(rootViewController: chatVC)*/
+//        self.window = window
+//        window.makeKeyAndVisible()
         
     }
     

@@ -15,10 +15,14 @@ final class ChatViewModel: ObservableObject {
     private let chatUseCase: DefaultChatUseCase
     private let summaryUseCase: DefaultSummaryUseCase
     
-    private let saveMessageUseCase: SaveMessageUseCase
-    private let fetchMessagesUseCase: FetchMessageUseCase
-    private let deleteMessageUseCase: DeleteMessageUseCase
-    private let updateMessageUseCase: UpdateMessageUseCase
+//    private let saveMessageUseCase: SaveMessageUseCase
+//    private let fetchMessagesUseCase: FetchMessageUseCase
+//    private let deleteMessageUseCase: DeleteMessageUseCase
+//    private let updateMessageUseCase: UpdateMessageUseCase
+    
+    private let coredataManager: CoreDataManager
+    
+    
     
     var allMessages: [Message] {
         return messages
@@ -40,15 +44,22 @@ final class ChatViewModel: ObservableObject {
     }
     
     // MARK: - Initializer
-    init(chat: DefaultChatUseCase, summary: DefaultSummaryUseCase,
-         save: SaveMessageUseCase, fetch: FetchMessageUseCase,
-         delete: DeleteMessageUseCase, update: UpdateMessageUseCase) {
+//    init(chat: DefaultChatUseCase, summary: DefaultSummaryUseCase,
+//         save: SaveMessageUseCase, fetch: FetchMessageUseCase,
+//         delete: DeleteMessageUseCase, update: UpdateMessageUseCase, coredataMaanger: CoreDataManager) {
+//        self.chatUseCase = chat
+//        self.summaryUseCase = summary
+//        self.saveMessageUseCase = save
+//        self.fetchMessagesUseCase = fetch
+//        self.deleteMessageUseCase = delete
+//        self.updateMessageUseCase = update
+//        self.coredataManager = coredataMaanger
+//    }
+    
+    init(chat: DefaultChatUseCase, summary: DefaultSummaryUseCase, coredataMaanger: CoreDataManager) {
         self.chatUseCase = chat
         self.summaryUseCase = summary
-        self.saveMessageUseCase = save
-        self.fetchMessagesUseCase = fetch
-        self.deleteMessageUseCase = delete
-        self.updateMessageUseCase = update
+        self.coredataManager = coredataMaanger
     }
     
     // MARK: - Functions
@@ -59,7 +70,9 @@ final class ChatViewModel: ObservableObject {
     func fetchMessages() {
         Task {
             do {
-                messages = try await fetchMessagesUseCase.execute()
+//                messages = try await fetchMessagesUseCase.execute()
+                print("fetch")
+                messages = try await coredataManager.fetchMessages()
                 messages.forEach {
                     addMessageSubject.send($0.id)
                 }
@@ -75,14 +88,17 @@ final class ChatViewModel: ObservableObject {
                 let myMessage: Message = Message(text: text, isSended: true, timestamp: Date())
                 messages.append(myMessage)
                 addMessageSubject.send(myMessage.id) // Controller에 보낸 메시지 발행
-                try await saveMessageUseCase.execute(myMessage) // CoreData에 보낸 메시지 저장
+//                try await saveMessageUseCase.execute(myMessage) // CoreData에 보낸 메시지 저장
+                
+                try await coredataManager.saveMessage(myMessage)
                 
                 // 대화의 맥락을 유지하기 위해 최근 메시지를 함께 보냄
                 let sendMessages: [String] = recentMessages
                 let newMessage = try await chatUseCase.execute(texts: sendMessages) // 답장 받아오기
                 messages.append(newMessage)
                 addMessageSubject.send(newMessage.id) // Controller에 답장 발행
-                try await saveMessageUseCase.execute(newMessage) // CoreData에 답장 저장
+//                try await saveMessageUseCase.execute(newMessage) // CoreData에 답장 저장
+                try await coredataManager.saveMessage(newMessage)
             } catch {
                 if let apiError = error as? ChatAPIError {
                     addMessageSubject.send(completion: .failure(apiError))
@@ -99,7 +115,8 @@ final class ChatViewModel: ObservableObject {
                 let summaryMessage: Message = try await summaryUseCase.execute(message: message)
                 messages[index] = summaryMessage
                 summaryMessageSubject.send(summaryMessage.id) // Controller에 요약된 메시지 발행
-                try await updateMessageUseCase.execute(summaryMessage)
+//                try await updateMessageUseCase.execute(summaryMessage)
+                try await coredataManager.updateMessage(summaryMessage)
             } catch {
                 if let apiError = error as? ChatAPIError {
                     summaryMessageSubject.send(completion: .failure(apiError))
