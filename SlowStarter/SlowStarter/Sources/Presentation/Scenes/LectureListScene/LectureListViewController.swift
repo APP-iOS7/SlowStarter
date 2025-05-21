@@ -1,6 +1,7 @@
 import UIKit
 
 class LectureListViewController: UIViewController {
+    weak var coordinator: LectureCoordinator?
     
     override func viewDidLoad() {
         super.viewDidLoad()

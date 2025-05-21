@@ -1,5 +1,3 @@
-
-
 import Foundation
 
 struct ChatRoom: Identifiable, Codable {
