@@ -162,6 +162,8 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 9999;
+				TargetAttributes = {
+				};
 			};
 			buildConfigurationList = C88043599C439EAA07D10628 /* Build configuration list for PBXProject "swift-http-types" */;
 			compatibilityVersion = "Xcode 14.0";

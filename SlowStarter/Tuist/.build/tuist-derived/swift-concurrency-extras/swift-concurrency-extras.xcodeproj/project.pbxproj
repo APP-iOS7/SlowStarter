@@ -179,6 +179,8 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 9999;
+				TargetAttributes = {
+				};
 			};
 			buildConfigurationList = B50A2DAA2837A186EA336E92 /* Build configuration list for PBXProject "swift-concurrency-extras" */;
 			compatibilityVersion = "Xcode 14.0";
