@@ -319,6 +319,8 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 9999;
+				TargetAttributes = {
+				};
 			};
 			buildConfigurationList = 6EF696E40EC9D1379C8C694B /* Build configuration list for PBXProject "xctest-dynamic-overlay" */;
 			compatibilityVersion = "Xcode 14.0";

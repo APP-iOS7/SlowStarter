@@ -30,6 +30,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let mainCoordinator = MainCoordinator(window: window, coreDataManager: coreDataManager)
         self.mainCoordinator = mainCoordinator
         mainCoordinator.start()
+
+        let videoPlayerViewController = VideoPlayerViewController()
         
         
 //        let chatVM: ChatViewModel = ChatViewModel(

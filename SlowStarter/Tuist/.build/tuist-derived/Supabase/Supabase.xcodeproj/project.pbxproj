@@ -1091,6 +1091,8 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 9999;
+				TargetAttributes = {
+				};
 			};
 			buildConfigurationList = E06FF61E10F4DAC12DB6C2DA /* Build configuration list for PBXProject "Supabase" */;
 			compatibilityVersion = "Xcode 14.0";

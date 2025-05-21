@@ -188,6 +188,8 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 9999;
+				TargetAttributes = {
+				};
 			};
 			buildConfigurationList = 5487751CD362B53CFF6E84B9 /* Build configuration list for PBXProject "swift-clocks" */;
 			compatibilityVersion = "Xcode 14.0";
