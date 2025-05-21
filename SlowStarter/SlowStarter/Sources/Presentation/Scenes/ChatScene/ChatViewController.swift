@@ -180,10 +180,9 @@ final class ChatViewController: UIViewController {
         collectionView.dataSource = dataSource
         
         // 섹션 추가
-        let messageIds: [AIChatMessage.ID] = viewModel.allMessages.map { $0.id }
         var snapshot: NSDiffableDataSourceSnapshot<Section, AIChatMessage.ID> = dataSource.snapshot()
         snapshot.appendSections([.main])
-        snapshot.appendItems(messageIds)
+        snapshot.appendItems(viewModel.messageIDs)
         dataSource.apply(snapshot, animatingDifferences: false)
     }
     

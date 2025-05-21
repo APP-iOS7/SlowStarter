@@ -17,13 +17,13 @@ final class ChatViewModel: ObservableObject {
     
     private let coreDataManager: CoreDataManager
     
-    var allMessages: [AIChatMessage] {
-        return messages
-    }
-    
     private var recentMessages: [AIChatMessage] {
         let size: Int = min(10, messages.count) // 10개, 그보다 적다면 있는 만큼
         return Array(messages[(messages.count - size)...]) // 뒤에서부터 size 만큼 꺼냄
+    }
+    
+    var messageIDs: [AIChatMessage.ID] {
+        return messages.map { $0.id }
     }
     
     init(chat: DefaultChatUseCase, summary: DefaultSummaryUseCase, coreDataManager: CoreDataManager
