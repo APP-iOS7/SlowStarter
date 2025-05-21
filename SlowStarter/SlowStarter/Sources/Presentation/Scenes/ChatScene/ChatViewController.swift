@@ -16,6 +16,8 @@ final class ChatViewController: UIViewController {
     // MARK: - Properties
     private var viewModel: ChatViewModel
     
+    weak var coordinator: ChatCoordinator?
+    
     private var cancellables: Set<AnyCancellable> = Set()
     
     private lazy var collectionViewTapGesture: UITapGestureRecognizer = {
