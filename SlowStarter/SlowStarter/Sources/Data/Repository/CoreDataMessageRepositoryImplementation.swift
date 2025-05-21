@@ -13,18 +13,18 @@ final class CoreDataMessageRepositoryImplementation: CoreDataMessageRepository {
         self.context = context
     }
     
-    func saveMessage(_ message: Messages) async throws {
+    func saveMessage(_ message: AIChatMessage) async throws {
         _ = message.toManagedObject(in: context)
         try context.save()
     }
     
-    func fetchMessages() async throws -> [Messages] {
+    func fetchMessages() async throws -> [AIChatMessage] {
         let request: NSFetchRequest<MessageEntity> = MessageEntity.fetchRequest()
-        let result = try context.fetch(request).compactMap { Messages.from($0) }
+        let result = try context.fetch(request).compactMap { AIChatMessage.from($0) }
         return result
     }
     
-    func deleteMessage(_ message: Messages) async throws {
+    func deleteMessage(_ message: AIChatMessage) async throws {
         let request: NSFetchRequest<MessageEntity> = MessageEntity.fetchRequest()
         request.predicate = NSPredicate(format: "id = %@", message.id as CVarArg)
         
@@ -34,7 +34,7 @@ final class CoreDataMessageRepositoryImplementation: CoreDataMessageRepository {
         }
     }
     
-    func updateMessage(_ message: Messages) async throws {
+    func updateMessage(_ message: AIChatMessage) async throws {
         let request: NSFetchRequest<MessageEntity> = MessageEntity.fetchRequest()
         request.predicate = NSPredicate(format: "id = %@", message.id as CVarArg)
         

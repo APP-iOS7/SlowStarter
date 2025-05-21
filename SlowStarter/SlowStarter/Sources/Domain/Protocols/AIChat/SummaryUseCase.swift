@@ -6,5 +6,5 @@
 //
 
 protocol SummaryUseCase {
-    func execute(message: Messages) async throws -> Messages
+    func execute(message: AIChatMessage) async throws -> AIChatMessage
 }

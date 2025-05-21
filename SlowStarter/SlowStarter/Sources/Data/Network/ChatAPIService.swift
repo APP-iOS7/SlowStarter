@@ -45,7 +45,7 @@ extension ChatAPIError: LocalizedError {
 }
 
 final class ChatAPIService {
-    func sendMessage(_ systemPrompt: String, _ messages: [Messages]) async throws -> String {
+    func sendMessage(_ systemPrompt: String, _ messages: [AIChatMessage]) async throws -> String {
         guard let apiKey: String = Bundle.main.object(forInfoDictionaryKey: "GEMINI_API_KEY") as? String else {
             throw ChatAPIError.missingAPIKey
         }

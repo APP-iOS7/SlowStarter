@@ -22,14 +22,14 @@ final class ChatRepositoryImplementation: ChatRepository {
         self.apiService = apiService
     }
     
-    func chat(messages: [Messages]) async throws -> Messages {
+    func chat(messages: [AIChatMessage]) async throws -> AIChatMessage {
         let reply: String = try await apiService.sendMessage(chatCommand, messages)
         let text: String = try parseChatMessage(from: reply)
-        return Messages(text: text, isSended: false, timestamp: Date())
+        return AIChatMessage(text: text, isSended: false, timestamp: Date())
     }
     
     func summary(text: String) async throws -> String {
-        let message: Messages = Messages(text: text, isSended: true, timestamp: Date())
+        let message: AIChatMessage = AIChatMessage(text: text, isSended: true, timestamp: Date())
         let reply: String = try await apiService.sendMessage(summaryCommand, [message])
         let summaryText: String = try parseChatMessage(from: reply)
         return summaryText
