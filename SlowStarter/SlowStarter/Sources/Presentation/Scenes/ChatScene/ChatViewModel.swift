@@ -10,17 +10,19 @@ import Combine
 
 final class ChatViewModel: ObservableObject {
     // MARK: - Properties
-    private var messages: [Message] = []
+    @Published var messages: [Messages] = []
     
     private let chatUseCase: DefaultChatUseCase
     private let summaryUseCase: DefaultSummaryUseCase
     
-    private let saveMessageUseCase: SaveMessageUseCase
-    private let fetchMessagesUseCase: FetchMessageUseCase
-    private let deleteMessageUseCase: DeleteMessageUseCase
-    private let updateMessageUseCase: UpdateMessageUseCase
+    private let coreDataManager: CoreDataManager
     
-    var allMessages: [Message] {
+//    private let saveMessageUseCase: SaveMessageUseCase
+//    private let fetchMessagesUseCase: FetchMessageUseCase
+//    private let deleteMessageUseCase: DeleteMessageUseCase
+//    private let updateMessageUseCase: UpdateMessageUseCase
+    
+    var allMessages: [Messages] {
         return messages
     }
     
@@ -29,40 +31,34 @@ final class ChatViewModel: ObservableObject {
         return Array(messages[(messages.count - size)...]).map { $0.text } // 뒤에서부터 size 만큼 꺼냄
     }
     
-    private var addMessageSubject: PassthroughSubject<Message.ID, ChatAPIError> = PassthroughSubject()
-    var addMessagePublisher: AnyPublisher<Message.ID, ChatAPIError> {
-        return addMessageSubject.eraseToAnyPublisher()
-    }
-    
-    private var summaryMessageSubject: PassthroughSubject<Message.ID, ChatAPIError> = PassthroughSubject()
-    var summaryMessagePublisher: AnyPublisher<Message.ID, ChatAPIError> {
-        return summaryMessageSubject.eraseToAnyPublisher()
-    }
-    
     // MARK: - Initializer
-    init(chat: DefaultChatUseCase, summary: DefaultSummaryUseCase,
-         save: SaveMessageUseCase, fetch: FetchMessageUseCase,
-         delete: DeleteMessageUseCase, update: UpdateMessageUseCase) {
+//    init(chat: DefaultChatUseCase, summary: DefaultSummaryUseCase,
+//         save: SaveMessageUseCase, fetch: FetchMessageUseCase,
+//         delete: DeleteMessageUseCase, update: UpdateMessageUseCase) {
+//        self.chatUseCase = chat
+//        self.summaryUseCase = summary
+//        self.saveMessageUseCase = save
+//        self.fetchMessagesUseCase = fetch
+//        self.deleteMessageUseCase = delete
+//        self.updateMessageUseCase = update
+//    }
+    
+    init(chat: DefaultChatUseCase, summary: DefaultSummaryUseCase, coreDataManager: CoreDataManager
+         ) {
         self.chatUseCase = chat
         self.summaryUseCase = summary
-        self.saveMessageUseCase = save
-        self.fetchMessagesUseCase = fetch
-        self.deleteMessageUseCase = delete
-        self.updateMessageUseCase = update
+        self.coreDataManager = coreDataManager
     }
     
     // MARK: - Functions
-    func message(with id: UUID) -> Message? {
+    func message(with id: UUID) -> Messages? {
         return messages.first { $0.id == id }
     }
     
     func fetchMessages() {
         Task {
             do {
-                messages = try await fetchMessagesUseCase.execute()
-                messages.forEach {
-                    addMessageSubject.send($0.id)
-                }
+                messages = try await coreDataManager.fetchMessages()
             } catch {
                 
             }
@@ -72,40 +68,38 @@ final class ChatViewModel: ObservableObject {
     func didTapSendButton(text: String) {
         Task {
             do {
-                let myMessage: Message = Message(text: text, isSended: true, timestamp: Date())
+                let myMessage: Messages = Messages(text: text, isSended: true, timestamp: Date())
                 messages.append(myMessage)
-                addMessageSubject.send(myMessage.id) // Controller에 보낸 메시지 발행
-                try await saveMessageUseCase.execute(myMessage) // CoreData에 보낸 메시지 저장
+//                try await saveMessageUseCase.execute(myMessage) // CoreData에 보낸 메시지 저장
+                try await coreDataManager.saveMessage(myMessage)
                 
                 // 대화의 맥락을 유지하기 위해 최근 메시지를 함께 보냄
-                let sendMessages: [String] = recentMessages
-                let newMessage = try await chatUseCase.execute(texts: sendMessages) // 답장 받아오기
-                messages.append(newMessage)
-                addMessageSubject.send(newMessage.id) // Controller에 답장 발행
-                try await saveMessageUseCase.execute(newMessage) // CoreData에 답장 저장
+                //TODO: 이부분 오류
+//                let sendMessages: [String] = recentMessages
+//                let newMessage = try await chatUseCase.execute(messages: sendMessages) // 답장 받아오기
+//                messages.append(newMessage)
+//                try await saveMessageUseCase.execute(newMessage) // CoreData에 답장 저장
+//                try await coreDataManager.saveMessage(newMessage)
             } catch {
                 if let apiError = error as? ChatAPIError {
-                    addMessageSubject.send(completion: .failure(apiError))
+                    
                 } else {
-                    addMessageSubject.send(completion: .failure(.unknown))
                 }
             }
         }
     }
     
-    func didTapSummaryButton(index: Int, message: Message) {
+    func didTapSummaryButton(index: Int, message: Messages) {
         Task {
             do {
-                let summaryMessage: Message = try await summaryUseCase.execute(message: message)
+                let summaryMessage: Messages = try await summaryUseCase.execute(message: message)
                 messages[index] = summaryMessage
-                summaryMessageSubject.send(summaryMessage.id) // Controller에 요약된 메시지 발행
-                try await updateMessageUseCase.execute(summaryMessage)
+//                try await updateMessageUseCase.execute(summaryMessage)
+                try await coreDataManager.updateMessage(summaryMessage)
             } catch {
                 if let apiError = error as? ChatAPIError {
-                    summaryMessageSubject.send(completion: .failure(apiError))
                 } else {
                     print(error.localizedDescription)
-                    summaryMessageSubject.send(completion: .failure(.unknown))
                 }
             }
         }

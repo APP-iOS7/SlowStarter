@@ -8,7 +8,7 @@
 import UIKit
 
 final class ReceivedMessageCell: UICollectionViewCell {
-    var chat: Message? {
+    var chat: Messages? {
         didSet {
             configure()
         }

@@ -15,7 +15,7 @@ protocol DataBaseManagerProtocol {
     func fetchData<T: Decodable>(as type: T.Type) async throws -> [T]
     func fetchData<T: Decodable>(as type: T.Type, select: String) async throws -> [T]
     func fetchData<T: Decodable>(as type: T.Type, select: String, isOnlyCount: Bool) async throws -> Int
-    func fetchData<T1: Decodable, T2:Decodable>(as type: T1.Type, select: String, conditionColumn: String, conditionValue: T2) async throws -> [T1]
+    func fetchData<T1: Decodable, T2: Decodable>(as type: T1.Type, select: String, conditionColumn: String, conditionValue: T2) async throws -> [T1]
     
     // MARK: - Create
     func insertData<T: Encodable>(as type: T.Type, data: T) async throws
