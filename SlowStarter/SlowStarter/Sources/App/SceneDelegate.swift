@@ -31,7 +31,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             update: updateUseCase
         )
         let chatVC: ChatViewController = ChatViewController(viewModel: chatVM)
-        let videoPlayerViewController = BasicVideoPlayerViewController()
+        let videoPlayerViewController = VideoPlayerViewController()
         
         window.rootViewController = UINavigationController(rootViewController: videoPlayerViewController)
         self.window = window

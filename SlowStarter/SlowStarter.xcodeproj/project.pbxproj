@@ -41,7 +41,7 @@
 		680B78B4CA1DFF97D28BFEA6 /* ChatUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4F38A5BA494436EBAD6546B /* ChatUseCase.swift */; };
 		68839CCFBDCB1F396BF4A98E /* LoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFBC845600F0DCF149AD3B94 /* LoginManager.swift */; };
 		6E7505EA1887143E21F93813 /* MessageRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27E34C9FD9A384913ABFE055 /* MessageRequest.swift */; };
-		6F076A07F2C285EB57585B57 /* BasicVideoPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A5537A056269F810B9BBB5 /* BasicVideoPlayerViewController.swift */; };
+		6F076A07F2C285EB57585B57 /* VideoPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A5537A056269F810B9BBB5 /* VideoPlayerViewController.swift */; };
 		761520280242C916368D3DB9 /* ConcurrencyExtras.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07CF55D27CC2486DAB0674CE /* ConcurrencyExtras.framework */; };
 		77119C4C17AC35E546CC61D5 /* ChatRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F117A0B9BFA25FAB7670DF6A /* ChatRepository.swift */; };
 		7B7F2AF4AD08F0EB09815443 /* PostgREST.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B65AED5D2039F3C0C51E16F1 /* PostgREST.framework */; };
@@ -210,7 +210,7 @@
 		EFA6C8704F3250A789F0F8D9 /* UserAssignment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAssignment.swift; sourceTree = "<group>"; };
 		EFBC845600F0DCF149AD3B94 /* LoginManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginManager.swift; sourceTree = "<group>"; };
 		F117A0B9BFA25FAB7670DF6A /* ChatRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRepository.swift; sourceTree = "<group>"; };
-		F1A5537A056269F810B9BBB5 /* BasicVideoPlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicVideoPlayerViewController.swift; sourceTree = "<group>"; };
+		F1A5537A056269F810B9BBB5 /* VideoPlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerViewController.swift; sourceTree = "<group>"; };
 		F3C8BD3B7CBD48C6C58828A3 /* SlowStarterTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "SlowStarterTests-Info.plist"; sourceTree = "<group>"; };
 		F4F38A5BA494436EBAD6546B /* ChatUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatUseCase.swift; sourceTree = "<group>"; };
 		F8D096CACBC3E409FA143C79 /* UserSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSetting.swift; sourceTree = "<group>"; };
@@ -638,7 +638,7 @@
 		F065F9E3A63166B21034CE3D /* VideoPlayer */ = {
 			isa = PBXGroup;
 			children = (
-				F1A5537A056269F810B9BBB5 /* BasicVideoPlayerViewController.swift */,
+				F1A5537A056269F810B9BBB5 /* VideoPlayerViewController.swift */,
 				864E54B87B27418507500BCF /* VideoErrors.swift */,
 			);
 			path = VideoPlayer;
@@ -865,7 +865,7 @@
 				669D6FF3BC0A9F4F24E2E2AE /* SupabaseEnum.swift in Sources */,
 				383EDEA636E09F49EB1BDAA5 /* ReceivedMessageCell.swift in Sources */,
 				C784424F9C5A6570961862B8 /* SendedMessageCell.swift in Sources */,
-				6F076A07F2C285EB57585B57 /* BasicVideoPlayerViewController.swift in Sources */,
+				6F076A07F2C285EB57585B57 /* VideoPlayerViewController.swift in Sources */,
 				EAA263BC9A99D48AF4450746 /* VideoErrors.swift in Sources */,
 				2C10AAB96733687DBDA1620A /* ExampleCoordinator.swift in Sources */,
 				D68403C3DAE5BD8A453BA20E /* Protocol.swift in Sources */,

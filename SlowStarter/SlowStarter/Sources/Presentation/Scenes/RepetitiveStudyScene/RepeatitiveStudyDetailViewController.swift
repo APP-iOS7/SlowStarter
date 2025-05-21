@@ -8,12 +8,20 @@
 import UIKit
 
 class RepeatitiveStudyDetailViewController: UIViewController {
+    
+    private let lectureTitle: UILabel = UILabel()
+    private let lectureDescription: UILabel = UILabel()
+    private let submitButton: UIButton = UIButton()
+    private let infomationLabel: UILabel = UILabel()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        view.backgroundColor = .white
+        
+        
     }
+    
     
 
 }

@@ -10,13 +10,11 @@ import AVKit
 import AVFoundation
 import SnapKit
 
-class BasicVideoPlayerViewController: UIViewController {
+class VideoPlayerViewController: UIViewController {
     
     // MARK: - UI Properties
     private var playerBaseView: UIView = UIView()
     private var thumbnailImageView: UIImageView!
-    private var inlinePlayPauseButton: UIButton!
-    private var fullScreenButton: UIButton!
     
     // MARK: - Player Properties
     private var embeddedPlayerViewController: AVPlayerViewController?
@@ -39,8 +37,7 @@ class BasicVideoPlayerViewController: UIViewController {
         super.viewDidLoad()
         // ... (기존 viewDidLoad 내용) ...
         view.backgroundColor = .white
-        title = "Basic Video Player"
-        configNavigationBarAppearance() // 네비게이션 바 설정 호출
+    //    configNavigationBarAppearance() // 네비게이션 바 설정 호출
         
         // 무음모드 소리재생 설정
         configureAudioSession()
@@ -48,9 +45,7 @@ class BasicVideoPlayerViewController: UIViewController {
         // UI 레이아웃 설정 (playerBaseView 먼저 추가)
         view.addSubview(playerBaseView)
         setupPlayerBaseViewConstraints() // playerBaseView 제약조건 설정 분리
-        
-        // 나머지 UI 요소들 설정
-        setupButtons()
+
         
         // 비디오 URL 및 AVPlayer 인스턴스 설정
         setVideoURLAndPlayer() // 이 내부에서 player가 할당되면서 KVO 옵저버가 등록됨
@@ -134,8 +129,6 @@ class BasicVideoPlayerViewController: UIViewController {
                 DispatchQueue.main.async { [weak self] in // UI 업데이트는 메인 스레드에서
                     self?.thumbnailImageView?.isHidden = true
                     print("Thumbnail hidden due to player rate > 0 (KVO)")
-                    // (선택) 커스텀 인라인 재생 버튼의 상태도 업데이트
-                    self?.inlinePlayPauseButton?.setTitle("Pause", for: .normal)
                 }
             } else { // 일시정지 또는 재생 완료 (rate가 0이면 멈춤)
                 // (선택) 일시정지 시 썸네일을 다시 표시하고 싶다면 아래 주석 해제
@@ -143,33 +136,30 @@ class BasicVideoPlayerViewController: UIViewController {
                 //     self?.thumbnailImageView?.isHidden = false
                 // }
                 // (선택) 커스텀 인라인 재생 버튼의 상태도 업데이트
-                DispatchQueue.main.async { [weak self] in
-                    self?.inlinePlayPauseButton?.setTitle("Play", for: .normal)
-                }
             }
         }
     }
 
     // ... (configNavigationBarAppearance, configureAudioSession, setVideoURLAndPlayer, generateThumbnail, UI Setup 함수들은 이전과 동일) ...
-    private func configNavigationBarAppearance() {
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = .white
-        
-        appearance.titleTextAttributes = [
-            .foregroundColor: UIColor.black,
-            .font: UIFont.systemFont(ofSize: 18, weight: .semibold)
-        ]
-        
-        appearance.largeTitleTextAttributes = [
-            .foregroundColor: UIColor.black,
-            .font: UIFont.systemFont(ofSize: 36, weight: .bold)
-        ]
-        
-        navigationController?.navigationBar.standardAppearance = appearance
-        navigationController?.navigationBar.scrollEdgeAppearance = appearance
-        navigationController?.navigationBar.prefersLargeTitles = true
-    }
+//    private func configNavigationBarAppearance() {
+//        let appearance = UINavigationBarAppearance()
+//        appearance.configureWithOpaqueBackground()
+//        appearance.backgroundColor = .white
+//        
+//        appearance.titleTextAttributes = [
+//            .foregroundColor: UIColor.black,
+//            .font: UIFont.systemFont(ofSize: 18, weight: .semibold)
+//        ]
+//        
+//        appearance.largeTitleTextAttributes = [
+//            .foregroundColor: UIColor.black,
+//            .font: UIFont.systemFont(ofSize: 36, weight: .bold)
+//        ]
+//        
+//        navigationController?.navigationBar.standardAppearance = appearance
+//        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+//        navigationController?.navigationBar.prefersLargeTitles = true
+//    }
     
     
     private func configureAudioSession() {
@@ -248,35 +238,8 @@ class BasicVideoPlayerViewController: UIViewController {
     private func setupPlayerBaseViewConstraints() {
         playerBaseView.backgroundColor = .lightGray
         playerBaseView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
-            make.leading.trailing.equalToSuperview()
-            make.height.equalTo(playerBaseView.snp.width).multipliedBy(9.0/16.0)
+            make.edges.equalToSuperview()
         }
-    }
-    
-    
-    private func setupButtons() {
-        fullScreenButton = UIButton(type: .system)
-        fullScreenButton.setTitle("Play Fullscreen", for: .normal)
-        fullScreenButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        view.addSubview(fullScreenButton)
-        
-        fullScreenButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(playerBaseView.snp.bottom).offset(30)
-        }
-        fullScreenButton.addTarget(self, action: #selector(fullScreenPlayButtonTapped), for: .touchUpInside)
-        
-        inlinePlayPauseButton = UIButton(type: .system)
-        inlinePlayPauseButton.setTitle("Play", for: .normal)
-        inlinePlayPauseButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        view.addSubview(inlinePlayPauseButton)
-        
-        inlinePlayPauseButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(fullScreenButton.snp.bottom).offset(20)
-        }
-        inlinePlayPauseButton.addTarget(self, action: #selector(tapInlinePlayPauseButton), for: .touchUpInside)
     }
     
     private func setupEmbeddedPlayerViewControllerAndThumbnail() {
@@ -355,9 +318,7 @@ class BasicVideoPlayerViewController: UIViewController {
     
     private func updateUIForPlayerState() {
         let isPlayerReady = (player != nil && player?.currentItem != nil)
-        fullScreenButton.isEnabled = isPlayerReady
-        inlinePlayPauseButton.isEnabled = isPlayerReady
-        
+       
         thumbnailImageView?.isHidden = false
     }
     
@@ -396,5 +357,5 @@ class BasicVideoPlayerViewController: UIViewController {
     }
 }
 #Preview {
-    UINavigationController(rootViewController: BasicVideoPlayerViewController())
+    UINavigationController(rootViewController: VideoPlayerViewController())
 }
