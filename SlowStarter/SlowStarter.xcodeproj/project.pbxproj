@@ -16,7 +16,6 @@
 		0C732FE6892CCAE65B81FB38 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A27AE015C317AC7020DD122 /* DatabaseManager.swift */; };
 		1B94FDA4A2F70EB67C073433 /* SummaryUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A396142B260D31ACC151A4 /* SummaryUseCase.swift */; };
 		28397643D2AE009F5E8DF64C /* SlowStarterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C9E1C00FD424D65740EFBCE /* SlowStarterTests.swift */; };
-		2C10AAB96733687DBDA1620A /* ExampleCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F9F16CD397EEB8A542BDFE5 /* ExampleCoordinator.swift */; };
 		2C8A74B025CA836FE0CFAB57 /* Lecture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825F32719B3B4C951D39AEDC /* Lecture.swift */; };
 		32C094FA662E94B1529E962E /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66A156E3D698E3F2D515BB2D /* Item.swift */; };
 		35CB35FEEAEC461E9E3314C5 /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 822E1E8A35A4E96B6ADF6CE5 /* ChatMessage.swift */; };
@@ -37,6 +36,8 @@
 		62CD37112DDC407F00F799C7 /* DataManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CD37102DDC407F00F799C7 /* DataManagerProtocol.swift */; };
 		62CD37162DDC430500F799C7 /* SupabaseDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CD37152DDC430500F799C7 /* SupabaseDataManager.swift */; };
 		62CD375F2DDC5D0D00F799C7 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CD375E2DDC5D0D00F799C7 /* CoreDataManager.swift */; };
+		62CD37642DDD55FF00F799C7 /* MainCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CD37632DDD55FF00F799C7 /* MainCoordinator.swift */; };
+		62CD37672DDD593300F799C7 /* ChatCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CD37662DDD593300F799C7 /* ChatCoordinator.swift */; };
 		669D6FF3BC0A9F4F24E2E2AE /* SupabaseEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF17EE0E65E6ADE6076126C /* SupabaseEnum.swift */; };
 		67E22FAA44E6C308FBAEBFB3 /* DataBaseManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 163FD109562D1EAB6F38AEC4 /* DataBaseManagerProtocol.swift */; };
 		68839CCFBDCB1F396BF4A98E /* LoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFBC845600F0DCF149AD3B94 /* LoginManager.swift */; };
@@ -137,7 +138,6 @@
 		163FD109562D1EAB6F38AEC4 /* DataBaseManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataBaseManagerProtocol.swift; sourceTree = "<group>"; };
 		1684938D8DF29BAE8B0B12C7 /* swift-crypto_Crypto.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "swift-crypto_Crypto.bundle"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B329BAE5293B0D2A1E488D8 /* InstructorDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructorDetail.swift; sourceTree = "<group>"; };
-		1F9F16CD397EEB8A542BDFE5 /* ExampleCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleCoordinator.swift; sourceTree = "<group>"; };
 		2055A7BD5D64FBC937E8DE7D /* Users.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Users.swift; sourceTree = "<group>"; };
 		22F31490FB224A4621DF4C2E /* LoginManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginManagerProtocol.swift; sourceTree = "<group>"; };
 		239417795BA77EA87C51C4E1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -165,6 +165,8 @@
 		62CD37152DDC430500F799C7 /* SupabaseDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseDataManager.swift; sourceTree = "<group>"; };
 		62CD37572DDC519900F799C7 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		62CD375E2DDC5D0D00F799C7 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
+		62CD37632DDD55FF00F799C7 /* MainCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCoordinator.swift; sourceTree = "<group>"; };
+		62CD37662DDD593300F799C7 /* ChatCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatCoordinator.swift; sourceTree = "<group>"; };
 		66A156E3D698E3F2D515BB2D /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		745725C9249C2975A1BEE4F2 /* ChatRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRepository.swift; sourceTree = "<group>"; };
 		7A27AE015C317AC7020DD122 /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
@@ -412,8 +414,9 @@
 		740239972403DF70A6E0E732 /* Coordinators */ = {
 			isa = PBXGroup;
 			children = (
-				1F9F16CD397EEB8A542BDFE5 /* ExampleCoordinator.swift */,
+				62CD37632DDD55FF00F799C7 /* MainCoordinator.swift */,
 				497D39447D05E8E139420FC5 /* Protocol.swift */,
+				62CD37662DDD593300F799C7 /* ChatCoordinator.swift */,
 			);
 			path = Coordinators;
 			sourceTree = "<group>";
@@ -540,9 +543,9 @@
 		C3A09533AAC1D7D1F519710C /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				0010F233E23D08F96289CCD7 /* Scenes */,
 				9111A1549D76390D3312F0EC /* CommonView */,
 				740239972403DF70A6E0E732 /* Coordinators */,
-				0010F233E23D08F96289CCD7 /* Scenes */,
 				A0A49629374ED8AB68EC3FCA /* Styles */,
 			);
 			path = Presentation;
@@ -828,10 +831,12 @@
 				897257C41CE57098B9D938A0 /* UserDetail.swift in Sources */,
 				62CD37092DDC3A5F00F799C7 /* StorageManager.swift in Sources */,
 				601DA78EEDD7BAE71523CB53 /* UserItem.swift in Sources */,
+				62CD37672DDD593300F799C7 /* ChatCoordinator.swift in Sources */,
 				93F8E969EA7C6E977D3E3F3A /* UserPayment.swift in Sources */,
 				86E64D5F905E67065181502B /* UserPointLog.swift in Sources */,
 				D03FEFAAC2924F6DB7FD2C35 /* UserSetting.swift in Sources */,
 				9863E40D9E24BB12B4A59094 /* UserSubscription.swift in Sources */,
+				62CD37642DDD55FF00F799C7 /* MainCoordinator.swift in Sources */,
 				E6EB52AFF812C68FC2F58B5F /* Users.swift in Sources */,
 				62CB49C73776755B81207110 /* VOD.swift in Sources */,
 				96407C4C3602CD683DB7C253 /* ChatRepository.swift in Sources */,
@@ -846,7 +851,6 @@
 				383EDEA636E09F49EB1BDAA5 /* ReceivedMessageCell.swift in Sources */,
 				C784424F9C5A6570961862B8 /* SendedMessageCell.swift in Sources */,
 				6F076A07F2C285EB57585B57 /* BasicVideoPlayerViewController.swift in Sources */,
-				2C10AAB96733687DBDA1620A /* ExampleCoordinator.swift in Sources */,
 				D68403C3DAE5BD8A453BA20E /* Protocol.swift in Sources */,
 				E276C273E1D23D3D20B5471A /* ChatViewController.swift in Sources */,
 				5D50A1A4E3C07140513765C2 /* ChatViewModel.swift in Sources */,

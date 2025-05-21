@@ -3,6 +3,7 @@ import CoreData
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
+    var mainCoordinator: MainCoordinator?
     
     var dataManager: SupabaseDataManager?
     
@@ -10,12 +11,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
  
         guard let windowScene = scene as? UIWindowScene else { return }
         
-        
         let window = UIWindow(windowScene: windowScene)
-        let chatApiService: ChatAPIService = ChatAPIService()
-        let chatRepository: ChatRepository = ChatRepositoryImplementation(apiService: chatApiService)
-        let chatUseCase: DefaultChatUseCase = DefaultChatUseCase(repository: chatRepository)
-        let summaryMessageUseCase: DefaultSummaryUseCase = DefaultSummaryUseCase(repository: chatRepository)
+//        let chatApiService: ChatAPIService = ChatAPIService()
+//        let chatRepository: ChatRepository = ChatRepositoryImplementation(apiService: chatApiService)
+//        let chatUseCase: DefaultChatUseCase = DefaultChatUseCase(repository: chatRepository)
+//        let summaryMessageUseCase: DefaultSummaryUseCase = DefaultSummaryUseCase(repository: chatRepository)
         
 //        let coreDataMessageRepository: CoreDataMessageRepository =
 //            CoreDataMessageRepositoryImplementation(context: CoreDataService.shared.viewContext)
@@ -25,7 +25,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 //        let updateUseCase: UpdateMessageUseCase = DefaultUpdateMessageUseCase(repository: coreDataMessageRepository)
         
         dataManager = SupabaseDataManager()
-        let coredataManager = CoreDataManager.shared
+        let coreDataManager = CoreDataManager.shared
+        self.window = window
+        let mainCoordinator = MainCoordinator(window: window, coreDataManager: coreDataManager)
+        self.mainCoordinator = mainCoordinator
+        mainCoordinator.start()
         
         
 //        let chatVM: ChatViewModel = ChatViewModel(
@@ -38,17 +42,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 //            coredataMaanger: coredataManager
 //        )
         
-        let chatVM: ChatViewModel = ChatViewModel(
-            chat: chatUseCase,
-            summary: summaryMessageUseCase,
-            coredataMaanger: coredataManager
-        )
+//        let chatVM: ChatViewModel = ChatViewModel(
+//            chat: chatUseCase,
+//            summary: summaryMessageUseCase,
+//            coredataMaanger: coredataManager
+//        )
+//        
+//        let chatVC: ChatViewController = ChatViewController(viewModel: chatVM)
         
-        let chatVC: ChatViewController = ChatViewController(viewModel: chatVM)
-        
-        window.rootViewController = UINavigationController(rootViewController: chatVC)
-        self.window = window
-        window.makeKeyAndVisible()
+//        window.rootViewController =/* UINavigationController(rootViewController: chatVC)*/
+//        self.window = window
+//        window.makeKeyAndVisible()
         
     }
     
