@@ -16,20 +16,21 @@ final class ChatRepositoryImplementation: ChatRepository {
         최대한 간결하고 이해하기 쉬운 내용으로 구성해주세요.
     """
     
-    private let summaryCommand: String = "이 내용을 아주 쉽고 간단하게 핵심만 요약해줘"
+    private let summaryCommand: String = "네가 보내준 이 답변을 아주 쉽고 간단하게 핵심만 요약해줘"
     
     init(apiService: ChatAPIService) {
         self.apiService = apiService
     }
     
-    func chat(texts: [String]) async throws -> Message {
-        let reply: String = try await apiService.sendMessage(chatCommand, texts)
+    func chat(messages: [Message]) async throws -> Message {
+        let reply: String = try await apiService.sendMessage(chatCommand, messages)
         let text: String = try parseChatMessage(from: reply)
         return Message(text: text, isSended: false, timestamp: Date())
     }
     
-    func summary(texts: [String]) async throws -> String {
-        let reply: String = try await apiService.sendMessage(summaryCommand, texts)
+    func summary(text: String) async throws -> String {
+        let message: Message = Message(text: text, isSended: true, timestamp: Date())
+        let reply: String = try await apiService.sendMessage(summaryCommand, [message])
         let summaryText: String = try parseChatMessage(from: reply)
         return summaryText
     }
@@ -39,11 +40,14 @@ final class ChatRepositoryImplementation: ChatRepository {
               let json = try JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
               let candidates = json["candidates"] as? [[String: Any]],
               let firstCandidate = candidates.first,
-              let content = firstCandidate["content"] as? [String: Any],
-              let parts = content["parts"] as? [[String: Any]],
+              let content = firstCandidate["content"] as? [String: Any] else {
+            throw ChatAPIError.parsingFailed
+        }
+
+        guard let parts = content["parts"] as? [[String: Any]],
               let firstPart = parts.first,
               let text = firstPart["text"] as? String else {
-            throw ChatAPIError.parsingFailed
+            return "질문을 이해하지 못했어요. 다시 질문해 주세요."
         }
         
         return text

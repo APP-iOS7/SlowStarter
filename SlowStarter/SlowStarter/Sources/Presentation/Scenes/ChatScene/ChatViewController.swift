@@ -188,25 +188,16 @@ final class ChatViewController: UIViewController {
     }
     
     private func bindViewModel() {
-        viewModel.addMessagePublisher
+        viewModel.$messages
             .receive(on: DispatchQueue.main)
             .sink { completion in
-                if case let .failure(error) = completion {
-                    print(error)
+                print(completion)
+            } receiveValue: { [weak self] messages in
+                guard let self = self else { return }
+                
+                messages.forEach { message in
+                    self.applySnapshot(message.id)
                 }
-            } receiveValue: { [weak self] id in
-                self?.applySnapshot(id)
-            }
-            .store(in: &cancellables)
-        
-        viewModel.summaryMessagePublisher
-            .receive(on: DispatchQueue.main)
-            .sink { completion in
-                if case let .failure(error) = completion {
-                    print(error)
-                }
-            } receiveValue: { [weak self] id in
-                self?.updateSnapshot(id)
             }
             .store(in: &cancellables)
     }
@@ -233,14 +224,13 @@ extension ChatViewController {
     // 컬렉션뷰 데이터소스 추가
     private func applySnapshot(_ id: Message.ID, animating: Bool = true) {
         var snapshot: NSDiffableDataSourceSnapshot<Section, Message.ID> = dataSource.snapshot()
-        snapshot.appendItems([id], toSection: .main)
-        dataSource.apply(snapshot, animatingDifferences: animating)
-    }
-    
-    // 컬렉션뷰 데이터소스 수정
-    private func updateSnapshot(_ id: Message.ID, animating: Bool = true) {
-        var snapshot: NSDiffableDataSourceSnapshot<Section, Message.ID> = dataSource.snapshot()
-        snapshot.reconfigureItems([id])
+                
+        if snapshot.itemIdentifiers.contains(id) {
+            snapshot.reconfigureItems([id]) // 이미 있는 cell을 다시 구성
+        } else {
+            snapshot.appendItems([id], toSection: .main) // 새로운 cell을 추가
+        }
+        
         dataSource.apply(snapshot, animatingDifferences: animating)
     }
 }
