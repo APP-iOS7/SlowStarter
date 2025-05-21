@@ -19,7 +19,7 @@ class ChatCoordinator: Coordinator {
         let chatViewModel = ChatViewModel(
             chat: chatUseCase,
             summary: summaryMessageUseCase,
-            coredataMaanger: coreDataManager
+            coreDataManager: coreDataManager
         )
         
         let viewController = ChatViewController(viewModel: chatViewModel)

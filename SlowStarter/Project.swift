@@ -10,7 +10,8 @@ let project = Project(
             "DEVELOPMENT_TEAM": "59FP2PXRXK"
         ],
         configurations: [
-            .debug(name: "Debug")
+//            .debug(name: "Debug"),
+            .debug(name: "Debug", xcconfig: "Config/Config.xcconfig")
             // .debug(name: "Debug", xcconfig: "SlowStarter/Sources/Config/Environment/APIConfig.xcconfig"),
             // .release(name: "Release", xcconfig: "SlowStarter/Sources/Config/Environment/APIConfig.xcconfig")
         ]
@@ -36,13 +37,32 @@ let project = Project(
                             ]
                         ]
                     ],
-                    "GEMINI_API_KEY": "$(GEMINI_API_KEY)"
+                    "UIAppFonts": [
+                        "Pretendard-Black.otf",
+                        "Pretendard-Bold.otf",
+                        "Pretendard-ExtraBold.otf",
+                        "Pretendard-ExtraLight.otf",
+                        "Pretendard-Light.otf",
+                        "Pretendard-Medium.otf",
+                        "Pretendard-Regular.otf",
+                        "Pretendard-SemiBold.otf",
+                        "Pretendard-Thin.otf",
+                    ],
+                    "GEMINI_API_KEY": "$(GEMINI_API_KEY)",
+                    "SUPABASE_API_KEY": "$(SUPABASE_API_KEY)",
+                    "SUPABASE_URL": "$(SUPABASE_URL)",
                 ]
             ),
-            sources: ["SlowStarter/Sources/**"],
+            sources: [
+                "SlowStarter/Sources/**",
+                "SlowStarter/Resources/Util/**",
+                     ],
             resources: [
                 "SlowStarter/Resources/**",
-                "SlowStarter/Sources/Data/Persistence/CoreDataModel.xcdatamodeld"
+                "SlowStarter/Resources/Util/**",
+                "SlowStarter/Sources/Domain/Models/CoreData/CoreDataModel.xcdatamodeld",
+                "SlowStarter/Sources/Domain/Models/CoreData/Config.xcdatamodeld",
+                "SlowStarter/Resources/Util/Font/**"
             ],
             scripts: [
                 .pre(

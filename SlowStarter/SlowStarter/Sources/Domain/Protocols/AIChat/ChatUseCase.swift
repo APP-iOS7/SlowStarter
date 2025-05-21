@@ -6,6 +6,5 @@
 //
 
 protocol ChatUseCase {
-    func execute(messages: [Message]) async throws -> Message
+    func execute(messages: [Messages]) async throws -> Messages
 }
-
