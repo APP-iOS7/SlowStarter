@@ -35,8 +35,7 @@ public class DataBaseManager: DataBaseManagerProtocol {
                 .value
             
             return data
-        }
-        catch {
+        } catch {
             print("FETCH ERROR: \(error.localizedDescription)")
             throw DatabaseError.unknown
         }
@@ -70,8 +69,7 @@ public class DataBaseManager: DataBaseManagerProtocol {
         let tableName: String
         do {
             tableName = try self.tableName(for: type)
-        }
-        catch {
+        } catch {
             throw error
         }
         
@@ -83,8 +81,7 @@ public class DataBaseManager: DataBaseManagerProtocol {
                 .value
             
             return data
-        }
-        catch {
+        } catch {
             print("FETCH ERROR: \(error.localizedDescription)")
             throw DatabaseError.unknown
         }
@@ -106,8 +103,7 @@ public class DataBaseManager: DataBaseManagerProtocol {
         let tableName: String
         do {
             tableName = try self.tableName(for: type)
-        }
-        catch {
+        } catch {
             throw error
         }
         
@@ -121,8 +117,7 @@ public class DataBaseManager: DataBaseManagerProtocol {
                 .value
             
             return data
-        }
-        catch {
+        } catch {
             print("FETCH ERROR: \(error.localizedDescription)")
             throw DatabaseError.unknown
         }
@@ -145,8 +140,7 @@ public class DataBaseManager: DataBaseManagerProtocol {
         let tableName: String
         do {
             tableName = try self.tableName(for: type)
-        }
-        catch {
+        } catch {
             throw error
         }
         
@@ -161,8 +155,7 @@ public class DataBaseManager: DataBaseManagerProtocol {
             }
             return count
             
-        }
-        catch {
+        } catch {
             print("FETCH ERROR: \(error.localizedDescription)")
             throw DatabaseError.unknown
         }
@@ -186,8 +179,7 @@ public class DataBaseManager: DataBaseManagerProtocol {
         let tableName: String
         do {
             tableName = try self.tableName(for: type)
-        }
-        catch {
+        } catch {
             throw error
         }
         
@@ -200,8 +192,7 @@ public class DataBaseManager: DataBaseManagerProtocol {
                 .value
             
             return data
-        }
-        catch {
+        } catch {
             print("FETCH ERROR: \(error.localizedDescription)")
             throw DatabaseError.unknown
         }
@@ -227,8 +218,7 @@ public class DataBaseManager: DataBaseManagerProtocol {
         do {
             tableName = try self.tableName(for: type)
             print(tableName)
-        }
-        catch {
+        } catch {
             throw error
         }
         
@@ -237,8 +227,7 @@ public class DataBaseManager: DataBaseManagerProtocol {
                 .from(tableName)
                 .insert(data)
                 .execute()
-        }
-        catch {
+        } catch {
             print("FETCH ERROR: \(error.localizedDescription)")
             throw DatabaseError.unknown
         }
@@ -260,8 +249,7 @@ public class DataBaseManager: DataBaseManagerProtocol {
         let tableName: String
         do {
             tableName = try self.tableName(for: type)
-        }
-        catch {
+        } catch {
             throw error
         }
         
@@ -270,8 +258,7 @@ public class DataBaseManager: DataBaseManagerProtocol {
                 .from(tableName)
                 .insert(data)
                 .execute()
-        }
-        catch {
+        } catch {
             print("FETCH ERROR: \(error.localizedDescription)")
             throw DatabaseError.unknown
         }
@@ -294,8 +281,7 @@ public class DataBaseManager: DataBaseManagerProtocol {
         let tableName: String
         do {
             tableName = try self.tableName(for: type)
-        }
-        catch {
+        } catch {
             throw error
         }
         
@@ -308,8 +294,7 @@ public class DataBaseManager: DataBaseManagerProtocol {
                 .execute()
                 .value as! T
             return returnedData
-        }
-        catch {
+        } catch {
             print("FETCH ERROR: \(error.localizedDescription)")
             throw DatabaseError.unknown
         }
@@ -331,29 +316,6 @@ public class DataBaseManager: DataBaseManagerProtocol {
     /// let updateData: [String: Any] = ["name": "John Doe"]
     /// try await networkManager.updateData(as: User.self, toUpdateData: updateData, conditionColumn: "id", conditionValue: 1)
     /// ```
-//    func updateData<T1: Encodable, T2: PostgrestFilterValue>(as type: T1.Type, toUpdateData: [String: Any], conditionColumn: String, conditionValue: T2) async throws {
-//        let tableName = try tableName(for: type)
-//
-//        let encodableData = toUpdateData.mapValues { value -> AnyEncodable in
-//            if let encodable = value as? Encodable {
-//                return AnyEncodable(encodable)
-//            } else {
-//                fatalError("Value \(value) does not conform to Encodable")
-//            }
-//        }
-//
-//        do {
-//            try await client
-//                .from(tableName)
-//                .update(encodableData)
-//                .eq(conditionColumn, value: conditionValue)
-//                .execute()
-//        } catch {
-//            print("FETCH ERROR: \(error.localizedDescription)")
-//            throw DatabaseError.unknown
-//        }
-//    }
-    
     func updateData<T1: Encodable, T2: Encodable>(as type: T1.Type, toUpdateData: [String: Any], conditionColumn: String, conditionValue: T2) async throws {
         let tableName = try tableName(for: type)
         
@@ -397,8 +359,7 @@ public class DataBaseManager: DataBaseManagerProtocol {
         let tableName: String
         do {
             tableName = try self.tableName(for: type)
-        }
-        catch {
+        } catch {
             throw error
         }
         
@@ -408,13 +369,11 @@ public class DataBaseManager: DataBaseManagerProtocol {
                 .delete()
                 .eq(conditionColumn, value: conditionValue as! PostgrestFilterValue)
                 .execute()
-        }
-        catch {
+        } catch {
             print("FETCH ERROR: \(error.localizedDescription)")
             throw DatabaseError.unknown
         }
     }
-    
     
     // MARK: - Table Name Resolver
     func tableName<T>(for type: T.Type) throws -> String {
@@ -446,6 +405,4 @@ public class DataBaseManager: DataBaseManagerProtocol {
             throw DatabaseError.unsupportedType("\(type)")
         }
     }
-    
-    
 }
