@@ -8,6 +8,7 @@
 import UIKit
 
 final class SendedMessageCell: UICollectionViewCell {
+    // MARK: - Properties
     var chat: AIChatMessage? {
         didSet {
             configure()
@@ -45,6 +46,7 @@ final class SendedMessageCell: UICollectionViewCell {
     private let cellMargin: CGFloat = 8.0
     private let minimumLeftMargin: CGFloat = 100.0
     
+    // MARK: - initializer
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -54,10 +56,17 @@ final class SendedMessageCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - LifyCycle
     // 모든 frame이 결정된 이후에 필요한 동작 정의
     override func layoutSubviews() {
         super.layoutSubviews()
         messageLabel.preferredMaxLayoutWidth = bounds.width - cellMargin - minimumLeftMargin // label 최대 너비
+    }
+    
+    // MARK: - Functions
+    private func configure() {
+        messageLabel.text = chat?.text
+        timeLabel.text = chat?.timeText
     }
     
     // Self-Sizing 셀의 최종 크기를 반환
@@ -103,9 +112,8 @@ final class SendedMessageCell: UICollectionViewCell {
         messageView.layer.cornerRadius = 8
     }
     
-    private func configure() {
-        messageLabel.text = chat?.text
-        timeLabel.text = chat?.timeText
+    func getMessageLableHeight() -> CGFloat {
+        return messageLabel.frame.height
     }
     
     // 재사용을 위해 내용물 초기화

@@ -26,6 +26,10 @@ final class ChatViewModel: ObservableObject {
         return messages.map { $0.id }
     }
     
+    var numberOfMessages: Int {
+        return messages.count
+    }
+    
     init(chat: DefaultChatUseCase, summary: DefaultSummaryUseCase, coreDataManager: CoreDataManager
          ) {
         self.chatUseCase = chat
@@ -34,8 +38,13 @@ final class ChatViewModel: ObservableObject {
     }
     
     // MARK: - Functions
-    func message(with id: UUID) -> AIChatMessage? {
+    func messageWith(id: UUID) -> AIChatMessage? {
         return messages.first { $0.id == id }
+    }
+    
+    func messageAt(index: Int) -> AIChatMessage? {
+        guard messages.indices.contains(index) else { return nil }
+        return messages[index]
     }
     
     func fetchMessages() {

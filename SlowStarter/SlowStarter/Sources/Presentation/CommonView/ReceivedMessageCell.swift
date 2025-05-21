@@ -8,6 +8,7 @@
 import UIKit
 
 final class ReceivedMessageCell: UICollectionViewCell {
+    // MARK: - Properties
     var chat: AIChatMessage? {
         didSet {
             configure()
@@ -21,7 +22,7 @@ final class ReceivedMessageCell: UICollectionViewCell {
         return view
     }()
     
-    private lazy var messageLabel: UILabel = {
+    private let messageLabel: UILabel = {
         let label: UILabel = UILabel()
         label.font = UIFont.systemFont(ofSize: 16)
         label.textColor = .white
@@ -56,6 +57,7 @@ final class ReceivedMessageCell: UICollectionViewCell {
     private let cellMargin: CGFloat = 8.0
     private let minimumLeftMargin: CGFloat = 100.0
     
+    // MARK: - Initializer
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -65,12 +67,14 @@ final class ReceivedMessageCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - LifeCycle
     // 모든 frame이 결정된 이후에 필요한 동작 정의
     override func layoutSubviews() {
         super.layoutSubviews()
         messageLabel.preferredMaxLayoutWidth = bounds.width - cellMargin - minimumLeftMargin // label 최대 너비
     }
     
+    // MARK: - Functions
     // Self-Sizing 셀의 최종 크기를 반환
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
         let attributes = super.preferredLayoutAttributesFitting(layoutAttributes)
@@ -89,6 +93,11 @@ final class ReceivedMessageCell: UICollectionViewCell {
         
         attributes.frame.size = autoLayoutSize
         return attributes
+    }
+    
+    private func configure() {
+        messageLabel.text = chat?.text
+        timeLabel.text = chat?.timeText
     }
     
     private func setupUI() {
@@ -119,9 +128,8 @@ final class ReceivedMessageCell: UICollectionViewCell {
         summaryButtom.layer.cornerRadius = 8
     }
     
-    private func configure() {
-        messageLabel.text = chat?.text
-        timeLabel.text = chat?.timeText
+    func getMessageLableHeight() -> CGFloat {
+        return messageLabel.frame.height
     }
     
     // 재사용을 위해 내용물 초기화
