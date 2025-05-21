@@ -684,6 +684,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 91A595898D8F1F185DF8D7E6 /* Build configuration list for PBXNativeTarget "swift-crypto_Crypto" */;
 			buildPhases = (
+				D4D278E630E610718CF3EBFB /* Sources */,
 				3A03D25C6194CD95466FBE9B /* Resources */,
 				DBAFE781793CAF43BBA31F5D /* Frameworks */,
 				D454A1AEDFEE4801B468DC05 /* Embed Frameworks */,
@@ -728,6 +729,8 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 9999;
+				TargetAttributes = {
+				};
 			};
 			buildConfigurationList = 0C4224DC7E6C9CEB97699EC6 /* Build configuration list for PBXProject "swift-crypto" */;
 			compatibilityVersion = "Xcode 14.0";
@@ -767,6 +770,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		D4D278E630E610718CF3EBFB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D621CAC5DEF5666B26FFFE49 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1028,7 +1038,7 @@
 				GENERATE_MASTER_OBJECT_FILE = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/../../tuist-derived/swift-crypto_Crypto/InfoPlists/swift-crypto_Crypto-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				PRODUCT_BUNDLE_IDENTIFIER = Crypto.resources;
+				PRODUCT_BUNDLE_IDENTIFIER = Crypto.generated.resources;
 				PRODUCT_NAME = "swift-crypto_Crypto";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -1043,6 +1053,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,6";
+				VERSIONING_SYSTEM = "";
 			};
 			name = Debug;
 		};
@@ -1056,7 +1067,7 @@
 				GENERATE_MASTER_OBJECT_FILE = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/../../tuist-derived/swift-crypto_Crypto/InfoPlists/swift-crypto_Crypto-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				PRODUCT_BUNDLE_IDENTIFIER = Crypto.resources;
+				PRODUCT_BUNDLE_IDENTIFIER = Crypto.generated.resources;
 				PRODUCT_NAME = "swift-crypto_Crypto";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -1067,6 +1078,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,6";
+				VERSIONING_SYSTEM = "";
 			};
 			name = Release;
 		};

@@ -9,5 +9,6 @@
 	longpaths = true
 [remote "origin"]
 	url = https://github.com/pointfreeco/xctest-dynamic-overlay
+	tagOpt = --no-tags
 	fetch = +refs/*:refs/*
 	mirror = true

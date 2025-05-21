@@ -27,7 +27,7 @@
           "identity" : "supabase-swift",
           "kind" : "remoteSourceControl",
           "location" : "https://github.com/supabase/supabase-swift.git",
-          "name" : "Supabase"
+          "name" : "supabase-swift"
         },
         "state" : {
           "checkoutState" : {
@@ -140,7 +140,10 @@
         },
         "subpath" : "xctest-dynamic-overlay"
       }
+    ],
+    "prebuilts" : [
+
     ]
   },
-  "version" : 6
+  "version" : 7
 }
