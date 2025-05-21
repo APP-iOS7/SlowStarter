@@ -53,5 +53,5 @@ xcuserdata/
 *.env
 
 # Ignore Tuist build and dependency checkouts
-/Tuist/.build/
+SlowStarter/Tuist/.build/
 SlowStarter/SlowStarter.xcodeproj/project.pbxproj
