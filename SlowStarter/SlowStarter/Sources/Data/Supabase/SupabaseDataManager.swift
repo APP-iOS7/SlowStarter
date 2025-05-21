@@ -1,12 +1,13 @@
 import Foundation
 import Supabase
 
+//TODO: 필요에 의해 변경하면 될듯
 
-class DataManager {
-    var client: SupabaseClient?
-    var databaseManager: DataBaseManager?
-    var storageManager: StorageManager?
-    var loginManager: LoginManager?
+class SupabaseDataManager {
+    private var client: SupabaseClient?
+    private var databaseManager: DataBaseManager?
+    private var storageManager: StorageManager?
+    private var loginManager: LoginManager?
     
     init() {
         let supabaseURLString = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_URL") as? String
