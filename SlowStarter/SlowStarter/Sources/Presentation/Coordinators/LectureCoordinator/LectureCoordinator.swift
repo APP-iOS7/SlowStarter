@@ -1,4 +1,3 @@
-
 import UIKit
 
 class LectureCoordinator: Coordinator {
@@ -13,5 +12,9 @@ class LectureCoordinator: Coordinator {
         viewController.coordinator = self
         viewController.tabBarItem = UITabBarItem(title: "test name Lecture", image: UIImage(systemName: "questionmark"), tag: 0)
         navigationController.viewControllers = [viewController]
+    }
+    
+    func showDetail() {
+        
     }
 }
