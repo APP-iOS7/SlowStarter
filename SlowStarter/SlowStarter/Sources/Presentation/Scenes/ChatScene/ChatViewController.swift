@@ -117,7 +117,7 @@ final class ChatViewController: UIViewController {
         return button
     }()
     
-    // MARK: - LifeCycle
+    // MARK: - Initializer
     init(viewModel: ChatViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -127,12 +127,18 @@ final class ChatViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         
         setConstraints()
         setCollectionView()
+        setKeyboardNotifications()
         bindViewModel()
         fetchMessages()
     }
@@ -184,6 +190,22 @@ final class ChatViewController: UIViewController {
         snapshot.appendSections([.main])
         snapshot.appendItems(viewModel.messageIDs)
         dataSource.apply(snapshot, animatingDifferences: false)
+    }
+    
+    private func setKeyboardNotifications() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow(_:)),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide(_:)),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
     }
     
     private func bindViewModel() {
@@ -241,6 +263,31 @@ final class ChatViewController: UIViewController {
     // MARK: - Selectors
     @objc private func tappedCollectionView() {
         view.endEditing(true) // 키보드 down
+    }
+    
+    @objc private func keyboardWillShow(_ notification: Notification) {
+        guard let userInfo = notification.userInfo,
+              let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
+              let animationDuration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double else { return }
+        
+        UIView.animate(withDuration: animationDuration) { [weak self] in
+            guard let self = self else { return }
+            self.collectionView.contentOffset.y += keyboardFrame.height - self.view.safeAreaInsets.bottom
+            self.collectionView.layoutIfNeeded()
+        }
+    }
+    
+    @objc private func keyboardWillHide(_ notification: Notification) {
+        guard let userInfo = notification.userInfo,
+              let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
+              let animationDuration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double else { return }
+        
+        UIView.animate(withDuration: animationDuration) { [weak self] in
+            guard let self = self else { return }
+            
+            self.collectionView.contentOffset.y -= keyboardFrame.height - self.view.safeAreaInsets.bottom
+            self.collectionView.layoutIfNeeded()
+        }
     }
 }
 
