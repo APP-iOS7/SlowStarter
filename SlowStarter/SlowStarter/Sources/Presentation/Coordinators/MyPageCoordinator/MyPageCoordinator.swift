@@ -1,13 +1,15 @@
 import UIKit
 
 
-class MyPageCoordinator: Coordinator {
+class MyPageCoordinator: NSObject, Coordinator {
     private let navigationController: UINavigationController
     
     private var childCoordinator: Coordinator?
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
+        super.init()
+        self.navigationController.delegate = self
     }
     
     func start() {
@@ -37,5 +39,16 @@ class MyPageCoordinator: Coordinator {
     func showSetting() {
         let coordinator = SettingCoordinator(navigationController: navigationController)
         coordinator.start()
+    }
+}
+
+extension MyPageCoordinator: UINavigationControllerDelegate {
+    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+        guard let fromViewController = navigationController.transitionCoordinator?.viewController(forKey: .from), !navigationController.viewControllers.contains(fromViewController) else { return }
+        
+        if fromViewController is CourseHistoryViewController {
+            childCoordinator = nil
+            print("Coordinator status: \(childCoordinator as Any)")
+        }
     }
 }

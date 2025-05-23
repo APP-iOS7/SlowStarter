@@ -84,6 +84,6 @@ class MainCoordinator: NSObject, Coordinator {
 // TabBar Delegate 수정
 extension MainCoordinator: UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        print("\(viewController)")
+        
     }
 }
