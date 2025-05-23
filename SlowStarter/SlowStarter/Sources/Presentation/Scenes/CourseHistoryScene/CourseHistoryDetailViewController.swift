@@ -13,13 +13,19 @@ class CourseHistoryDetailViewController: UIViewController {
     
     func setupUI() {
         let profileView = setupLecturerProfile()
-        let detailView = setupLectureDetail() // 아래에 수정된 함수 참고
+        let detailView = setupLectureDetail()
+        let unSubscribeButton = UIButton()
+        unSubscribeButton.setTitle("구독 해지하기", for: .normal)
+        unSubscribeButton.setTitleColor(.systemBlue, for: .normal)
+        unSubscribeButton.titleLabel?.font = UIFont(name: "Pretendard-Light", size: 8)
         
         view.addSubview(profileView)
         view.addSubview(detailView)
+        view.addSubview(unSubscribeButton)
 
         profileView.translatesAutoresizingMaskIntoConstraints = false
         detailView.translatesAutoresizingMaskIntoConstraints = false
+        unSubscribeButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             profileView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
@@ -29,7 +35,10 @@ class CourseHistoryDetailViewController: UIViewController {
 
             detailView.topAnchor.constraint(equalTo: profileView.bottomAnchor, constant: 24),
             detailView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: padding),
-            detailView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding)
+            detailView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding),
+            
+            unSubscribeButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 5),
+            unSubscribeButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
 
@@ -65,7 +74,6 @@ class CourseHistoryDetailViewController: UIViewController {
         ])
         verticalStack.axis = .vertical
         verticalStack.spacing = 4
-        //        verticalStack.distribution = .fillProportionally
         verticalStack.translatesAutoresizingMaskIntoConstraints = false
         
         let horizontalStack = UIStackView(arrangedSubviews: [
@@ -73,7 +81,6 @@ class CourseHistoryDetailViewController: UIViewController {
         ])
         horizontalStack.axis = .horizontal
         horizontalStack.spacing = 16
-        //        horizontalStack.distribution = .fill
         horizontalStack.alignment = .center
         horizontalStack.translatesAutoresizingMaskIntoConstraints = false
         
