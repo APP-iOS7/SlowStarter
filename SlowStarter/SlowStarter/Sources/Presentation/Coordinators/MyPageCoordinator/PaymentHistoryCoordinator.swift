@@ -11,7 +11,7 @@ class PaymentHistoryCoordinator: Coordinator {
     func start() {
         let viewController = PaymentHistoryViewController()
         viewController.coordinator = self
-        navigationController.pushViewController(viewController, animated: false)
+        navigationController.pushViewController(viewController, animated: true)
         
     }
 }

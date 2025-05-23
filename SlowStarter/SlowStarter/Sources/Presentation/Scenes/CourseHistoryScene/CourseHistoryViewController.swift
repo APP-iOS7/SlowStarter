@@ -4,6 +4,8 @@ class CourseHistoryViewController: UIViewController {
     weak var coordinator: CourseHistoryCoordinator?
     
     let tableView = UITableView()
+    
+    let padding: CGFloat = 10
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,8 +25,8 @@ class CourseHistoryViewController: UIViewController {
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: padding),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding)
         ])
     }
 }
@@ -39,7 +41,7 @@ extension CourseHistoryViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "CourseHistoryCell", for: indexPath) as? CourseHistoryTableViewCell else {
             return UITableViewCell()
         }
-        cell.configure(with: "Course #\(indexPath.row + 1)")
+        cell.configure(with: "Course #\(indexPath.row + 1)", status: indexPath.row % 2 == 0 ? true : false)
         return cell
     }
 }

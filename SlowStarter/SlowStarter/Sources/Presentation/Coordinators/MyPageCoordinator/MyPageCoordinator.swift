@@ -48,7 +48,6 @@ extension MyPageCoordinator: UINavigationControllerDelegate {
         
         if fromViewController is CourseHistoryViewController {
             childCoordinator = nil
-            print("Coordinator status: \(childCoordinator as Any)")
         }
     }
 }

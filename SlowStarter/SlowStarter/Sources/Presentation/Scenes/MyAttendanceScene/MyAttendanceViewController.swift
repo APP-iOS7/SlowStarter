@@ -4,6 +4,8 @@ class MyAttendanceViewController: UIViewController, UICollectionViewDelegateFlow
     
     weak var coordinator: MyAttendanceCoordinator?
     
+    let padding: CGFloat = 10
+    
     private let datePickerButton = UIButton(type: .system)
     private let previousButton = UIButton(type: .system)
     private let nextButton = UIButton(type: .system)
@@ -20,6 +22,8 @@ class MyAttendanceViewController: UIViewController, UICollectionViewDelegateFlow
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .systemBackground
+        
         setupHeader()
         setupWeekdayLabels()
         setupDiaryCollectionView()
@@ -29,29 +33,22 @@ class MyAttendanceViewController: UIViewController, UICollectionViewDelegateFlow
     
     // MARK: - Header
     private func setupHeader() {
-        let previousAction = UIAction { _ in
-            self.didTapPrevious()
-        }
+        let previousAction = UIAction { _ in self.didTapPrevious() }
         previousButton.setTitle("<", for: .normal)
         previousButton.titleLabel?.font = .boldSystemFont(ofSize: 20)
         previousButton.addAction(previousAction, for: .touchUpInside)
         
-        let nextAction = UIAction { _ in
-            self.didTapNext()
-        }
+        let nextAction = UIAction { _ in self.didTapNext() }
         nextButton.setTitle(">", for: .normal)
         nextButton.titleLabel?.font = .boldSystemFont(ofSize: 20)
         nextButton.addAction(nextAction, for: .touchUpInside)
         
         datePickerButton.setTitleColor(.black, for: .normal)
         datePickerButton.titleLabel?.font = .boldSystemFont(ofSize: 18)
-        datePickerButton.addAction(UIAction { _ in
-            self.didTapYearButton()
-        }, for: .touchUpInside)
+        datePickerButton.addAction(UIAction { _ in self.didTapYearButton() }, for: .touchUpInside)
         
         let leftStack = UIStackView(arrangedSubviews: [datePickerButton])
         leftStack.axis = .horizontal
-        leftStack.spacing = 12
         
         let buttonsStack = UIStackView(arrangedSubviews: [previousButton, nextButton])
         buttonsStack.axis = .horizontal
@@ -65,13 +62,28 @@ class MyAttendanceViewController: UIViewController, UICollectionViewDelegateFlow
         headerStack.distribution = .equalSpacing
         headerStack.translatesAutoresizingMaskIntoConstraints = false
         
-        view.addSubview(headerStack)
+        let containerView = UIView()
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(headerStack)
+        
+        view.addSubview(containerView)
+        
+        let width = (UIScreen.main.bounds.width - 2 * padding) / 7
+
         NSLayoutConstraint.activate([
-            headerStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            headerStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
-            headerStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24)
+            headerStack.topAnchor.constraint(equalTo: containerView.topAnchor),
+            headerStack.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: 10),
+            headerStack.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: width / 2),
+            headerStack.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -width / 2)
+        ])
+        
+        NSLayoutConstraint.activate([
+            containerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            containerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            containerView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
     }
+
     
     private func didTapYearButton() {
         let currentYear = calendar.component(.year, from: currentDate)
@@ -105,7 +117,7 @@ class MyAttendanceViewController: UIViewController, UICollectionViewDelegateFlow
         weekdays.forEach { day in
             let label = UILabel()
             label.text = day
-            label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+            label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
             label.textAlignment = .center
             label.textColor = (day == "일") ? .systemRed : (day == "토") ? .systemBlue : .black
             stackView.addArrangedSubview(label)
@@ -114,8 +126,8 @@ class MyAttendanceViewController: UIViewController, UICollectionViewDelegateFlow
         view.addSubview(stackView)
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 60),
-            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: padding),
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding),
             stackView.heightAnchor.constraint(equalToConstant: 20)
         ])
     }
@@ -126,7 +138,7 @@ class MyAttendanceViewController: UIViewController, UICollectionViewDelegateFlow
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
         
-        let width = UIScreen.main.bounds.width / 7
+        let width = (UIScreen.main.bounds.width - 2 * padding) / 7
         layout.itemSize = CGSize(width: width, height: width)
         
         diaryCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -139,8 +151,8 @@ class MyAttendanceViewController: UIViewController, UICollectionViewDelegateFlow
         view.addSubview(diaryCollectionView)
         NSLayoutConstraint.activate([
             diaryCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 100),
-            diaryCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            diaryCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            diaryCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: padding),
+            diaryCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding),
             diaryCollectionView.heightAnchor.constraint(equalToConstant: width * 6)
         ])
     }

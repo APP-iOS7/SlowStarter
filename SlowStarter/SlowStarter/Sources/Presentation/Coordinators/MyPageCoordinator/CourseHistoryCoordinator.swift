@@ -11,12 +11,12 @@ class CourseHistoryCoordinator: Coordinator {
     func start() {
         let viewController = CourseHistoryViewController()
         viewController.coordinator = self
-        navigationController.pushViewController(viewController, animated: false)
+        navigationController.pushViewController(viewController, animated: true)
     }
     
     func showDetail() {
         print("clicked")
         let viewController = CourseHistoryDetailViewController()
-        navigationController.pushViewController(viewController, animated: false)
+        navigationController.pushViewController(viewController, animated: true)
     }
 }

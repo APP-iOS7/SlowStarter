@@ -53,9 +53,10 @@ class MyAttendanceCollectionViewCell: UICollectionViewCell {
         let isCurrentMonth = calendar.isDate(date, equalTo: currentMonth, toGranularity: .month)
         
         dayLabel.text = "\(day)"
+        dayLabel.textAlignment = .center
         dayLabel.textColor = isCurrentMonth ? .black : .lightGray
         dayLabel.backgroundColor = .clear
-        dayLabel.layer.borderWidth = 0
+//        dayLabel.layer.borderWidth = 1
 
         if calendar.isDate(date, inSameDayAs: today) {
             //켈린더에 오늘 날짜라면 표시할 것 정의 부

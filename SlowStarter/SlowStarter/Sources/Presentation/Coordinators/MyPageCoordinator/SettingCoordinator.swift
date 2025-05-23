@@ -11,7 +11,7 @@ class SettingCoordinator: Coordinator {
     func start() {
         let viewController = SettingViewController()
         viewController.coordinator = self
-        navigationController.pushViewController(viewController, animated: false)
+        navigationController.pushViewController(viewController, animated: true)
         
     }
 }

@@ -11,7 +11,7 @@ class MyAttendanceCoordinator: Coordinator {
     func start() {
         let viewController = MyAttendanceViewController()
         viewController.coordinator = self
-        navigationController.pushViewController(viewController, animated: false)
+        navigationController.pushViewController(viewController, animated: true)
         
     }
 }
