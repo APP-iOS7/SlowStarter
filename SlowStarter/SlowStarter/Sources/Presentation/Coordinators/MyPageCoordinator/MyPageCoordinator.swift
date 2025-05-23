@@ -4,6 +4,8 @@ import UIKit
 class MyPageCoordinator: Coordinator {
     private let navigationController: UINavigationController
     
+    private var childCoordinator: Coordinator?
+    
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
@@ -23,6 +25,7 @@ class MyPageCoordinator: Coordinator {
     
     func showCourseHistory() {
         let coordinator = CourseHistoryCoordinator(navigationController: navigationController)
+        childCoordinator = coordinator
         coordinator.start()
     }
     

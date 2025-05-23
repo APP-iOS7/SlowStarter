@@ -49,7 +49,7 @@ extension CourseHistoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        print("you selected row \(indexPath.row)")
+        coordinator?.showDetail()
     }
 }
 
