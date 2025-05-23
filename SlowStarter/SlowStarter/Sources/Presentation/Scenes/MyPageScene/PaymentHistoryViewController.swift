@@ -8,6 +8,7 @@
 import UIKit
 
 class PaymentHistoryViewController: UIViewController {
+    weak var coordinator: PaymentHistoryCoordinator?
 
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -14,4 +14,25 @@ class MyPageCoordinator: Coordinator {
         viewController.tabBarItem = UITabBarItem(title: "test name MyPage", image: UIImage(systemName: "questionmark"), tag: 3)
         navigationController.viewControllers = [viewController]
     }
+    
+    func showMyAttendance() {
+        let coordinator = MyAttendanceCoordinator(navigationController: navigationController)
+        coordinator.start()
+        
+    }
+    
+    func showCourseHistory() {
+        let coordinator = CourseHistoryCoordinator(navigationController: navigationController)
+        coordinator.start()
+    }
+    
+    func showPaymentHistory() {
+        let coordinator = PaymentHistoryCoordinator(navigationController: navigationController)
+        coordinator.start()
+    }
+    
+    func showSetting() {
+        let coordinator = SettingCoordinator(navigationController: navigationController)
+        coordinator.start()
+    }
 }

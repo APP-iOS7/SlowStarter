@@ -1,6 +1,9 @@
 import UIKit
 
 class MyAttendanceViewController: UIViewController, UICollectionViewDelegateFlowLayout {
+    
+    weak var coordinator: MyAttendanceCoordinator?
+    
     private let datePickerButton = UIButton(type: .system)
     private let previousButton = UIButton(type: .system)
     private let nextButton = UIButton(type: .system)

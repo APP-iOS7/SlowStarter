@@ -119,6 +119,13 @@ class MyPageViewController: UIViewController {
             "결제 내역"
         ]
         
+        let coordinatorFunctions: [() -> Void] = [
+            { [weak self] in self?.coordinator?.showMyAttendance() },
+            { [weak self] in self?.coordinator?.showCourseHistory() },
+            { [weak self] in self?.coordinator?.showSetting() },
+            { [weak self] in self?.coordinator?.showPaymentHistory() }
+        ]
+        
         let verticalStack = UIStackView()
         verticalStack.axis = .vertical
         verticalStack.distribution = .fillEqually
@@ -130,9 +137,9 @@ class MyPageViewController: UIViewController {
         
         verticalStack.translatesAutoresizingMaskIntoConstraints = false
         
-        for item in menuItems {
+        for index in menuItems.indices {
             var config = UIButton.Configuration.filled()
-            config.title = item
+            config.title = menuItems[index]
             config.baseBackgroundColor = UIColor(hex: "#F0F0F0")
             config.baseForegroundColor = UIColor(hex: "#333333")
             config.cornerStyle = .medium
@@ -140,6 +147,10 @@ class MyPageViewController: UIViewController {
             let button = UIButton(configuration: config)
             button.titleLabel?.font = UIFont(name: "Pretendard-Medium", size: 16)
             button.heightAnchor.constraint(equalToConstant: 50).isActive = true
+            
+            button.addAction(UIAction { _ in
+                coordinatorFunctions[index]()
+            }, for: .touchUpInside)
             
             verticalStack.addArrangedSubview(button)
         }
