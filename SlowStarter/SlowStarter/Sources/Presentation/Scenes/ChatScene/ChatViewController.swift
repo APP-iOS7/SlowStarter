@@ -308,7 +308,7 @@ final class ChatViewController: UIViewController {
             guard let self = self else { return }
             
             // 최대 스크롤 수치 (컨텐츠 사이즈 - 프레임 사이즈)
-            // 컨텐츠 사이즈가 화면보다 크지 않은 경우 0 반환
+            // 컨텐츠 사이즈가 frame 보다 크지 않은 경우 0 반환
             let maxOffsetY = max(0, self.collectionView.contentSize.height - self.collectionView.frame.height)
             
             // 이미 최대로 스크롤 돼있으면 움직이지 않음

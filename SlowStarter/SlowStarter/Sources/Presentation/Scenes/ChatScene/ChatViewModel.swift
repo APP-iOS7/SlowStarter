@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Combine
 
 final class ChatViewModel: ObservableObject {
     // MARK: - Properties
@@ -71,7 +70,7 @@ final class ChatViewModel: ObservableObject {
                 try await coreDataManager.saveMessage(newMessage) // CoreData에 답장 저장
             } catch {
                 if let apiError = error as? ChatAPIError {
-                    
+                    print(apiError)
                 } else {
                     
                 }
@@ -87,6 +86,7 @@ final class ChatViewModel: ObservableObject {
                 try await coreDataManager.updateMessage(summaryMessage)
             } catch {
                 if let apiError = error as? ChatAPIError {
+                    print(apiError)
                 } else {
                     print(error.localizedDescription)
                 }
