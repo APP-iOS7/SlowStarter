@@ -37,11 +37,11 @@ final class ChatViewModel: ObservableObject {
     }
     
     // MARK: - Functions
-    func messageWith(id: UUID) -> AIChatMessage? {
+    func message(with id: UUID) -> AIChatMessage? {
         return messages.first { $0.id == id }
     }
     
-    func messageAt(index: Int) -> AIChatMessage? {
+    func message(at index: Int) -> AIChatMessage? {
         guard messages.indices.contains(index) else { return nil }
         return messages[index]
     }

@@ -119,6 +119,8 @@ final class ReceivedMessageCell: UICollectionViewCell {
             
             summaryButtom.trailingAnchor.constraint(equalTo: messageView.trailingAnchor, constant: -4),
             summaryButtom.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4),
+            summaryButtom.widthAnchor.constraint(equalToConstant: 30),
+            summaryButtom.heightAnchor.constraint(equalTo: summaryButtom.widthAnchor),
             
             timeLabel.leadingAnchor.constraint(equalTo: messageView.trailingAnchor, constant: 5),
             timeLabel.bottomAnchor.constraint(equalTo: messageView.bottomAnchor, constant: -5)

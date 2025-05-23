@@ -60,7 +60,7 @@ final class ChatViewController: UIViewController {
         let dataSource = UICollectionViewDiffableDataSource<Section, AIChatMessage.ID>(
             collectionView: collectionView
         ) { [weak self] collectionView, indexPath, id -> UICollectionViewCell? in
-            guard let message: AIChatMessage = self?.viewModel.messageWith(id: id) else { return nil }
+            guard let message: AIChatMessage = self?.viewModel.message(with: id) else { return nil }
             
             if message.isSended {
                 return collectionView.dequeueConfiguredReusableCell(
@@ -118,6 +118,8 @@ final class ChatViewController: UIViewController {
     }()
     
     private var lastKeyboardVisibleHeight: CGFloat = 0
+    
+    private var isInitialLoad: Bool = true
     
     // MARK: - Initializer
     init(viewModel: ChatViewModel) {
@@ -234,32 +236,25 @@ final class ChatViewController: UIViewController {
         viewModel.didTapSendButton(text: text)
     }
     
-    // 컬렉션뷰 최근 메시지로 이동
-    private func scrollToLatestMessage(at index: Int) {
-        guard let item: AIChatMessage = viewModel.messageAt(index: index) else { return }
-        var indexPath: IndexPath = IndexPath(item: index, section: 0)
+    private func scrollToLatestMessage() {
+        let numberOfItems = dataSource.snapshot().numberOfItems(inSection: .main)
+        print(numberOfItems)
+        guard numberOfItems > 0 else { print("out"); return }
+        
+        let indexPath: IndexPath = IndexPath(item: numberOfItems - 1, section: 0)
         var position: UICollectionView.ScrollPosition = .bottom
         
-        if item.isSended {
-            guard let cell: SendedMessageCell = collectionView.cellForItem(at: indexPath)
-                    as? SendedMessageCell else { return }
+        if let layoutAttributes = collectionView.collectionViewLayout.layoutAttributesForItem(at: indexPath) {
+            let cellHeight: CGFloat = layoutAttributes.size.height
+            let visibleHeight: CGFloat = collectionView.frame.height
             
-            if cell.getMessageLableHeight() > collectionView.frame.height { position = .top }
-        } else {
-            guard let cell: ReceivedMessageCell = collectionView.cellForItem(at: indexPath)
-                    as? ReceivedMessageCell else { return }
-            
-            if cell.getMessageLableHeight() > collectionView.frame.height {
-                position = .top
-                indexPath = IndexPath(item: index - 1, section: 0)
-            }
+            if cellHeight > visibleHeight && !self.isInitialLoad { position = .top }
         }
         
-        collectionView.scrollToItem(
-            at: indexPath,
-            at: position,
-            animated: true
-        )
+        if self.isInitialLoad { self.isInitialLoad = false }
+        
+        collectionView.layoutIfNeeded()
+        collectionView.scrollToItem(at: indexPath, at: position, animated: true)
     }
     
     // MARK: - Selectors
@@ -333,6 +328,7 @@ extension ChatViewController {
     // 컬렉션뷰 데이터소스 추가
     private func applySnapshot(_ messages: [AIChatMessage], animating: Bool = true) {
         var snapshot: NSDiffableDataSourceSnapshot<Section, AIChatMessage.ID> = dataSource.snapshot()
+        guard !messages.isEmpty else { return }
         
         for message in messages {
             if snapshot.itemIdentifiers.contains(message.id) {
@@ -343,7 +339,10 @@ extension ChatViewController {
         }
         
         dataSource.apply(snapshot, animatingDifferences: animating) { [weak self] in
-            self?.scrollToLatestMessage(at: messages.count - 1)
+            guard let self = self else { return }
+            
+            self.scrollToLatestMessage()
+            self.collectionView.layoutIfNeeded()
         }
     }
 }
