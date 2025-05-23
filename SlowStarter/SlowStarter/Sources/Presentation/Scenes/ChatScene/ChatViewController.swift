@@ -117,6 +117,8 @@ final class ChatViewController: UIViewController {
         return button
     }()
     
+    private var lastKeyboardVisibleHeight: CGFloat = 0
+    
     // MARK: - Initializer
     init(viewModel: ChatViewModel) {
         self.viewModel = viewModel
@@ -266,27 +268,62 @@ final class ChatViewController: UIViewController {
     }
     
     @objc private func keyboardWillShow(_ notification: Notification) {
+        guard lastKeyboardVisibleHeight == 0 else { return } // 키보드가 이미 올라온 경우: 처리 x, (이중 동작 방지)
+        
         guard let userInfo = notification.userInfo,
               let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
               let animationDuration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double else { return }
         
+        // 컬렉션뷰에 영향을 주지 않는 SafeArea 영역 제거
+        let calculatedKeyboardHeight: CGFloat = keyboardFrame.height - self.view.safeAreaInsets.bottom
+        guard calculatedKeyboardHeight > 0 else { return } // 계산된 키보드 높이가 0 이하일 때 처리 x
+        
+        self.lastKeyboardVisibleHeight = calculatedKeyboardHeight // 키보드 이벤트 시작
+        
         UIView.animate(withDuration: animationDuration) { [weak self] in
             guard let self = self else { return }
-            self.collectionView.contentOffset.y += keyboardFrame.height - self.view.safeAreaInsets.bottom
-            self.collectionView.layoutIfNeeded()
+            
+            // 움직임이 예상되는 정도
+            let targetOffsetY = self.collectionView.contentOffset.y + lastKeyboardVisibleHeight
+            
+            // 최대 스크롤 수치 (컨텐츠 사이즈 - 프레임 사이즈)
+            // 컨텐츠 사이즈가 화면보다 크지 않은 경우 0 반환
+            let maxOffsetY = max(0, self.collectionView.contentSize.height - self.collectionView.frame.height)
+            
+            // 최대 스크롤 영역을 벗어나는 것을 방지
+            let newOffsetY = min(targetOffsetY, maxOffsetY)
+            
+            self.collectionView.contentOffset.y = newOffsetY // offset 적용
+            self.view.layoutIfNeeded() // UI 갱신
         }
     }
     
     @objc private func keyboardWillHide(_ notification: Notification) {
+        guard lastKeyboardVisibleHeight > 0 else { return } // 키보드가 올라오지 않은 경우: 처리 x, (이중 동작 방지)
+        
         guard let userInfo = notification.userInfo,
-              let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
               let animationDuration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double else { return }
         
         UIView.animate(withDuration: animationDuration) { [weak self] in
             guard let self = self else { return }
             
-            self.collectionView.contentOffset.y -= keyboardFrame.height - self.view.safeAreaInsets.bottom
-            self.collectionView.layoutIfNeeded()
+            // 최대 스크롤 수치 (컨텐츠 사이즈 - 프레임 사이즈)
+            // 컨텐츠 사이즈가 화면보다 크지 않은 경우 0 반환
+            let maxOffsetY = max(0, self.collectionView.contentSize.height - self.collectionView.frame.height)
+            
+            // 이미 최대로 스크롤 돼있으면 움직이지 않음
+            if maxOffsetY == self.collectionView.contentOffset.y {
+                self.lastKeyboardVisibleHeight = 0 // 키보드 이벤트 종료
+                return
+            }
+            
+            let targetOffsetY = self.collectionView.contentOffset.y - lastKeyboardVisibleHeight // 움직임이 예상되는 정도
+            let newOffsetY = max(targetOffsetY, 0) // 최소 스크롤 영역을 벗어나는 것을 방지
+            
+            self.collectionView.contentOffset.y = newOffsetY // offset 적용
+            self.view.layoutIfNeeded() // UI 갱신
+            
+            self.lastKeyboardVisibleHeight = 0 // 키보드 이벤트 종료
         }
     }
 }
