@@ -12,6 +12,11 @@ enum Section {
     case main
 }
 
+enum ChatItemIdentifier: Hashable {
+    case message(UUID)
+    case loadingIndicator
+}
+
 final class ChatViewController: UIViewController {
     // MARK: - Properties
     private var viewModel: ChatViewModel
@@ -41,7 +46,7 @@ final class ChatViewController: UIViewController {
         return cv
     }()
     
-    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, AIChatMessage.ID> = {
+    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, ChatItemIdentifier> = {
         let sendedCellRegistration: UICollectionView.CellRegistration<SendedMessageCell, AIChatMessage> = {
             UICollectionView.CellRegistration { cell, _, message in
                 cell.chat = message
@@ -57,22 +62,38 @@ final class ChatViewController: UIViewController {
             }
         }()
         
-        let dataSource = UICollectionViewDiffableDataSource<Section, AIChatMessage.ID>(
+        let loadingCellRegistration: UICollectionView.CellRegistration<LoadingCell, Void> = {
+            UICollectionView.CellRegistration { cell, _, _ in
+                cell.configure()
+            }
+        }()
+        
+        let dataSource = UICollectionViewDiffableDataSource<Section, ChatItemIdentifier>(
             collectionView: collectionView
-        ) { [weak self] collectionView, indexPath, id -> UICollectionViewCell? in
-            guard let message: AIChatMessage = self?.viewModel.message(with: id) else { return nil }
+        ) { [weak self] collectionView, indexPath, identifier -> UICollectionViewCell? in
             
-            if message.isSended {
+            switch identifier {
+            case .message(let id):
+                guard let message: AIChatMessage = self?.viewModel.message(with: id) else { return nil }
+                
+                if message.isSended {
+                    return collectionView.dequeueConfiguredReusableCell(
+                        using: sendedCellRegistration,
+                        for: indexPath,
+                        item: message
+                    )
+                } else {
+                    return collectionView.dequeueConfiguredReusableCell(
+                        using: receivedCellRegistration,
+                        for: indexPath,
+                        item: message
+                    )
+                }
+            case .loadingIndicator:
                 return collectionView.dequeueConfiguredReusableCell(
-                    using: sendedCellRegistration,
+                    using: loadingCellRegistration,
                     for: indexPath,
-                    item: message
-                )
-            } else {
-                return collectionView.dequeueConfiguredReusableCell(
-                    using: receivedCellRegistration,
-                    for: indexPath,
-                    item: message
+                    item: ()
                 )
             }
         }
@@ -190,9 +211,9 @@ final class ChatViewController: UIViewController {
         collectionView.dataSource = dataSource
         
         // 섹션 추가
-        var snapshot: NSDiffableDataSourceSnapshot<Section, AIChatMessage.ID> = dataSource.snapshot()
+        var snapshot: NSDiffableDataSourceSnapshot<Section, ChatItemIdentifier> = dataSource.snapshot()
         snapshot.appendSections([.main])
-        snapshot.appendItems(viewModel.messageIDs)
+        snapshot.appendItems(viewModel.messageIDs.map { .message($0) })
         dataSource.apply(snapshot, animatingDifferences: false)
     }
     
@@ -215,12 +236,31 @@ final class ChatViewController: UIViewController {
     private func bindViewModel() {
         viewModel.$messages
             .receive(on: DispatchQueue.main)
+            .dropFirst() // viewModel에서 초기화 될 때 무시
             .sink { completion in
                 print(completion)
-            } receiveValue: { [weak self] messages in
+            } receiveValue: { [weak self] _ in
                 guard let self = self else { return }
                 
-                self.applySnapshot(messages)
+                self.applySnapshot()
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$isLoading
+            .receive(on: DispatchQueue.main)
+            .dropFirst() // viewModel에서 초기화 될 때 무시
+            .sink { [weak self] isLoading in
+                guard let self = self else { return }
+                
+                if isLoading {
+                    sendButton.isEnabled = false
+                    sendButton.backgroundColor = .systemGray6
+                } else {
+                    sendButton.isEnabled = true
+                    sendButton.backgroundColor = .green
+                }
+                
+                self.applySnapshot()
             }
             .store(in: &cancellables)
     }
@@ -238,7 +278,9 @@ final class ChatViewController: UIViewController {
     
     private func scrollToLatestMessage() {
         let numberOfItems = dataSource.snapshot().numberOfItems(inSection: .main)
-        guard numberOfItems > 0 else { print("out"); return }
+        guard numberOfItems > 0 else { return }
+        
+        print(isInitialLoad)
         
         let indexPath: IndexPath = IndexPath(item: numberOfItems - 1, section: 0)
         var position: UICollectionView.ScrollPosition = .bottom // 셀은 일반적으로 컬렉션뷰 바닥에 위치
@@ -327,15 +369,27 @@ final class ChatViewController: UIViewController {
 // MARK: - Diffable DataSource
 extension ChatViewController {
     // 컬렉션뷰 데이터소스 추가
-    private func applySnapshot(_ messages: [AIChatMessage], animating: Bool = true) {
-        var snapshot: NSDiffableDataSourceSnapshot<Section, AIChatMessage.ID> = dataSource.snapshot()
-        guard !messages.isEmpty else { return }
+    private func applySnapshot(animating: Bool = true) {
+        var snapshot: NSDiffableDataSourceSnapshot<Section, ChatItemIdentifier> = dataSource.snapshot()
         
-        for message in messages {
-            if snapshot.itemIdentifiers.contains(message.id) {
-                snapshot.reconfigureItems([message.id]) // 이미 있는 cell을 다시 구성
+        for message in viewModel.messages {
+            let id = ChatItemIdentifier.message(message.id)
+            if snapshot.itemIdentifiers.contains(id) {
+                snapshot.reconfigureItems([id]) // 이미 있는 cell을 다시 구성
             } else {
-                snapshot.appendItems([message.id], toSection: .main) // 새로운 cell을 추가
+                snapshot.appendItems([id], toSection: .main) // 새로운 cell을 추가
+            }
+        }
+        
+        // isLoading = true 면
+        if viewModel.isLoading {
+            if !snapshot.itemIdentifiers.contains(.loadingIndicator) { // 중복 추가 방지
+                snapshot.appendItems([.loadingIndicator], toSection: .main) // 로딩셀 추가
+            }
+        } else { // isLoading = false
+            // 로딩셀이 있으면
+            if snapshot.itemIdentifiers.contains(.loadingIndicator) {
+                snapshot.deleteItems([.loadingIndicator]) // 로딩셀 삭제
             }
         }
         

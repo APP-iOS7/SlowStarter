@@ -10,6 +10,7 @@ import Foundation
 final class ChatViewModel: ObservableObject {
     // MARK: - Properties
     @Published var messages: [AIChatMessage] = []
+    @Published var isLoading: Bool = false 
     
     private let chatUseCase: DefaultChatUseCase
     private let summaryUseCase: DefaultSummaryUseCase
@@ -59,6 +60,8 @@ final class ChatViewModel: ObservableObject {
     func didTapSendButton(text: String) {
         Task {
             do {
+                isLoading = true
+                
                 let myMessage: AIChatMessage = AIChatMessage(text: text, isSended: true, timestamp: Date())
                 messages.append(myMessage)
                 try await coreDataManager.saveMessage(myMessage)
@@ -68,8 +71,13 @@ final class ChatViewModel: ObservableObject {
                 let newMessage = try await chatUseCase.execute(messages: sendMessages) // 답장 받아오기
                 messages.append(newMessage)
                 try await coreDataManager.saveMessage(newMessage) // CoreData에 답장 저장
+                
+                isLoading = false
             } catch {
+                isLoading = false
+                
                 if let apiError = error as? ChatAPIError {
+                    
                     print(apiError)
                 } else {
                     
@@ -81,10 +89,15 @@ final class ChatViewModel: ObservableObject {
     func didTapSummaryButton(index: Int, message: AIChatMessage) {
         Task {
             do {
+                isLoading = true
+                
                 let summaryMessage: AIChatMessage = try await summaryUseCase.execute(message: message)
                 messages[index] = summaryMessage
                 try await coreDataManager.updateMessage(summaryMessage)
+                
+                isLoading = false
             } catch {
+                isLoading = false
                 if let apiError = error as? ChatAPIError {
                     print(apiError)
                 } else {
