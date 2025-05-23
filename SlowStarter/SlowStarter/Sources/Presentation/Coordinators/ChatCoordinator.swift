@@ -2,7 +2,7 @@ import UIKit
 
 
 class ChatCoordinator: Coordinator {
-    private let navigationController: UINavigationController
+    var navigationController: UINavigationController
     private let coreDataManager: CoreDataManager
     
     init(navigationController: UINavigationController, coreDataManager: CoreDataManager) {
