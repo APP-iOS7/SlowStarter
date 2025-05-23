@@ -60,10 +60,11 @@ final class ChatViewModel: ObservableObject {
     func didTapSendButton(text: String) {
         Task {
             do {
-                isLoading = true
-                
                 let myMessage: AIChatMessage = AIChatMessage(text: text, isSended: true, timestamp: Date())
                 messages.append(myMessage)
+                
+                isLoading = true
+                
                 try await coreDataManager.saveMessage(myMessage)
                 
                 // 대화의 맥락을 유지하기 위해 최근 메시지를 함께 보냄
@@ -77,7 +78,6 @@ final class ChatViewModel: ObservableObject {
                 isLoading = false
                 
                 if let apiError = error as? ChatAPIError {
-                    
                     print(apiError)
                 } else {
                     
@@ -89,15 +89,10 @@ final class ChatViewModel: ObservableObject {
     func didTapSummaryButton(index: Int, message: AIChatMessage) {
         Task {
             do {
-                isLoading = true
-                
                 let summaryMessage: AIChatMessage = try await summaryUseCase.execute(message: message)
                 messages[index] = summaryMessage
                 try await coreDataManager.updateMessage(summaryMessage)
-                
-                isLoading = false
             } catch {
-                isLoading = false
                 if let apiError = error as? ChatAPIError {
                     print(apiError)
                 } else {

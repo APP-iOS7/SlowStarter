@@ -280,8 +280,6 @@ final class ChatViewController: UIViewController {
         let numberOfItems = dataSource.snapshot().numberOfItems(inSection: .main)
         guard numberOfItems > 0 else { return }
         
-        print(isInitialLoad)
-        
         let indexPath: IndexPath = IndexPath(item: numberOfItems - 1, section: 0)
         var position: UICollectionView.ScrollPosition = .bottom // 셀은 일반적으로 컬렉션뷰 바닥에 위치
         
