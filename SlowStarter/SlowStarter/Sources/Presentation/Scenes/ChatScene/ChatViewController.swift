@@ -238,22 +238,23 @@ final class ChatViewController: UIViewController {
     
     private func scrollToLatestMessage() {
         let numberOfItems = dataSource.snapshot().numberOfItems(inSection: .main)
-        print(numberOfItems)
         guard numberOfItems > 0 else { print("out"); return }
         
         let indexPath: IndexPath = IndexPath(item: numberOfItems - 1, section: 0)
-        var position: UICollectionView.ScrollPosition = .bottom
+        var position: UICollectionView.ScrollPosition = .bottom // 셀은 일반적으로 컬렉션뷰 바닥에 위치
         
+        // 셀이 가진 제약에 근거해 셀의 layout 정보를 계산 (화면에 그려지지 않아도 ok)
         if let layoutAttributes = collectionView.collectionViewLayout.layoutAttributesForItem(at: indexPath) {
             let cellHeight: CGFloat = layoutAttributes.size.height
             let visibleHeight: CGFloat = collectionView.frame.height
             
+            // 셀이 frame보다 크면서, 최초 진입 시가 아닐 때: 셀을 컬렉션뷰 상단에 위치
             if cellHeight > visibleHeight && !self.isInitialLoad { position = .top }
         }
         
-        if self.isInitialLoad { self.isInitialLoad = false }
+        if self.isInitialLoad { self.isInitialLoad = false } // 최초 진입 시
         
-        collectionView.layoutIfNeeded()
+        collectionView.layoutIfNeeded() // 스크롤 전에 UI 갱신
         collectionView.scrollToItem(at: indexPath, at: position, animated: true)
     }
     
