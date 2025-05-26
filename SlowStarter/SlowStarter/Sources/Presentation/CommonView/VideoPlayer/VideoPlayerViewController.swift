@@ -27,7 +27,7 @@ class VideoPlayerViewController: UIViewController {
             addPlayerObservers() // 새 옵저버 등록
         }
     }
-    private var videoURL: URL?
+    var videoURL: URL?
     
     // KVO Context (여러 옵저버를 사용할 경우 구분하기 위함, 여기서는 하나만 사용)
     private var playerRateObservationContext = 0
@@ -140,27 +140,6 @@ class VideoPlayerViewController: UIViewController {
         }
     }
 
-    // ... (configNavigationBarAppearance, configureAudioSession, setVideoURLAndPlayer, generateThumbnail, UI Setup 함수들은 이전과 동일) ...
-//    private func configNavigationBarAppearance() {
-//        let appearance = UINavigationBarAppearance()
-//        appearance.configureWithOpaqueBackground()
-//        appearance.backgroundColor = .white
-//        
-//        appearance.titleTextAttributes = [
-//            .foregroundColor: UIColor.black,
-//            .font: UIFont.systemFont(ofSize: 18, weight: .semibold)
-//        ]
-//        
-//        appearance.largeTitleTextAttributes = [
-//            .foregroundColor: UIColor.black,
-//            .font: UIFont.systemFont(ofSize: 36, weight: .bold)
-//        ]
-//        
-//        navigationController?.navigationBar.standardAppearance = appearance
-//        navigationController?.navigationBar.scrollEdgeAppearance = appearance
-//        navigationController?.navigationBar.prefersLargeTitles = true
-//    }
-    
     
     private func configureAudioSession() {
         do {

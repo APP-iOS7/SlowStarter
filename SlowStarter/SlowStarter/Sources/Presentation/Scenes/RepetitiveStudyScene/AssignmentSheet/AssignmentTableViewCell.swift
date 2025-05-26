@@ -10,12 +10,21 @@ import SnapKit
 
 class AssignmentTableViewCell: UITableViewCell {
     
+    weak var delegate: AssignmentTableViewCellDelegate?
+    
     static let identifier = "AssignmentTableViewCell"
+    
+    private let imageBaseView: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 10
+        view.layer.masksToBounds = true
+        return view
+    }()
     
     private let assignmentImageView: UIImageView = {
         let imgView = UIImageView()
         imgView.image = UIImage(systemName: "person.crop.square.on.square.angled.fill")
-        imgView.contentMode = .scaleAspectFit
+        imgView.contentMode = .scaleAspectFill
         imgView.clipsToBounds = true
         return imgView
     }()
@@ -37,15 +46,17 @@ class AssignmentTableViewCell: UITableViewCell {
     }()
     
     private let addPhotoButton: UIButton = {
-        let button = UIButton()
+        let button = UIButton(type: .system)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .bold)
         button.setTitle("사진 추가하기", for: .normal)
+        button.setTitleColor(.black, for: .normal)
         return button
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
+        setupButton()
     }
     
     required init?(coder: NSCoder) {
@@ -64,33 +75,56 @@ class AssignmentTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
+    private func setupButton() {
+        addPhotoButton.addAction(UIAction(handler: { [weak self] _ in
+            print("button tapped")
+            guard let self = self else {
+                print("no self")
+                return }
+            delegate?.didTapAssignmentButton(in: self)
+        }), for: .touchUpInside)
+    }
+    
     private func setupUI() {
         
         contentView.addSubview(celltitleLabel)
         celltitleLabel.snp.makeConstraints { make in
             make.top.leading.equalToSuperview().offset(10)
         }
+        
+        
         contentView.addSubview(addPhotoButton)
         addPhotoButton.snp.makeConstraints { make in
-            make.top.equalTo(celltitleLabel).offset(10)
-            make.trailing.equalToSuperview().offset(-10)
+            make.top.equalTo(celltitleLabel.snp.top).offset(10)
+            make.trailing.equalToSuperview().inset(10)
             
         }
-        contentView.addSubview(assignmentImageView)
-        assignmentImageView.snp.makeConstraints { make in
+        
+        contentView.addSubview(imageBaseView)
+        imageBaseView.snp.makeConstraints { make in
             make.top.equalTo(celltitleLabel.snp.bottom).offset(20)
+            make.leading.equalToSuperview().offset(20)
             make.width.height.equalTo(50)
         }
+        
+        contentView.addSubview(assignmentImageView)
+        assignmentImageView.snp.makeConstraints { make in
+            make.edges.equalTo(imageBaseView)
+        }
+        
         contentView.addSubview(memoLabel)
         memoLabel.snp.makeConstraints { make in
             make.top.equalTo(assignmentImageView.snp.bottom).offset(12)
             make.leading.equalToSuperview().offset(10)
+            make.trailing.equalToSuperview().inset(10) // trailing 제약 추가
+            make.bottom.equalToSuperview().inset(10) 
         }
     }
     // 셀에 데이터를 채우는 메서드
-    public func configure(with assignment: Assignment) {
+    public func configure(with assignment: Assignment, numbering: String) {
         memoLabel.text = assignment.memo
         assignmentImageView.image = assignment.image
+        celltitleLabel.text = numbering
     }
     
     // 셀이 재사용될 때 호출되어 이전 데이터를 초기화 (선택적)
@@ -98,11 +132,16 @@ class AssignmentTableViewCell: UITableViewCell {
         super.prepareForReuse()
         memoLabel.text = nil
         assignmentImageView.image = nil
+        
+    }
+    
+    deinit {
+        delegate = nil
     }
     
 }
 
-
-#Preview {
-    AssignmentTableViewCell()
-}
+//
+//#Preview {
+//    AssignmentTableViewCell()
+//}

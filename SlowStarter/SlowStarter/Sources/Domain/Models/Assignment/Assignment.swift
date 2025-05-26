@@ -1,17 +1,12 @@
-////
-////  SubmittedAssignmentViewController.swift
-////  SlowStarter
-////
-////  Created by jdios on 5/21/25.
-////
 //
-//import UIKit
+//  Assignment.swift
+//  SlowStarter
 //
+//  Created by jdios on 5/21/25.
 //
 
+import Foundation
 import UIKit
-
-
 struct Assignment: Identifiable {
     let id = UUID()
     let memo: String
@@ -24,28 +19,4 @@ struct Assignment: Identifiable {
         Assignment(memo: "네 번째 과제: 디자인 수정", image: UIImage(systemName: "paintbrush.pointed.fill") ?? UIImage()),
         Assignment(memo: "다섯 번째 과제: 최종 발표 준비", image: UIImage(systemName: "speaker.wave.2.fill") ?? UIImage())
     ]
-}
-class SubmittedAssignmentViewController: UIViewController {
-    
-    var assignments: [Assignment] = Assignment.sampleAssignments
-    
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        view.backgroundColor = .white
-        
-    }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
