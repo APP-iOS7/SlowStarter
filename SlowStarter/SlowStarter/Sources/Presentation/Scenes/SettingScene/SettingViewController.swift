@@ -12,16 +12,19 @@ class SettingViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        configurationUI()
         setupUI()
     }
-
-    private func setupUI() {
-        view.backgroundColor = .white
-
+    
+    private func configurationUI() {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(SettingTableViewCell.self, forCellReuseIdentifier: "SettingCell")
+    }
+
+    private func setupUI() {
+        view.backgroundColor = .white
 
         let versionLabel = UILabel()
         versionLabel.text = "ver 0.0.1"
