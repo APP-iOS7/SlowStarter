@@ -8,6 +8,7 @@
 import UIKit
 
 class RepeatitiveStudyMainViewController: UIViewController {
+    weak var coordinator: RepeatitiveStudyMainCoordinator?
     
     
     override func viewDidLoad() {
