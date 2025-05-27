@@ -133,12 +133,6 @@ class VideoPlayerViewController: UIViewController {
         
         updateUIForPlayerState() // 초기 UI (플레이스홀더 썸네일 등)
         
-        // 테스트용 URL 로드
-        if let testURL = URL(string: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4") {
-            updateVideo(with: testURL)
-        } else {
-            updateVideo(with: nil) // URL이 유효하지 않으면 nil로 초기화 (플레이스홀더 표시)
-        }
     }
     
     deinit {
