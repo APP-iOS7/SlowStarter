@@ -40,6 +40,7 @@ final class ChatViewController: UIViewController {
         let cv: UICollectionView = UICollectionView(frame: view.bounds, collectionViewLayout: flowLayout)
         cv.backgroundColor = .white
         cv.delaysContentTouches = false
+        cv.delegate = self
         cv.translatesAutoresizingMaskIntoConstraints = false
         cv.addGestureRecognizer(collectionViewTapGesture) // 키보드 down 제스쳐 추가
         cv.isUserInteractionEnabled = true // 상호작용 허용
@@ -213,7 +214,6 @@ final class ChatViewController: UIViewController {
         // 섹션 추가
         var snapshot: NSDiffableDataSourceSnapshot<Section, ChatItemIdentifier> = dataSource.snapshot()
         snapshot.appendSections([.main])
-        snapshot.appendItems(viewModel.messageIDs.map { .message($0) })
         dataSource.apply(snapshot, animatingDifferences: false)
     }
     
@@ -239,10 +239,22 @@ final class ChatViewController: UIViewController {
             .dropFirst() // viewModel에서 초기화 될 때 무시
             .sink { completion in
                 print(completion)
-            } receiveValue: { [weak self] _ in
+            } receiveValue: { [weak self] newItems in
                 guard let self = self else { return }
+                let oldItems = self.dataSource.snapshot().itemIdentifiers(inSection: .main)
                 
-                self.applySnapshot()
+                if case .message(let id) = oldItems.first,
+                   let first = newItems.first {
+                    if id == first.id { // 배열 뒤에 추가
+                        self.applySnapshot(for: newItems)
+                        return
+                    } else { // 배열 앞에 추가(이전 대화)
+                        self.applySnapshot(forPreviousMessages: newItems)
+                        return
+                    }
+                }
+                
+                self.applySnapshot(for: newItems) // default: 배열 뒤에 추가
             }
             .store(in: &cancellables)
         
@@ -250,17 +262,15 @@ final class ChatViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .dropFirst() // viewModel에서 초기화 될 때 무시
             .sink { [weak self] isLoading in
-                guard let self = self else { return }
-                
                 if isLoading {
-                    sendButton.isEnabled = false
-                    sendButton.backgroundColor = .systemGray6
+                    self?.sendButton.isEnabled = false // 로딩중일 때 메시지 전송 x
+                    self?.sendButton.backgroundColor = .systemGray6
                 } else {
-                    sendButton.isEnabled = true
-                    sendButton.backgroundColor = .green
+                    self?.sendButton.isEnabled = true
+                    self?.sendButton.backgroundColor = .green
                 }
                 
-                self.applySnapshot()
+                self?.applyLoadingSnapshot(isLoading) // 로딩셀 추가, 삭제
             }
             .store(in: &cancellables)
     }
@@ -292,10 +302,16 @@ final class ChatViewController: UIViewController {
             if cellHeight > visibleHeight && !self.isInitialLoad { position = .top }
         }
         
-        if self.isInitialLoad { self.isInitialLoad = false } // 최초 진입 시
+        collectionView.scrollToItem(at: indexPath, at: position, animated: !self.isInitialLoad)
+        collectionView.layoutIfNeeded() // UI 갱신
         
-        collectionView.layoutIfNeeded() // 스크롤 전에 UI 갱신
-        collectionView.scrollToItem(at: indexPath, at: position, animated: true)
+        if self.isInitialLoad { self.isInitialLoad = false } // 최초 진입 시
+    }
+    
+    private func scrollToMessage(at index: Int) {
+        let indexPath: IndexPath = IndexPath(row: index, section: 0)
+        collectionView.scrollToItem(at: indexPath, at: .bottom, animated: false)
+        collectionView.layoutIfNeeded()
     }
     
     // MARK: - Selectors
@@ -364,13 +380,23 @@ final class ChatViewController: UIViewController {
     }
 }
 
+extension ChatViewController: UICollectionViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.y <= 0 {
+            if scrollView.isDragging || scrollView.isDecelerating { // 스크롤 중이거나, 관성으로 움직일 때
+                viewModel.fetchMessages()
+            }
+        }
+    }
+}
+
 // MARK: - Diffable DataSource
 extension ChatViewController {
-    // 컬렉션뷰 데이터소스 추가
-    private func applySnapshot(animating: Bool = true) {
+    // 컬렉션뷰 채팅셀 추가, 갱신
+    private func applySnapshot(for messages: [AIChatMessage]) {
         var snapshot: NSDiffableDataSourceSnapshot<Section, ChatItemIdentifier> = dataSource.snapshot()
         
-        for message in viewModel.messages {
+        for message in messages {
             let id = ChatItemIdentifier.message(message.id)
             if snapshot.itemIdentifiers.contains(id) {
                 snapshot.reconfigureItems([id]) // 이미 있는 cell을 다시 구성
@@ -379,8 +405,34 @@ extension ChatViewController {
             }
         }
         
+        dataSource.apply(snapshot, animatingDifferences: !isInitialLoad) { [weak self] in
+            self?.collectionView.layoutIfNeeded()
+            self?.scrollToLatestMessage()
+        }
+    }
+    
+    // 이전 채팅셀 추가
+    private func applySnapshot(forPreviousMessages messages: [AIChatMessage]) {
+        var snapshot: NSDiffableDataSourceSnapshot<Section, ChatItemIdentifier> = dataSource.snapshot()
+        
+        guard let firstItem = snapshot.itemIdentifiers.first,
+              case .message(let id) = firstItem,
+              let index = messages.firstIndex(where: { $0.id == id }) else { return }
+        
+        let previousMessages: [ChatItemIdentifier] = Array(messages[0..<index]).map { .message($0.id) }
+        
+        snapshot.insertItems(previousMessages, beforeItem: firstItem) // 이전 대화 추가
+        dataSource.apply(snapshot, animatingDifferences: false) { [weak self] in
+            self?.scrollToMessage(at: index)
+        }
+    }
+    
+    // 컬렉션뷰 로딩셀 추가, 삭제
+    private func applyLoadingSnapshot(_ isLoading: Bool) {
+        var snapshot: NSDiffableDataSourceSnapshot<Section, ChatItemIdentifier> = dataSource.snapshot()
+        
         // isLoading = true 면
-        if viewModel.isLoading {
+        if isLoading {
             if !snapshot.itemIdentifiers.contains(.loadingIndicator) { // 중복 추가 방지
                 snapshot.appendItems([.loadingIndicator], toSection: .main) // 로딩셀 추가
             }
@@ -391,11 +443,9 @@ extension ChatViewController {
             }
         }
         
-        dataSource.apply(snapshot, animatingDifferences: animating) { [weak self] in
-            guard let self = self else { return }
-            
-            self.scrollToLatestMessage()
-            self.collectionView.layoutIfNeeded()
+        dataSource.apply(snapshot, animatingDifferences: true) { [weak self] in
+            self?.collectionView.layoutIfNeeded()
+            self?.scrollToLatestMessage()
         }
     }
 }

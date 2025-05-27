@@ -70,13 +70,16 @@ final class CoreDataManager: CoreDataManagerProtocol {
         }
     }
     
-    /// 저장된 모든 메시지를 비동기적으로 조회
+    /// 저장된 메시지를 비동기적으로 조회
     /// - Returns: 메시지 객체 배열
     /// - Throws: Core Data 조회 중 발생할 수 있는 오류
-    func fetchMessages() async throws -> [AIChatMessage] {
+    func fetchMessages(at page: Int) async throws -> [AIChatMessage] {
         let request: NSFetchRequest<MessageEntity> = MessageEntity.fetchRequest()
-        // 메시지 엔티티를 관리 객체로 변환하여 반환
-        let result = try messageContext.fetch(request).compactMap { AIChatMessage.from($0) }
+        request.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: false)]
+        request.fetchLimit = 20 // 한 묶음 = 20개
+        request.fetchOffset = 20 * page
+        
+        let result: [AIChatMessage] = try messageContext.fetch(request).compactMap { AIChatMessage.from($0) }
         return result
     }
     

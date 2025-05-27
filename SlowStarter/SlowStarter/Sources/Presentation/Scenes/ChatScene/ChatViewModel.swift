@@ -9,25 +9,18 @@ import Foundation
 
 final class ChatViewModel: ObservableObject {
     // MARK: - Properties
-    @Published var messages: [AIChatMessage] = []
-    @Published var isLoading: Bool = false 
+    @Published private(set) var messages: [AIChatMessage] = []
+    @Published private(set) var isLoading: Bool = false
+    
+    private var page: Int = 0
     
     private let chatUseCase: DefaultChatUseCase
     private let summaryUseCase: DefaultSummaryUseCase
-    
     private let coreDataManager: CoreDataManager
     
     private var recentMessages: [AIChatMessage] {
         let size: Int = min(10, messages.count) // 10개, 그보다 적다면 있는 만큼
         return Array(messages[(messages.count - size)...]) // 뒤에서부터 size 만큼 꺼냄
-    }
-    
-    var messageIDs: [AIChatMessage.ID] {
-        return messages.map { $0.id }
-    }
-    
-    var numberOfMessages: Int {
-        return messages.count
     }
     
     init(chat: DefaultChatUseCase, summary: DefaultSummaryUseCase, coreDataManager: CoreDataManager
@@ -50,7 +43,11 @@ final class ChatViewModel: ObservableObject {
     func fetchMessages() {
         Task {
             do {
-                messages = try await coreDataManager.fetchMessages()
+                let messages: [AIChatMessage] = try await coreDataManager.fetchMessages(at: page).reversed()
+                guard !messages.isEmpty else { return }
+                
+                self.messages.insert(contentsOf: messages, at: 0)
+                page += 1
             } catch {
                 
             }
@@ -64,15 +61,14 @@ final class ChatViewModel: ObservableObject {
                 messages.append(myMessage)
                 
                 isLoading = true
-                
                 try await coreDataManager.saveMessage(myMessage)
                 
                 // 대화의 맥락을 유지하기 위해 최근 메시지를 함께 보냄
                 let sendMessages: [AIChatMessage] = recentMessages
                 let newMessage = try await chatUseCase.execute(messages: sendMessages) // 답장 받아오기
                 messages.append(newMessage)
-                try await coreDataManager.saveMessage(newMessage) // CoreData에 답장 저장
                 
+                try await coreDataManager.saveMessage(newMessage) // CoreData에 답장 저장
                 isLoading = false
             } catch {
                 isLoading = false
