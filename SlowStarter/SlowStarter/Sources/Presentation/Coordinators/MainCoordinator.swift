@@ -14,12 +14,13 @@ class MainCoordinator: Coordinator {
         self.tabBarController = UITabBarController()
 
         let chatNavigationController = UINavigationController()
+        let repeatitiveStudayDetailViewController = RepeatitiveStudyDetailViewController()
         self.chatCoordinator = ChatCoordinator(
             navigationController: chatNavigationController,
             coreDataManager: coreDataManager
         )
 
-        tabBarController.viewControllers = [chatNavigationController]
+        tabBarController.viewControllers = [repeatitiveStudayDetailViewController]
     }
 
     func start() {
