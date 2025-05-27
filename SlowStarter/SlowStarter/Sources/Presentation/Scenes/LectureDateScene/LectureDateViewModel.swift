@@ -30,9 +30,9 @@ struct LectureDateViewModel {
     let selectedButton: Bool = false
     
     let tabTitles: [(tabIcon: String, title: String)] = [
-        (tabIcon: "list.bullet", title: "강의목록"),
-        (tabIcon: "square.and.pencil", title: "반복학습"),
+        (tabIcon: "list.clipboard", title: "강의목록"),
+        (tabIcon: "play.desktopcomputer", title: "반복학습"),
         (tabIcon: "bubble", title: "채팅"),
-        (tabIcon: "person.crop.square", title: "마이페이지")
+        (tabIcon: "rectangle.stack.badge.person.crop", title: "마이페이지")
     ]
 }

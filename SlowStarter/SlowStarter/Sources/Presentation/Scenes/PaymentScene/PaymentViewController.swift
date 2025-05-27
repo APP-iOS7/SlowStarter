@@ -14,7 +14,7 @@ class PaymentViewController: UIViewController {
     
     private let paymentButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("결제완료", for: .normal)
+        button.setTitle("상담일자에 만나요~!", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont(name: "Pretendard-Black", size: 24)
         button.backgroundColor = .systemGreen

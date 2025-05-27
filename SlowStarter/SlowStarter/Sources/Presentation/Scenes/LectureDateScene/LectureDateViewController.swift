@@ -26,7 +26,7 @@ class LectureDateViewController: UIViewController {
     
     let subtitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "강의를 수강할 날짜를 선택해주세요.(총 2개)"
+        label.text = "상담할 날짜를 선택해주세요."
         label.font = UIFont(name: "Pretendard-Medium", size: 18)
         label.textAlignment = .left
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -59,7 +59,7 @@ class LectureDateViewController: UIViewController {
     
     private let nextButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("다음", for: .normal)
+        button.setTitle("상담날짜를 확정합니다.", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont(name: "Pretendard-Black", size: 24)
         button.backgroundColor = .systemGreen
@@ -72,6 +72,9 @@ class LectureDateViewController: UIViewController {
     private let tabBar: UITabBar = {
         let tabBar = UITabBar()
         tabBar.translatesAutoresizingMaskIntoConstraints = false
+        tabBar.tintColor = .systemGreen // 활성 탭 색상
+        tabBar.unselectedItemTintColor = .systemGray // 비활성 탭 색상
+        tabBar.backgroundColor = .white // 탭 바 배경색
         return tabBar
     }()
     
