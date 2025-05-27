@@ -10,6 +10,8 @@ import UIKit
 
 struct LectureListViewModel {
     
+    let title: String = "강의 리스트"
+    let subtitle: String = "다양한 강의를 직접 경험하세요!"
     let locationText: String = "강남구"
     let searchBarText: String = "사는곳 또는 직무를 입력해 강의를 검색하세요."
     

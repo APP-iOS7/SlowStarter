@@ -15,62 +15,55 @@ class LectureDetailViewController: UIViewController {
     private let viewModel = LectureDetailViewModel()
     
     // MARK: - UI Components
+    private let descriptionScrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        return scrollView
+    }()
+    
+    private let introVideoView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.image = UIImage(named: "cookingClassWomanChef")
+        return imageView
+    }()
+    
     lazy private var titleLabel: UILabel = {
         let label = UILabel()
         label.text = viewModel.title
-        label.font = UIFont(name: "Pretendard-Black", size: 24)
-        label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let introVideoView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .lightGray.withAlphaComponent(0.5)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    lazy private var curriculumShow: UILabel = {
-        let label = UILabel()
-        label.text = viewModel.curriculumShow
         label.font = UIFont(name: "Pretendard-Black", size: 24)
         label.textAlignment = .left
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+        
+    lazy private var priceLabel: UILabel = {
+        let label = UILabel()
+        label.text = viewModel.price
+        label.font = UIFont(name: "Pretendard-Regular", size: 20)
+        label.textAlignment = .left
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
     
-    lazy private var profileImageView: UIImageView = {
+    lazy private var slideImageView_1: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.image = UIImage(named: "profile_placeholder")
+        imageView.image = UIImage(named: "bread01")
         imageView.backgroundColor = .lightGray.withAlphaComponent(0.5)
         return imageView
     }()
     
-    lazy private var instructorNameLabel: UILabel = {
+    private var descriptionTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = viewModel.name
-        label.font = UIFont(name: "Pretendard-Black", size: 24)
+        label.text = "강의 설명"
+        label.font = UIFont(name: "Pretendard-Regular", size: 20)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
-    }()
-    
-    lazy private var instructorJobLabel: UILabel = {
-        let label = UILabel()
-        label.text = viewModel.job
-        label.font = UIFont(name: "Pretendard-Black", size: 24)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let descriptionScrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.backgroundColor = .lightGray.withAlphaComponent(0.5)
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        return scrollView
     }()
     
     lazy private var descriptionLabel: UILabel = {
@@ -85,7 +78,7 @@ class LectureDetailViewController: UIViewController {
         let button = UIButton(type: .system)
         button.setTitle("수강날짜 선택하기", for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = UIFont(name: "Pretendard-Black", size: 24)
+        button.titleLabel?.font = UIFont(name: "Pretendard-Bold", size: 20)
         button.backgroundColor = .systemGreen
         button.layer.cornerRadius = 10
         button.layer.borderWidth = 1
@@ -108,21 +101,17 @@ class LectureDetailViewController: UIViewController {
         tabBar.delegate = self
         setupTabBarItems()
         
-        // 이미지 로드 호출
-        loadImage(from: viewModel.profileImageURL, into: profileImageView)
-        
         // 버튼 액션 추가
         selectDateButton.addTarget(self, action: #selector(selectDateButtonTapped), for: .touchUpInside)
     }
     
     private func setupUI() {
-        view.addSubview(titleLabel)
-        view.addSubview(introVideoView)
-        view.addSubview(curriculumShow)
-        view.addSubview(profileImageView)
-        view.addSubview(instructorNameLabel)
-        view.addSubview(instructorJobLabel)
         view.addSubview(descriptionScrollView)
+        descriptionScrollView.addSubview(introVideoView)
+        descriptionScrollView.addSubview(titleLabel)
+        descriptionScrollView.addSubview(priceLabel)
+        descriptionScrollView.addSubview(slideImageView_1)
+        descriptionScrollView.addSubview(descriptionTitleLabel)
         descriptionScrollView.addSubview(descriptionLabel)
         view.addSubview(selectDateButton)
         view.addSubview(tabBar)
@@ -130,81 +119,46 @@ class LectureDetailViewController: UIViewController {
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            
-            introVideoView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
-            introVideoView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            introVideoView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            introVideoView.heightAnchor.constraint(equalToConstant: 100),
-            
-            curriculumShow.topAnchor.constraint(equalTo: introVideoView.bottomAnchor, constant: 30),
-            curriculumShow.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            
-            profileImageView.topAnchor.constraint(equalTo: introVideoView.bottomAnchor, constant: 15),
-            profileImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 200),
-            profileImageView.widthAnchor.constraint(equalToConstant: 70),
-            profileImageView.heightAnchor.constraint(equalTo: profileImageView.widthAnchor),
-            
-            instructorNameLabel.topAnchor.constraint(equalTo: introVideoView.bottomAnchor, constant: 20),
-            instructorNameLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 280),
-            
-            instructorJobLabel.topAnchor.constraint(equalTo: instructorNameLabel.bottomAnchor, constant: 0),
-            instructorJobLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 280),
-            
-            descriptionScrollView.topAnchor.constraint(equalTo: instructorJobLabel.bottomAnchor, constant: 20),
+            descriptionScrollView.topAnchor.constraint(equalTo: view.topAnchor),
             descriptionScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             descriptionScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            descriptionScrollView.heightAnchor.constraint(equalToConstant: 280),
+            descriptionScrollView.bottomAnchor.constraint(equalTo: tabBar.topAnchor),
             
-            descriptionLabel.topAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.topAnchor, constant: 20),
+            introVideoView.topAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.topAnchor),
+            introVideoView.leadingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.leadingAnchor),
+            introVideoView.trailingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.trailingAnchor),
+            introVideoView.heightAnchor.constraint(equalToConstant: 400),
+            
+            titleLabel.topAnchor.constraint(equalTo: introVideoView.bottomAnchor, constant: 20),
+            titleLabel.leadingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.leadingAnchor, constant: 20),
+            
+            priceLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
+            priceLabel.leadingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.leadingAnchor, constant: 20),
+                        
+            slideImageView_1.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 30),
+            slideImageView_1.leadingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.leadingAnchor, constant: 20),
+            slideImageView_1.heightAnchor.constraint(equalToConstant: 200),
+            
+            descriptionTitleLabel.topAnchor.constraint(equalTo: slideImageView_1.bottomAnchor, constant: 20),
+            descriptionTitleLabel.leadingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.leadingAnchor, constant: 20),
+            descriptionTitleLabel.trailingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.trailingAnchor, constant: -20),
+            
+            descriptionLabel.topAnchor.constraint(equalTo: descriptionTitleLabel.topAnchor, constant: 20),
             descriptionLabel.leadingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.leadingAnchor, constant: 20),
             descriptionLabel.trailingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.trailingAnchor, constant: -20),
             descriptionLabel.widthAnchor.constraint(equalTo: descriptionScrollView.frameLayoutGuide.widthAnchor, constant: -40),
             descriptionLabel.bottomAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.bottomAnchor, constant: -20),
             
-            selectDateButton.topAnchor.constraint(equalTo: descriptionScrollView.bottomAnchor, constant: 10),
             selectDateButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
             selectDateButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            selectDateButton.heightAnchor.constraint(equalToConstant: 60),
+            selectDateButton.bottomAnchor.constraint(equalTo: tabBar.topAnchor, constant: -5),
+            selectDateButton.heightAnchor.constraint(equalToConstant: 50),
             
             tabBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tabBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tabBar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            tabBar.heightAnchor.constraint(equalToConstant: 60)
+            tabBar.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            tabBar.heightAnchor.constraint(equalToConstant: 100)
         ])
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        // 여기서 cornerRadius 설정을 해주면, 프레임이 완전히 설정된 후에 적용됩니다.
-        profileImageView.layer.cornerRadius = profileImageView.frame.width / 2
-    }
-    
-    // LectureDetailViewController.swift 파일에 추가
-    private func loadImage(from urlString: String, into imageView: UIImageView) {
-        guard let url = URL(string: urlString) else {
-            print("Invalid URL: \(urlString)")
-            return
-        }
-        
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            if let error = error {
-                print("Error loading image: \(error.localizedDescription)")
-                return
-            }
-            
-            guard let data = data, let image = UIImage(data: data) else {
-                print("Invalid image data")
-                return
-            }
-            
-            DispatchQueue.main.async {
-                imageView.image = image
-            }
-        }.resume()
     }
     
     func setupTabBarItems() {
