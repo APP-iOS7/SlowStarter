@@ -7,7 +7,7 @@
 
 import UIKit
 
-class LectureCoordinator: Coordinator {
+class LectureCoordinator: LectureFlowCoordinator {
     var navigationController: UINavigationController
 
     init(navigationController: UINavigationController) {
@@ -42,5 +42,9 @@ class LectureCoordinator: Coordinator {
         // 모달 스타일 설정
         paymentViewController.modalPresentationStyle = .pageSheet
         navigationController.present(paymentViewController, animated: false, completion: nil)
+    }
+    
+    func popViewController() {
+        navigationController.popViewController(animated: false)
     }
 }

@@ -9,7 +9,7 @@ import UIKit
 
 class LectureListViewController: UIViewController {
     
-    weak var coordinator: LectureCoordinator?
+    weak var coordinator: LectureFlowCoordinator?
     // 코디네이터 주입을 위한 프로퍼티 추가
     
     private let viewModel = LectureListViewModel()
@@ -92,8 +92,9 @@ class LectureListViewController: UIViewController {
         tableView.dataSource = self
         tabBar.delegate = self
         setupTabBarItems()
-        self.navigationController?.navigationBar.isHidden = true
-        // 내비게이션 바 숨김 유지 (필요에 따라)
+        
+        // 내비게이션 바 숨김 해제
+        self.navigationController?.navigationBar.isHidden = false
     }
     
     private func setupUI() {

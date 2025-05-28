@@ -9,7 +9,7 @@ import UIKit
 
 class LectureDateViewController: UIViewController {
     
-    weak var coordinator: LectureCoordinator?
+    weak var coordinator: LectureFlowCoordinator?
     // 코디네이터 주입을 위한 프로퍼티 추가
     
     private let viewModel = LectureDateViewModel()
@@ -91,6 +91,9 @@ class LectureDateViewController: UIViewController {
         
         // 버튼 액션 추가
         nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
+        
+        // 내비게이션 바 표시 및 뒤로가기 버튼 활성화 (기본값)
+        self.navigationController?.navigationBar.isHidden = false
     }
     
     private func setupUI() {
@@ -121,7 +124,7 @@ class LectureDateViewController: UIViewController {
             selectedDateView.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 20),
             selectedDateView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
             selectedDateView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            selectedDateView.heightAnchor.constraint(equalToConstant: 180),
+            selectedDateView.heightAnchor.constraint(equalToConstant: 160),
             
             selectedDateLabel.centerXAnchor.constraint(equalTo: selectedDateView.centerXAnchor),
             selectedDateLabel.centerYAnchor.constraint(equalTo: selectedDateView.centerYAnchor),

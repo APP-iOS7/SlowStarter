@@ -9,7 +9,7 @@ import UIKit
 
 class PaymentViewController: UIViewController {
     
-    weak var coordinator: LectureCoordinator?
+    weak var coordinator: LectureFlowCoordinator?
     // 코디네이터 주입을 위한 프로퍼티 추가
     
     private let paymentButton: UIButton = {
@@ -49,7 +49,7 @@ class PaymentViewController: UIViewController {
     
     // 코디네이터에게 화면 전환 요청
     @objc private func paymentButtonTapped() {
-        coordinator?.start()
+        coordinator?.showLectureDateSelection()
     }
 }
 

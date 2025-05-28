@@ -9,7 +9,7 @@ import UIKit
 
 class LectureDetailViewController: UIViewController {
     
-    weak var coordinator: LectureCoordinator?
+    weak var coordinator: LectureFlowCoordinator?
     // 코디네이터 주입을 위한 프로퍼티 추가
     
     private let viewModel = LectureDetailViewModel()
@@ -150,7 +150,7 @@ class LectureDetailViewController: UIViewController {
     
     private let selectDateButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("수강날짜 선택하기", for: .normal)
+        button.setTitle("상담날짜 예약하기", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont(name: "Pretendard-Bold", size: 20)
         button.backgroundColor = .black
@@ -180,6 +180,9 @@ class LectureDetailViewController: UIViewController {
         
         // 버튼 액션 추가
         selectDateButton.addTarget(self, action: #selector(selectDateButtonTapped), for: .touchUpInside)
+        
+        // 내비게이션 바 표시 및 뒤로가기 버튼 활성화 (기본값)
+        self.navigationController?.navigationBar.isHidden = false
     }
     
     private func setupUI() {
