@@ -134,7 +134,7 @@ class LectureListViewController: UIViewController {
     func setupTabBarItems() {
         var items: [UITabBarItem] = []
         for (index, tabData) in viewModel.tabTitles.enumerated() {
-            let image = UIImage(systemName: tabData.tabIcon)
+            let image = UIImage(named: tabData.tabIcon)
             let item = UITabBarItem(title: tabData.title, image: image, tag: index)
             items.append(item)
         }

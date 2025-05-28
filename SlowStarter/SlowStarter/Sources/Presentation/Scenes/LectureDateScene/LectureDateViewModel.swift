@@ -9,11 +9,10 @@ import Foundation
 
 struct LectureDateViewModel {
     
-    let title: String = "강의명"
+    let title: String = "메시 선생님과 배우는 쿠킹클래스"
 //    let selectedDate: Date
     
     var lectureDates: [String] = [
-        "2025년 6월 20일 금요일 오전 10시",
         "2025년 6월 20일 금요일 오전 10시",
         "2025년 6월 21일 토요일 오후 1시",
         "2025년 6월 22일 일요일 오전 9시",
@@ -30,9 +29,9 @@ struct LectureDateViewModel {
     let selectedButton: Bool = false
     
     let tabTitles: [(tabIcon: String, title: String)] = [
-        (tabIcon: "list.clipboard", title: "강의목록"),
-        (tabIcon: "play.desktopcomputer", title: "반복학습"),
-        (tabIcon: "bubble", title: "채팅"),
-        (tabIcon: "rectangle.stack.badge.person.crop", title: "마이페이지")
+        (tabIcon: "tabLectureList", title: "강의목록"),
+        (tabIcon: "tabLaptopChromebook", title: "반복학습"),
+        (tabIcon: "tabChatBubble", title: "채팅"),
+        (tabIcon: "tabMypage", title: "마이페이지")
     ]
 }

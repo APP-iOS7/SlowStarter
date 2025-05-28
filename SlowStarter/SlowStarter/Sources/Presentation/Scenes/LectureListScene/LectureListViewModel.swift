@@ -29,10 +29,10 @@ struct LectureListViewModel {
     ]
     
     let tabTitles: [(tabIcon: String, title: String)] = [
-        (tabIcon: "list.clipboard", title: "강의목록"),
-        (tabIcon: "play.desktopcomputer", title: "반복학습"),
-        (tabIcon: "bubble", title: "채팅"),
-        (tabIcon: "rectangle.stack.badge.person.crop", title: "마이페이지")
+        (tabIcon: "tabLectureList", title: "강의목록"),
+        (tabIcon: "tabLaptopChromebook", title: "반복학습"),
+        (tabIcon: "tabChatBubble", title: "채팅"),
+        (tabIcon: "tabMypage", title: "마이페이지")
     ]
     
     // MARK: - UI Style

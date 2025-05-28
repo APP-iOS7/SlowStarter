@@ -153,7 +153,7 @@ class LectureDetailViewController: UIViewController {
         button.setTitle("수강날짜 선택하기", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont(name: "Pretendard-Bold", size: 20)
-        button.backgroundColor = .systemGreen
+        button.backgroundColor = .black
         button.layer.cornerRadius = 10
         button.layer.borderWidth = 1
         //        button.layer.borderColor = UIColor.white.cgColor
@@ -283,7 +283,7 @@ class LectureDetailViewController: UIViewController {
     func setupTabBarItems() {
         var items: [UITabBarItem] = []
         for (index, tabData) in viewModel.tabTitles.enumerated() {
-            let image = UIImage(systemName: tabData.tabIcon)
+            let image = UIImage(named: tabData.tabIcon)
             let item = UITabBarItem(title: tabData.title, image: image, tag: index)
             items.append(item)
         }

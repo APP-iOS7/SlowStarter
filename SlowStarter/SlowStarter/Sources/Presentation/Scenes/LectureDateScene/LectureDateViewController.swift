@@ -26,7 +26,7 @@ class LectureDateViewController: UIViewController {
     
     let subtitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "상담할 날짜를 선택해주세요."
+        label.text = "상담예약을 위해 날짜를 선택해주세요."
         label.font = UIFont(name: "Pretendard-Medium", size: 18)
         label.textAlignment = .left
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -49,7 +49,7 @@ class LectureDateViewController: UIViewController {
     
     lazy private var selectedDateLabel: UILabel = {
         let label = UILabel()
-        label.text = "2025년 6월 25일\n수요일 오후 2시"
+        label.text = "위 리스트 중 하나를\n선택하면 표시됩니다."
         label.font = UIFont(name: "Pretendard-Black", size: 24)
         label.numberOfLines = 2
         label.textAlignment = .center
@@ -59,10 +59,10 @@ class LectureDateViewController: UIViewController {
     
     private let nextButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("상담날짜를 확정합니다.", for: .normal)
+        button.setTitle("상담예약날짜를 확정합니다.", for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = UIFont(name: "Pretendard-Black", size: 24)
-        button.backgroundColor = .systemGreen
+        button.titleLabel?.font = UIFont(name: "Pretendard-Bold", size: 22)
+        button.backgroundColor = .black
         button.layer.cornerRadius = 10
         button.layer.borderWidth = 1
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -116,19 +116,19 @@ class LectureDateViewController: UIViewController {
             tableView.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 20),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.heightAnchor.constraint(equalToConstant: 250),
+            tableView.heightAnchor.constraint(equalToConstant: 290),
             
             selectedDateView.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 20),
-            selectedDateView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            selectedDateView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            selectedDateView.heightAnchor.constraint(equalToConstant: 100),
+            selectedDateView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            selectedDateView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            selectedDateView.heightAnchor.constraint(equalToConstant: 180),
             
             selectedDateLabel.centerXAnchor.constraint(equalTo: selectedDateView.centerXAnchor),
             selectedDateLabel.centerYAnchor.constraint(equalTo: selectedDateView.centerYAnchor),
             
-            nextButton.topAnchor.constraint(equalTo: selectedDateView.bottomAnchor, constant: 20),
             nextButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
             nextButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            nextButton.bottomAnchor.constraint(equalTo: tabBar.topAnchor, constant: -5),
             nextButton.heightAnchor.constraint(equalToConstant: 60),
             
             tabBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -141,7 +141,7 @@ class LectureDateViewController: UIViewController {
     func setupTabBarItems() {
         var items: [UITabBarItem] = []
         for (index, tabData) in viewModel.tabTitles.enumerated() {
-            let image = UIImage(systemName: tabData.tabIcon)
+            let image = UIImage(named: tabData.tabIcon)?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 10, weight: .regular))
             let item = UITabBarItem(title: tabData.title, image: image, tag: index)
             items.append(item)
         }
@@ -164,7 +164,18 @@ extension LectureDateViewController: UITableViewDataSource, UITableViewDelegate 
         let cell = tableView.dequeueReusableCell(withIdentifier: "LectureDateCell", for: indexPath)
         cell.textLabel?.text = viewModel.lectureDates[indexPath.row]
         cell.backgroundColor = .systemGray6
+        
+        // 텍스트 크기를 크게 설정합니다.
+        cell.textLabel?.font = UIFont(name: "Pretendard-Medium", size: 20)
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // 선택된 셀의 텍스트를 가져와 selectedDateLabel에 설정합니다.
+        selectedDateLabel.text = viewModel.lectureDates[indexPath.row]
+        
+        // 선택된 셀의 배경색을 변경
+//        tableView.cellForRow(at: indexPath)?.backgroundColor = .black
     }
 }
 
