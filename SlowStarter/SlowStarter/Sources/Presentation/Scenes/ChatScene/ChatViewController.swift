@@ -54,10 +54,10 @@ final class ChatViewController: UIViewController {
         }()
         
         let receivedCellRegistration: UICollectionView.CellRegistration<ReceivedMessageCell, AIChatMessage> = {
-            UICollectionView.CellRegistration { [weak self] cell, indexPath, message in
+            UICollectionView.CellRegistration { [weak self] cell, _, message in
                 cell.message = message
                 cell.summaryButtom.addAction(UIAction { _ in
-                    self?.viewModel.didTapSummaryButton(index: indexPath.row, message: message)
+                    self?.viewModel.didTapSummaryButton(message: message)
                 }, for: .touchUpInside)
             }
         }()
@@ -297,13 +297,16 @@ final class ChatViewController: UIViewController {
         guard !snapshot.itemIdentifiers.isEmpty,
               let lastID = snapshot.itemIdentifiers.last,
               case .message(let id) = lastID,
-              let lastItem = viewModel.message(with: id),
-              let sectionIndex = snapshot.sectionIdentifiers.firstIndex(of: .date(lastItem.timestamp)) else { return }
+              let lastItem = viewModel.message(with: id) else { return }
+        
+        let section = Section.date(Calendar.current.startOfDay(for: lastItem.timestamp))
+        guard let sectionIndex = snapshot.sectionIdentifiers.firstIndex(of: section) else { return }
         
         let indexPath: IndexPath = IndexPath(
-            item: snapshot.numberOfItems(inSection: .date(lastItem.timestamp)) - 1,
+            item: snapshot.numberOfItems(inSection: section) - 1,
             section: sectionIndex
         )
+        
         var position: UICollectionView.ScrollPosition = .bottom // 셀은 일반적으로 컬렉션뷰 바닥에 위치
         
         // 셀이 가진 제약에 근거해 셀의 layout 정보를 계산 (화면에 그려지지 않아도 ok)
@@ -319,12 +322,6 @@ final class ChatViewController: UIViewController {
         collectionView.layoutIfNeeded() // UI 갱신
         
         if self.isInitialLoad { self.isInitialLoad = false } // 최초 진입 시
-    }
-    
-    private func scrollToMessage(at index: Int) {
-        let indexPath: IndexPath = IndexPath(row: index, section: 0)
-        collectionView.scrollToItem(at: indexPath, at: .bottom, animated: false)
-        collectionView.layoutIfNeeded()
     }
     
     // MARK: - Selectors
@@ -497,7 +494,7 @@ extension ChatViewController {
     
     // 컬렉션뷰 로딩셀 추가, 삭제
     private func applyLoadingSnapshot(_ isLoading: Bool) {
-        var snapshot: NSDiffableDataSourceSnapshot<Section, ChatItemIdentifier> = dataSource.snapshot()
+        var snapshot: NSDiffableDataSourceSnapshot<Section, ChatItemIdentifier> = NSDiffableDataSourceSnapshot()
         
         guard let lastItem = snapshot.itemIdentifiers.last,
               case .message(let id) = lastItem,

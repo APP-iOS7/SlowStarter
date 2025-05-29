@@ -82,11 +82,16 @@ final class ChatViewModel: ObservableObject {
         }
     }
     
-    func didTapSummaryButton(index: Int, message: AIChatMessage) {
+    func didTapSummaryButton(message: AIChatMessage) {
         Task {
             do {
+                guard let index = messages.firstIndex(where: { $0.id == message.id }) else { return }
                 let summaryMessage: AIChatMessage = try await summaryUseCase.execute(message: message)
-                messages[index] = summaryMessage
+                
+                var updatedMessages = messages
+                updatedMessages[index] = summaryMessage
+                messages = updatedMessages
+                
                 try await coreDataManager.updateMessage(summaryMessage)
             } catch {
                 if let apiError = error as? ChatAPIError {
