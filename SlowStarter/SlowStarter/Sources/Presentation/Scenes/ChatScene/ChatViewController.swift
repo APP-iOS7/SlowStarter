@@ -8,8 +8,8 @@
 import UIKit
 import Combine
 
-enum Section {
-    case main
+enum Section: Hashable {
+    case date(Date)
 }
 
 enum ChatItemIdentifier: Hashable {
@@ -68,6 +68,18 @@ final class ChatViewController: UIViewController {
             }
         }()
         
+        let dateHeaderRegistration = UICollectionView.SupplementaryRegistration<DateHeaderView>(
+            elementKind: UICollectionView.elementKindSectionHeader) { [weak self] headerView, kind, indexPath in
+                guard let self = self else { return }
+                
+                let snapshot = self.dataSource.snapshot()
+                let sectionIdentifier = snapshot.sectionIdentifiers[indexPath.section]
+                
+                if case .date(let date) = sectionIdentifier {
+                    headerView.configure(date)
+                }
+            }
+        
         let dataSource = UICollectionViewDiffableDataSource<Section, ChatItemIdentifier>(
             collectionView: collectionView
         ) { [weak self] collectionView, indexPath, identifier -> UICollectionViewCell? in
@@ -96,6 +108,15 @@ final class ChatViewController: UIViewController {
                     item: ()
                 )
             }
+        }
+        
+        dataSource.supplementaryViewProvider = { collectionView, kind, indexPath -> UICollectionReusableView? in
+            guard kind == UICollectionView.elementKindSectionHeader else { return nil }
+            
+            return collectionView.dequeueConfiguredReusableSupplementary(
+                using: dateHeaderRegistration,
+                for: indexPath
+            )
         }
         
         return dataSource
@@ -211,11 +232,6 @@ final class ChatViewController: UIViewController {
     
     private func setCollectionView() {
         collectionView.dataSource = dataSource
-        
-        // 섹션 추가
-        var snapshot: NSDiffableDataSourceSnapshot<Section, ChatItemIdentifier> = dataSource.snapshot()
-        snapshot.appendSections([.main])
-        dataSource.apply(snapshot, animatingDifferences: false)
     }
     
     private func setKeyboardNotifications() {
@@ -236,28 +252,14 @@ final class ChatViewController: UIViewController {
     
     private func bindViewModel() {
         viewModel.$messages
+            .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .dropFirst() // viewModel에서 초기화 될 때 무시
             .sink { completion in
                 print(completion)
-            } receiveValue: { [weak self] newItems in
-                guard let self = self else { return }
-                let oldItems = self.dataSource.snapshot().itemIdentifiers(inSection: .main)
-                
-                self.cellHeightCache.removeAll() // cell size 다시 계산
-                
-                if case .message(let id) = oldItems.first,
-                   let first = newItems.first {
-                    if id == first.id { // 배열 뒤에 추가
-                        self.applySnapshot(for: newItems)
-                        return
-                    } else { // 배열 앞에 추가(이전 대화)
-                        self.applySnapshot(forPreviousMessages: newItems)
-                        return
-                    }
-                }
-                
-                self.applySnapshot(for: newItems) // default: 배열 뒤에 추가
+            } receiveValue: { [weak self] messages in
+                self?.cellHeightCache.removeAll() // cell size 다시 계산
+                self?.applySnapshot(for: messages)
             }
             .store(in: &cancellables)
         
@@ -290,10 +292,18 @@ final class ChatViewController: UIViewController {
     }
     
     private func scrollToLatestMessage() {
-        let numberOfItems = dataSource.snapshot().numberOfItems(inSection: .main)
-        guard numberOfItems > 0 else { return }
+        let snapshot = dataSource.snapshot()
         
-        let indexPath: IndexPath = IndexPath(item: numberOfItems - 1, section: 0)
+        guard !snapshot.itemIdentifiers.isEmpty,
+              let lastID = snapshot.itemIdentifiers.last,
+              case .message(let id) = lastID,
+              let lastItem = viewModel.message(with: id),
+              let sectionIndex = snapshot.sectionIdentifiers.firstIndex(of: .date(lastItem.timestamp)) else { return }
+        
+        let indexPath: IndexPath = IndexPath(
+            item: snapshot.numberOfItems(inSection: .date(lastItem.timestamp)) - 1,
+            section: sectionIndex
+        )
         var position: UICollectionView.ScrollPosition = .bottom // 셀은 일반적으로 컬렉션뷰 바닥에 위치
         
         // 셀이 가진 제약에 근거해 셀의 layout 정보를 계산 (화면에 그려지지 않아도 ok)
@@ -445,20 +455,37 @@ extension ChatViewController: UICollectionViewDelegateFlowLayout {
             return CGSize(width: cellWidth, height: calculatedHeight)
         }
     }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSize(width: collectionView.bounds.width, height: 50)
+    }
 }
 
 // MARK: - Diffable DataSource
 extension ChatViewController {
     // 컬렉션뷰 채팅셀 추가, 갱신
     private func applySnapshot(for messages: [AIChatMessage]) {
-        var snapshot: NSDiffableDataSourceSnapshot<Section, ChatItemIdentifier> = dataSource.snapshot()
+        var snapshot: NSDiffableDataSourceSnapshot<Section, ChatItemIdentifier> = NSDiffableDataSourceSnapshot()
         
-        for message in messages {
-            let id = ChatItemIdentifier.message(message.id)
-            if snapshot.itemIdentifiers.contains(id) {
-                snapshot.reconfigureItems([id]) // 이미 있는 cell을 다시 구성
-            } else {
-                snapshot.appendItems([id], toSection: .main) // 새로운 cell을 추가
+        // 날짜별로 그룹핑, 오름차 순으로 정렬
+        let groupedMessages = Dictionary(grouping: viewModel.messages) { message -> Date in
+            return Calendar.current.startOfDay(for: message.timestamp)
+        }
+        let sortedDates = groupedMessages.keys.sorted { $0 < $1 }
+        
+        // 날짜 섹션별로 추가
+        for date in sortedDates {
+            let section = Section.date(date)
+            snapshot.appendSections([section])
+            
+            let messagesInSection = groupedMessages[date]?
+                .sorted { $0.timestamp < $1.timestamp }
+                .map { ChatItemIdentifier.message($0.id) }
+            
+            if let items = messagesInSection, !items.isEmpty {
+                snapshot.appendItems(items, toSection: .date(date))
             }
         }
         
@@ -468,30 +495,20 @@ extension ChatViewController {
         }
     }
     
-    // 이전 채팅셀 추가
-    private func applySnapshot(forPreviousMessages messages: [AIChatMessage]) {
-        var snapshot: NSDiffableDataSourceSnapshot<Section, ChatItemIdentifier> = dataSource.snapshot()
-        
-        guard let firstItem = snapshot.itemIdentifiers.first,
-              case .message(let id) = firstItem,
-              let index = messages.firstIndex(where: { $0.id == id }) else { return }
-        
-        let previousMessages: [ChatItemIdentifier] = Array(messages[0..<index]).map { .message($0.id) }
-        
-        snapshot.insertItems(previousMessages, beforeItem: firstItem) // 이전 대화 추가
-        dataSource.apply(snapshot, animatingDifferences: false) { [weak self] in
-            self?.scrollToMessage(at: index)
-        }
-    }
-    
     // 컬렉션뷰 로딩셀 추가, 삭제
     private func applyLoadingSnapshot(_ isLoading: Bool) {
         var snapshot: NSDiffableDataSourceSnapshot<Section, ChatItemIdentifier> = dataSource.snapshot()
         
+        guard let lastItem = snapshot.itemIdentifiers.last,
+              case .message(let id) = lastItem,
+              let message = viewModel.message(with: id) else { return }
+        
+        let section: Section = .date(Calendar.current.startOfDay(for: message.timestamp))
+        
         // isLoading = true 면
         if isLoading {
             if !snapshot.itemIdentifiers.contains(.loadingIndicator) { // 중복 추가 방지
-                snapshot.appendItems([.loadingIndicator], toSection: .main) // 로딩셀 추가
+                snapshot.appendItems([.loadingIndicator], toSection: section) // 로딩셀 추가
             }
         } else { // isLoading = false
             // 로딩셀이 있으면

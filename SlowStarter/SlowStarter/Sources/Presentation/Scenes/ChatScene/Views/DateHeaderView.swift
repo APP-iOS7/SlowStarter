@@ -7,7 +7,7 @@
 
 import UIKit
 
-class DateHeaderView: UICollectionReusableView {
+final class DateHeaderView: UICollectionReusableView {
     private let dateLabel: UILabel = {
         let label: UILabel = UILabel()
         label.textColor = .black
@@ -70,5 +70,11 @@ class DateHeaderView: UICollectionReusableView {
             rightLineView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -10),
             rightLineView.heightAnchor.constraint(equalToConstant: 1)
         ])
+    }
+    
+    func configure(_ date: Date) {
+        let formatter: DateFormatter = DateFormatter()
+        formatter.dateFormat = "yyyy년 MM월 dd일"
+        dateLabel.text = formatter.string(from: date)
     }
 }
