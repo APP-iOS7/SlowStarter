@@ -363,8 +363,13 @@ final class ChatViewController: UIViewController {
             guard let self = self else { return }
             
             // 최대 스크롤 수치 (컨텐츠 사이즈 - 프레임 사이즈)
-            // 컨텐츠 사이즈가 frame 보다 크지 않은 경우 0 반환
             let maxOffsetY = max(0, self.collectionView.contentSize.height - self.collectionView.frame.height)
+            
+            // contentOffset이 최하단에 가까울 때 위치 조정 x
+            if self.collectionView.contentOffset.y > maxOffsetY - 10 {
+                self.lastKeyboardVisibleHeight = 0
+                return
+            }
             
             let targetOffsetY = self.collectionView.contentOffset.y - lastKeyboardVisibleHeight // 움직임이 예상되는 정도
             let newOffsetY = max(targetOffsetY, 0) // 최소 스크롤 영역을 벗어나는 것을 방지
@@ -387,6 +392,7 @@ extension ChatViewController: UICollectionViewDelegate {
     }
 }
 
+// MARK: - DelegateFlowLayout
 extension ChatViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
@@ -394,19 +400,21 @@ extension ChatViewController: UICollectionViewDelegateFlowLayout {
         guard let item = dataSource.itemIdentifier(for: indexPath) else { return .zero }
         
         let cellWidth: CGFloat =
-            collectionView.bounds.width - (collectionView.contentInset.left + collectionView.contentInset.right)
+        collectionView.bounds.width - (collectionView.contentInset.left + collectionView.contentInset.right)
         
         // 로딩셀인 경우 정해진 고정 size를 반환
         guard case .message(let id) = item else {
             return CGSize(width: cellWidth, height: 60)
         }
-
+        
+        // 저장된 height가 있으면 그대로 사용
         if let cachedHeight = cellHeightCache[id] {
             return CGSize(width: cellWidth, height: cachedHeight)
         }
         
         guard let message: AIChatMessage = viewModel.message(with: id) else { return .zero }
         
+        // 저장된 height가 없으면 계산
         if message.isSended {
             let dummyCell: SendedMessageCell = SendedMessageCell()
             dummyCell.message = message
