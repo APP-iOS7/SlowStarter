@@ -217,6 +217,16 @@ final class ChatViewController: UIViewController {
     @objc private func tappedCollectionView() {
         view.endEditing(true) // 키보드 down
     }
+    
+    // MARK: - Notification
+    // 채팅 메시지를 수신했을 때 호출될 함수
+    func onChatMessageReceived(sender: String, message: String, conversationId: String? = nil) {
+        NotificationManager.shared.sendChatMessageNotification(
+            senderName: sender,
+            messageBody: message,
+            conversationID: conversationId
+        )
+    }
 }
 
 // MARK: - Diffable DataSource
@@ -224,7 +234,7 @@ extension ChatViewController {
     // 컬렉션뷰 데이터소스 추가
     private func applySnapshot(_ id: Messages.ID, animating: Bool = true) {
         var snapshot: NSDiffableDataSourceSnapshot<Section, Messages.ID> = dataSource.snapshot()
-                
+        
         if snapshot.itemIdentifiers.contains(id) {
             snapshot.reconfigureItems([id]) // 이미 있는 cell을 다시 구성
         } else {

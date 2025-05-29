@@ -1,8 +1,9 @@
 import UIKit
 import CoreData
+import UserNotifications
 
 @main
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     lazy var persistentConfigContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "Config")
         container.loadPersistentStores { storeDescription, error in
@@ -25,7 +26,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            print("Permission granted: \(granted)")
+            if let error = error {
+                print("알림 권한 요청 에러: \(error.localizedDescription)")
+            }
+        }
+        UNUserNotificationCenter.current().delegate = self
         return true
     }
     
@@ -43,5 +50,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
     
+    // MARK: - UNUserNotificationCenterDelegate Methods
+    // 앱이 포그라운드에 있을 때 알림을 받을 경우 호출되는 메서드
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification,
+                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.banner, .sound, .badge])
+        print("포그라운드에서 알림 수신: \(notification.request.content.body)")
+    }
     
+    // 사용자가 알림을 탭했을 때 호출되는 메서드
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                didReceive response: UNNotificationResponse,
+                                withCompletionHandler completionHandler: @escaping () -> Void) {
+        // 사용자가 알림을 탭했을 때 수행할 작업
+        print("알림 탭: \(response.notification.request.content.body)")
+        completionHandler()
+    }
 }
