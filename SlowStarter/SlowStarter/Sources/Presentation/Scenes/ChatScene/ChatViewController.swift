@@ -32,7 +32,6 @@ final class ChatViewController: UIViewController {
     
     private let flowLayout: UICollectionViewFlowLayout = {
         let flowLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-        flowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize // Cell Self-Sizing
         return flowLayout
     }()
     
@@ -50,13 +49,13 @@ final class ChatViewController: UIViewController {
     private lazy var dataSource: UICollectionViewDiffableDataSource<Section, ChatItemIdentifier> = {
         let sendedCellRegistration: UICollectionView.CellRegistration<SendedMessageCell, AIChatMessage> = {
             UICollectionView.CellRegistration { cell, _, message in
-                cell.chat = message
+                cell.message = message
             }
         }()
         
         let receivedCellRegistration: UICollectionView.CellRegistration<ReceivedMessageCell, AIChatMessage> = {
             UICollectionView.CellRegistration { [weak self] cell, indexPath, message in
-                cell.chat = message
+                cell.message = message
                 cell.summaryButtom.addAction(UIAction { _ in
                     self?.viewModel.didTapSummaryButton(index: indexPath.row, message: message)
                 }, for: .touchUpInside)
@@ -142,6 +141,8 @@ final class ChatViewController: UIViewController {
     private var lastKeyboardVisibleHeight: CGFloat = 0
     
     private var isInitialLoad: Bool = true
+    
+    private var cellHeightCache: [UUID: CGFloat] = .init()
     
     // MARK: - Initializer
     init(viewModel: ChatViewModel) {
@@ -242,6 +243,8 @@ final class ChatViewController: UIViewController {
             } receiveValue: { [weak self] newItems in
                 guard let self = self else { return }
                 let oldItems = self.dataSource.snapshot().itemIdentifiers(inSection: .main)
+                
+                self.cellHeightCache.removeAll() // cell size 다시 계산
                 
                 if case .message(let id) = oldItems.first,
                    let first = newItems.first {
@@ -363,12 +366,6 @@ final class ChatViewController: UIViewController {
             // 컨텐츠 사이즈가 frame 보다 크지 않은 경우 0 반환
             let maxOffsetY = max(0, self.collectionView.contentSize.height - self.collectionView.frame.height)
             
-            // 이미 최대로 스크롤 돼있으면 움직이지 않음
-            if maxOffsetY == self.collectionView.contentOffset.y {
-                self.lastKeyboardVisibleHeight = 0 // 키보드 이벤트 종료
-                return
-            }
-            
             let targetOffsetY = self.collectionView.contentOffset.y - lastKeyboardVisibleHeight // 움직임이 예상되는 정도
             let newOffsetY = max(targetOffsetY, 0) // 최소 스크롤 영역을 벗어나는 것을 방지
             
@@ -386,6 +383,58 @@ extension ChatViewController: UICollectionViewDelegate {
             if scrollView.isDragging || scrollView.isDecelerating { // 스크롤 중이거나, 관성으로 움직일 때
                 viewModel.fetchMessages()
             }
+        }
+    }
+}
+
+extension ChatViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        guard let item = dataSource.itemIdentifier(for: indexPath) else { return .zero }
+        
+        let cellWidth: CGFloat =
+            collectionView.bounds.width - (collectionView.contentInset.left + collectionView.contentInset.right)
+        
+        // 로딩셀인 경우 정해진 고정 size를 반환
+        guard case .message(let id) = item else {
+            return CGSize(width: cellWidth, height: 60)
+        }
+
+        if let cachedHeight = cellHeightCache[id] {
+            return CGSize(width: cellWidth, height: cachedHeight)
+        }
+        
+        guard let message: AIChatMessage = viewModel.message(with: id) else { return .zero }
+        
+        if message.isSended {
+            let dummyCell: SendedMessageCell = SendedMessageCell()
+            dummyCell.message = message
+            
+            let autoLayoutSize = dummyCell.contentView.systemLayoutSizeFitting(
+                CGSize(width: cellWidth, height: UIView.layoutFittingCompressedSize.height),
+                withHorizontalFittingPriority: .required,
+                verticalFittingPriority: .fittingSizeLevel
+            )
+            
+            let calculatedHeight = autoLayoutSize.height
+            cellHeightCache[id] = calculatedHeight
+            
+            return CGSize(width: cellWidth, height: calculatedHeight)
+        } else {
+            let dummyCell: ReceivedMessageCell = ReceivedMessageCell()
+            dummyCell.message = message
+            
+            let autoLayoutSize = dummyCell.contentView.systemLayoutSizeFitting(
+                CGSize(width: cellWidth, height: UIView.layoutFittingCompressedSize.height),
+                withHorizontalFittingPriority: .required,
+                verticalFittingPriority: .fittingSizeLevel
+            )
+            
+            let calculatedHeight = autoLayoutSize.height
+            cellHeightCache[id] = calculatedHeight
+            
+            return CGSize(width: cellWidth, height: calculatedHeight)
         }
     }
 }

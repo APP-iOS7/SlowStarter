@@ -9,7 +9,7 @@ import UIKit
 
 final class ReceivedMessageCell: UICollectionViewCell {
     // MARK: - Properties
-    var chat: AIChatMessage? {
+    var message: AIChatMessage? {
         didSet {
             configure()
         }
@@ -75,29 +75,9 @@ final class ReceivedMessageCell: UICollectionViewCell {
     }
     
     // MARK: - Functions
-    // Self-Sizing 셀의 최종 크기를 반환
-    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
-        let attributes = super.preferredLayoutAttributesFitting(layoutAttributes)
-        
-        let targetSize = CGSize(
-            width: UIScreen.main.bounds.width, // width: 최대 크기
-            height: UIView.layoutFittingCompressedSize.height // height: auto
-        )
-        
-        // AutoLayout을 기반으로 실제 사이즈를 계산
-        let autoLayoutSize = contentView.systemLayoutSizeFitting(
-            targetSize,
-            withHorizontalFittingPriority: .required, // Priority = 1000, 제약이 반드시 지켜짐
-            verticalFittingPriority: .fittingSizeLevel // Priority = 50, 유연한 제약, 컨텐츠에 맞는 최소 높이를 계산
-        )
-        
-        attributes.frame.size = autoLayoutSize
-        return attributes
-    }
-    
     private func configure() {
-        messageLabel.text = chat?.text
-        timeLabel.text = chat?.timeText
+        messageLabel.text = message?.text
+        timeLabel.text = message?.timeText
     }
     
     private func setupUI() {
@@ -137,7 +117,7 @@ final class ReceivedMessageCell: UICollectionViewCell {
     // 재사용을 위해 내용물 초기화
     override func prepareForReuse() {
         super.prepareForReuse()
-        chat = nil
+        message = nil
         messageLabel.text = nil
         timeLabel.text = nil
         summaryButtom.removeTarget(nil, action: nil, for: .allEvents)

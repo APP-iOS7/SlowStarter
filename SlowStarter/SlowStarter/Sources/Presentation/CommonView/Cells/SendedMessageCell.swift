@@ -9,7 +9,7 @@ import UIKit
 
 final class SendedMessageCell: UICollectionViewCell {
     // MARK: - Properties
-    var chat: AIChatMessage? {
+    var message: AIChatMessage? {
         didSet {
             configure()
         }
@@ -65,30 +65,11 @@ final class SendedMessageCell: UICollectionViewCell {
     
     // MARK: - Functions
     private func configure() {
-        messageLabel.text = chat?.text
-        timeLabel.text = chat?.timeText
+        messageLabel.text = message?.text
+        timeLabel.text = message?.timeText
     }
     
     // Self-Sizing 셀의 최종 크기를 반환
-    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
-        let attributes = super.preferredLayoutAttributesFitting(layoutAttributes)
-        
-        let targetSize = CGSize(
-            width: UIScreen.main.bounds.width, // width: 최대 크기
-            height: UIView.layoutFittingCompressedSize.height // height: auto
-        )
-        
-        // AutoLayout을 기반으로 실제 사이즈를 계산
-        let autoLayoutSize = contentView.systemLayoutSizeFitting(
-            targetSize,
-            withHorizontalFittingPriority: .required, // Priority = 1000, 제약이 반드시 지켜짐
-            verticalFittingPriority: .fittingSizeLevel // Priority = 50, 유연한 제약, 컨텐츠에 맞는 최소 높이를 계산
-        )
-        
-        attributes.frame.size = autoLayoutSize
-        return attributes
-    }
-    
     private func setupUI() {
         contentView.addSubview(messageView)
         contentView.addSubview(timeLabel)
