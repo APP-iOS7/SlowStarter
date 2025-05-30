@@ -27,14 +27,7 @@ struct LectureListViewModel {
             Lecture(lectureId: UUID().uuidString, instructorId: UUID().uuidString, title: "나만의 액세서리 만들기", description: "개성을 뽐낼 수 있는 특별한 액세서리를 직접 만들어 보세요"),
             Lecture(lectureId: UUID().uuidString, instructorId: UUID().uuidString, title: "간단한 정리 수납 전문가 되기", description: "주변을 깔끔하게 정리하는 노하우 배우기")
     ]
-    
-    let tabTitles: [(tabIcon: String, title: String)] = [
-        (tabIcon: "tabLectureList", title: "강의목록"),
-        (tabIcon: "tabLaptopChromebook", title: "반복학습"),
-        (tabIcon: "tabChatBubble", title: "채팅"),
-        (tabIcon: "tabMypage", title: "마이페이지")
-    ]
-    
+        
     // MARK: - UI Style
     let lectureListBackgroundColor: UIColor = .systemGray6
 }
