@@ -43,7 +43,7 @@ final class ChatViewModel: ObservableObject {
     func fetchMessages() {
         Task {
             do {
-                let messages: [AIChatMessage] = try await coreDataManager.fetchMessages(at: page).reversed()
+                let messages: [AIChatMessage] = try await coreDataManager.fetchMessages(before: messages.first).reversed()
                 guard !messages.isEmpty else { return }
                 
                 self.messages.insert(contentsOf: messages, at: 0)

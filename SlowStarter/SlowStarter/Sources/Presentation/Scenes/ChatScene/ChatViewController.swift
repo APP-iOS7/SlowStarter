@@ -385,6 +385,7 @@ final class ChatViewController: UIViewController {
     }
 }
 
+// MARK: - CollectionView Delegate
 extension ChatViewController: UICollectionViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView.contentOffset.y <= 0 {
