@@ -161,9 +161,9 @@ final class ChatViewController: UIViewController {
     }()
     
     private var lastKeyboardVisibleHeight: CGFloat = 0
-    
     private var isInitialLoad: Bool = true
-    
+    private var isLoadingPreviousMessages: Bool = false
+    private var anchorMessageID: UUID?
     private var cellHeightCache: [UUID: CGFloat] = .init()
     
     // MARK: - Initializer
@@ -292,6 +292,18 @@ final class ChatViewController: UIViewController {
         viewModel.didTapSendButton(text: text)
     }
     
+    private func scrollToCurrentMessage() {
+        guard let anchorID = anchorMessageID,
+              let indexPath = dataSource.indexPath(for: .message(anchorID)) else { return }
+        
+        collectionView.layoutIfNeeded()
+        collectionView.scrollToItem(at: indexPath, at: .top, animated: false)
+        collectionView.contentOffset.y -= 50
+        
+        anchorMessageID = nil
+        isLoadingPreviousMessages = false
+    }
+    
     private func scrollToLatestMessage() {
         let snapshot = dataSource.snapshot()
         
@@ -314,8 +326,8 @@ final class ChatViewController: UIViewController {
             if cellHeight > visibleHeight && !self.isInitialLoad { position = .top }
         }
         
-        collectionView.scrollToItem(at: indexPath, at: position, animated: !self.isInitialLoad)
         collectionView.layoutIfNeeded() // UI 갱신
+        collectionView.scrollToItem(at: indexPath, at: position, animated: !self.isInitialLoad)
         
         if self.isInitialLoad { self.isInitialLoad = false } // 최초 진입 시
     }
@@ -391,7 +403,14 @@ final class ChatViewController: UIViewController {
 extension ChatViewController: UICollectionViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView.contentOffset.y <= 0 {
-            if scrollView.isDragging || scrollView.isDecelerating { // 스크롤 중이거나, 관성으로 움직일 때
+            if scrollView.isDragging && !isLoadingPreviousMessages { // 스크롤 중이거나, 관성으로 움직일 때
+                isLoadingPreviousMessages = true // 중복 동작 방지
+                
+                guard let firstIndexPath = collectionView.indexPathsForVisibleItems.sorted().first,
+                      let firstIdentifier = dataSource.itemIdentifier(for: firstIndexPath),
+                      case .message(let id) = firstIdentifier else { return }
+                
+                anchorMessageID = id
                 viewModel.fetchMessages()
             }
         }
@@ -485,10 +504,16 @@ extension ChatViewController {
             }
         }
         
-        dataSource.apply(snapshot, animatingDifferences: !isInitialLoad) { [weak self] in
-            self?.collectionView.layoutIfNeeded()
-            self?.scrollToLatestMessage()
+        dataSource.apply(snapshot, animatingDifferences: !(isInitialLoad || isLoadingPreviousMessages)) { [weak self] in
+            guard let self = self else { return }
+            
+            if self.anchorMessageID == nil {
+                self.scrollToLatestMessage()
+            } else {
+                self.scrollToCurrentMessage()
+            }
         }
+        
     }
     
     // 컬렉션뷰 로딩셀 추가, 삭제

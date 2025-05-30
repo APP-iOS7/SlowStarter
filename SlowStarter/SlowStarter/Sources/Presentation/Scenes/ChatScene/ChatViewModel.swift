@@ -87,10 +87,7 @@ final class ChatViewModel: ObservableObject {
             do {
                 guard let index = messages.firstIndex(where: { $0.id == message.id }) else { return }
                 let summaryMessage: AIChatMessage = try await summaryUseCase.execute(message: message)
-                
-                var updatedMessages = messages
-                updatedMessages[index] = summaryMessage
-                messages = updatedMessages
+                messages[index] = summaryMessage
                 
                 try await coreDataManager.updateMessage(summaryMessage)
             } catch {
