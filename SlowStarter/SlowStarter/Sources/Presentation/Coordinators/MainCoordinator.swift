@@ -1,44 +1,89 @@
 import UIKit
 
 
-class MainCoordinator: Coordinator {
-    var navigationController: UINavigationController
-    
+class MainCoordinator: NSObject, Coordinator {
     private let window: UIWindow
     private let tabBarController: UITabBarController
     private let coreDataManager: CoreDataManager
     
     private let lectureCoordinator: LectureCoordinator
     private let chatCoordinator: ChatCoordinator
+    private let repeatitiveStudyMainCoordinator: RepeatitiveStudyMainCoordinator
+    private let myPageCoordinator: MyPageCoordinator
     
     init(window: UIWindow, coreDataManager: CoreDataManager) {
         self.window = window
         self.coreDataManager = coreDataManager
         self.tabBarController = UITabBarController()
         
-        // 강의 목록 탭을 위한 내비게이션 컨트롤러 생성 및 LectureCoordinator 초기화
-        let lectureListNavigationController = UINavigationController()
-        // 강의 목록 화면에서는 내비게이션 바를 숨겨야 할 수 있습니다.
-//        lectureListNavigationController.navigationBar.isHidden = true
-        self.lectureCoordinator = LectureCoordinator(navigationController: lectureListNavigationController)
+        let lectureNavigationController = UINavigationController()
+        self.lectureCoordinator = LectureCoordinator(navigationController: lectureNavigationController)
         
         let chatNavigationController = UINavigationController()
+        let repeatitiveStudayDetailViewController = RepeatLearnDetailViewController(currentPlayingData: RepeatLearnData.sample)
         self.chatCoordinator = ChatCoordinator(
             navigationController: chatNavigationController,
             coreDataManager: coreDataManager
         )
+        let repeatitiveStudyMainNavigationController = UINavigationController()
+        self.repeatitiveStudyMainCoordinator = RepeatitiveStudyMainCoordinator(navigationController: repeatitiveStudyMainNavigationController)
         
-        // MainCoordinator의 navigationController를 초기 탭의 navigationController로 설정
-        // MainCoordinator가 직접 push/present를 하는 경우는 적을 수 있지만, 프로토콜 준수를 위함입니다.
-        self.navigationController = lectureListNavigationController
+        let myPageNavigationController = UINavigationController()
+        self.myPageCoordinator = MyPageCoordinator(navigationController: myPageNavigationController)
         
-        tabBarController.viewControllers = [lectureListNavigationController]
+        tabBarController.viewControllers = [
+            lectureNavigationController,
+            chatNavigationController,
+            repeatitiveStudyMainNavigationController,
+            myPageNavigationController
+        ]
+        
+        super.init()
+        self.tabBarController.delegate = self
     }
     
     func start() {
+        // tab bar item coordinator 실행
         lectureCoordinator.start()
         chatCoordinator.start()
+        repeatitiveStudyMainCoordinator.start()
+        myPageCoordinator.start()
+        
+        // tab bar item setting
+        setupTabBarStyle()
+        
         window.rootViewController = tabBarController
         window.makeKeyAndVisible()
+    }
+    
+    func setupTabBarStyle() {
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .white
+        
+        // 선택된 탭 바 아이템 색상
+        appearance.stackedLayoutAppearance.selected.iconColor = .systemCyan
+        appearance.stackedLayoutAppearance.selected.titleTextAttributes = [
+            .foregroundColor: UIColor.systemRed,
+            .font: UIFont.systemFont(ofSize: 12, weight: .semibold)
+        ]
+        
+        // 선택되지 않은 아이템 색상
+        appearance.stackedLayoutAppearance.normal.iconColor = .lightGray
+        appearance.stackedLayoutAppearance.normal.titleTextAttributes = [
+            .foregroundColor: UIColor.lightGray,
+            .font: UIFont.systemFont(ofSize: 12, weight: .regular)
+        ]
+        
+        tabBarController.tabBar.standardAppearance = appearance
+        tabBarController.tabBar.scrollEdgeAppearance = appearance
+        tabBarController.tabBar.isTranslucent = false
+    }
+}
+
+// TabBar Delegate 수정
+extension MainCoordinator: UITabBarControllerDelegate {
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        
     }
 }

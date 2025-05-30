@@ -8,6 +8,7 @@
 import UIKit
 
 class LectureListViewController: UIViewController {
+    weak var coordinator: LectureCoordinator?
     
     weak var coordinator: LectureFlowCoordinator?
     // 코디네이터 주입을 위한 프로퍼티 추가
