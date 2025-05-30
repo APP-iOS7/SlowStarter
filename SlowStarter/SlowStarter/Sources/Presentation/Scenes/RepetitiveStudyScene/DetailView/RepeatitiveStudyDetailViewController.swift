@@ -180,7 +180,7 @@ class RepeatLearnDetailViewController: UIViewController {
     }
 }
 
-extension RepeatLearnDetailViewController: UITableViewDataSource, UITableViewDelegate {
+extension RepeatLearnDetailViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return repeatLearnListCellDataset.count
     }
@@ -193,8 +193,14 @@ extension RepeatLearnDetailViewController: UITableViewDataSource, UITableViewDel
         cell.configure(with: data)
         return cell
     }
-    
-    
+}
+extension RepeatLearnDetailViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let nextData = repeatLearnListCellDataset[indexPath.row]
+        
+        self.currentRepeatLearn = nextData
+        self.updateData(with: currentRepeatLearn)
+    }
 }
 
 
