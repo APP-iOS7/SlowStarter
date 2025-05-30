@@ -69,16 +69,17 @@ final class ChatViewController: UIViewController {
         }()
         
         let dateHeaderRegistration = UICollectionView.SupplementaryRegistration<DateHeaderView>(
-            elementKind: UICollectionView.elementKindSectionHeader) { [weak self] headerView, kind, indexPath in
-                guard let self = self else { return }
-                
-                let snapshot = self.dataSource.snapshot()
-                let sectionIdentifier = snapshot.sectionIdentifiers[indexPath.section]
-                
-                if case .date(let date) = sectionIdentifier {
-                    headerView.configure(date)
-                }
+            elementKind: UICollectionView.elementKindSectionHeader
+        ) { [weak self] headerView, kind, indexPath in
+            guard let self = self else { return }
+            
+            let snapshot = self.dataSource.snapshot()
+            let sectionIdentifier = snapshot.sectionIdentifiers[indexPath.section]
+            
+            if case .date(let date) = sectionIdentifier {
+                headerView.configure(date)
             }
+        }
         
         let dataSource = UICollectionViewDiffableDataSource<Section, ChatItemIdentifier>(
             collectionView: collectionView
@@ -407,7 +408,7 @@ extension ChatViewController: UICollectionViewDelegateFlowLayout {
         guard let item = dataSource.itemIdentifier(for: indexPath) else { return .zero }
         
         let cellWidth: CGFloat =
-        collectionView.bounds.width - (collectionView.contentInset.left + collectionView.contentInset.right)
+            collectionView.bounds.width - (collectionView.contentInset.left + collectionView.contentInset.right)
         
         // 로딩셀인 경우 정해진 고정 size를 반환
         guard case .message(let id) = item else {
@@ -494,7 +495,7 @@ extension ChatViewController {
     
     // 컬렉션뷰 로딩셀 추가, 삭제
     private func applyLoadingSnapshot(_ isLoading: Bool) {
-        var snapshot: NSDiffableDataSourceSnapshot<Section, ChatItemIdentifier> = NSDiffableDataSourceSnapshot()
+        var snapshot: NSDiffableDataSourceSnapshot<Section, ChatItemIdentifier> = dataSource.snapshot()
         
         guard let lastItem = snapshot.itemIdentifiers.last,
               case .message(let id) = lastItem,
