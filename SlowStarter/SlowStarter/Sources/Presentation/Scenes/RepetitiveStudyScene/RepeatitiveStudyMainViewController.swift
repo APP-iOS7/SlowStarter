@@ -2,7 +2,8 @@ import UIKit
 import SnapKit
 
 class RepetitiveLearningViewController: UIViewController {
-
+    weak var coordinator: RepeatitiveStudyMainCoordinator?
+    
     // MARK: - UI Elements
 
     private let scrollView: UIScrollView = {
