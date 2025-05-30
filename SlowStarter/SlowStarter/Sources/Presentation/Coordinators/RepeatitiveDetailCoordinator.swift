@@ -19,7 +19,7 @@ class RepeatitiveDetailCoordinator: Coordinator {
     
     func start() {
         
-        let viewController = RepeatitiveStudyDetailViewController()
+        let viewController = RepeatLearnDetailViewController(coder: <#NSCoder#>)
         navigationController.viewControllers = [viewController]
     }
 }

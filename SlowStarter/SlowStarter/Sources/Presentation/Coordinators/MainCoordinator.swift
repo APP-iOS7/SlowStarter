@@ -20,7 +20,7 @@ class MainCoordinator: NSObject, Coordinator {
         self.lectureCoordinator = LectureCoordinator(navigationController: lectureNavigationController)
         
         let chatNavigationController = UINavigationController()
-        let repeatitiveStudayDetailViewController = RepeatitiveStudyDetailViewController()
+        let repeatitiveStudayDetailViewController = RepeatLearnDetailViewController(currentPlayingData: RepeatLearnData.sample)
         self.chatCoordinator = ChatCoordinator(
             navigationController: chatNavigationController,
             coreDataManager: coreDataManager
