@@ -331,9 +331,11 @@ final class ChatViewController: UIViewController {
         guard let userInfo = notification.userInfo,
               let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
               let animationDuration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double else { return }
+
         
-        // 컬렉션뷰에 영향을 주지 않는 SafeArea 영역 제거
-        let calculatedKeyboardHeight: CGFloat = keyboardFrame.height - self.view.safeAreaInsets.bottom
+        // 컬렉션뷰에 영향을 주지 않는 TabBar 영역 제거
+        let tabBarHeight: CGFloat = tabBarController?.tabBar.frame.size.height ?? 0.0
+        let calculatedKeyboardHeight: CGFloat = keyboardFrame.height - tabBarHeight
         guard calculatedKeyboardHeight > 0 else { return } // 계산된 키보드 높이가 0 이하일 때 처리 x
         
         self.lastKeyboardVisibleHeight = calculatedKeyboardHeight // 키보드 이벤트 시작
