@@ -13,7 +13,7 @@ class RepeatitiveTableViewCell: UITableViewCell {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "여기에 제목이 들어가고 바뀔거임"
-        label.numberOfLines = 0
+        label.numberOfLines = 2
         label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         return label
     }()
@@ -29,10 +29,15 @@ class RepeatitiveTableViewCell: UITableViewCell {
     private let hstack: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [])
         stack.axis = .horizontal
-        stack.distribution = .fillEqually
+        stack.distribution = .equalCentering
         stack.spacing = 10
         return stack
     }()
+    
+    // 버튼들을 저장할 배열 (configure에서 접근하기 위함)
+        private var pointButtons: [UIButton] = []
+
+    
     // MARK: - init
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -54,9 +59,12 @@ class RepeatitiveTableViewCell: UITableViewCell {
                 return button
             }()
             
+            
             pointButton.addAction(UIAction(handler: {[weak self] _ in
                 self?.pointButtonTapped(tag: pointButton.tag)
             }), for: .touchUpInside)
+            
+            pointButtons.append(pointButton)
             
             hstack.addArrangedSubview(pointButton)
         }
@@ -76,10 +84,19 @@ class RepeatitiveTableViewCell: UITableViewCell {
         }
     }
     
-    public func configure() {
+    public func configure(with data: RepeatLearnData) {
         // 강의명 레이블도 조정필요
         // 외부에서 값 조절해야함 특히 토탈어사인먼트 레이블
+        self.titleLabel.text = data.lectureTitle
+        if data.assignments.count > 3 {
+            self.totalAssignmentLabel.text = "+\(data.assignments.count - 3)"
+        } else {
+            self.totalAssignmentLabel.text = "+0"
+        }
         
+        for i in 0..<data.weeklyProgress {
+            pointButtons[i].isEnabled = false
+        }
     }
     
     
@@ -87,6 +104,7 @@ class RepeatitiveTableViewCell: UITableViewCell {
         contentView.addSubview(titleLabel)
         titleLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().inset(10)
+            make.width.equalTo(150)
             make.centerY.equalToSuperview()
         }
         
