@@ -57,6 +57,7 @@ final class ChatViewController: UIViewController {
             UICollectionView.CellRegistration { [weak self] cell, _, message in
                 cell.message = message
                 cell.summaryButtom.addAction(UIAction { _ in
+                    self?.isLoadingSummaryMessage = true
                     self?.viewModel.didTapSummaryButton(message: message)
                 }, for: .touchUpInside)
             }
@@ -163,6 +164,7 @@ final class ChatViewController: UIViewController {
     private var lastKeyboardVisibleHeight: CGFloat = 0
     private var isInitialLoad: Bool = true
     private var isLoadingPreviousMessages: Bool = false
+    private var isLoadingSummaryMessage: Bool = false
     private var anchorMessageID: UUID?
     private var cellHeightCache: [UUID: CGFloat] = .init()
     
@@ -253,7 +255,6 @@ final class ChatViewController: UIViewController {
     
     private func bindViewModel() {
         viewModel.$messages
-            .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .dropFirst() // viewModel에서 초기화 될 때 무시
             .sink { completion in
@@ -504,8 +505,13 @@ extension ChatViewController {
             }
         }
         
-        dataSource.apply(snapshot, animatingDifferences: !(isInitialLoad || isLoadingPreviousMessages)) { [weak self] in
+        let animatingDifferences: Bool = !(isInitialLoad || isLoadingPreviousMessages)
+        dataSource.apply(snapshot, animatingDifferences: animatingDifferences) { [weak self] in
             guard let self = self else { return }
+            guard !isLoadingSummaryMessage else {
+                isLoadingSummaryMessage = false
+                return
+            }
             
             if self.anchorMessageID == nil {
                 self.scrollToLatestMessage()
@@ -513,7 +519,6 @@ extension ChatViewController {
                 self.scrollToCurrentMessage()
             }
         }
-        
     }
     
     // 컬렉션뷰 로딩셀 추가, 삭제
