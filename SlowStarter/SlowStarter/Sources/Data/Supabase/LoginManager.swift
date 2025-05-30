@@ -23,9 +23,34 @@ public class LoginManager: LoginManagerProtocol {
     /// - Parameters:
     ///   - email: 사용자 이메일
     ///   - password: 사용자 비밀번호
-    func signUp(email: String, password: String) async throws {
+    public func signUp(email: String, password: String) async throws {
         do {
             try await auth.signUp(email: email, password: password)
+        } catch {
+            throw mapAuthError(error)
+        }
+    }
+    
+    /// 지정된 이메일로 OTP를 전송합니다.
+    /// - Parameters:
+    ///   - email: OTP를 받을 사용자 이메일
+    public func sendOTP(email: String) async throws {
+        do {
+            try await auth.signInWithOTP(email: email)
+        } catch {
+            throw mapAuthError(error)
+        }
+    }
+    
+    /// 이메일과 OTP 토큰으로 사용자를 검증하고 세션을 생성합니다.
+    /// - Parameters:
+    ///   - email: 사용자 이메일
+    ///   - OTP: 사용자가 입력한 OTP 토큰 (6자리 코드)
+    /// - Returns: 인증된 사용자 정보 (`User`)
+    /// - Throws: OTP 검증 실패 시 예외
+    public func checkOTP(email: String, OTP: String) async throws {
+        do {
+            try await auth.verifyOTP(email: email, token: OTP, type: .email)
         } catch {
             throw mapAuthError(error)
         }
@@ -86,31 +111,33 @@ public class LoginManager: LoginManagerProtocol {
     func updateUser(_ field: UserUpdateField) async throws {
         do {
             let attributes: UserAttributes
-
+            
             switch field {
             case .email(let email):
                 attributes = UserAttributes(email: email)
-
+                
             case .phoneNumber(let phoneNumber):
                 let digits = phoneNumber.filter { $0.isNumber }
-
+                
                 guard digits.count == 10 || digits.count == 11 else {
                     throw LoginManagerError.invalidPhoneNumber
                 }
-
+                
                 let internationalNumber = "+82" + digits.dropFirst(1)
                 attributes = UserAttributes(phone: internationalNumber)
-
+                
             case .password(let password):
                 attributes = UserAttributes(password: password)
             }
-
+            
             try await auth.update(user: attributes)
             
         } catch {
             throw mapAuthError(error)
         }
     }
+    
+    
     
     // MARK: - 재인증
     

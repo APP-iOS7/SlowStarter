@@ -57,7 +57,7 @@ class MyPageViewController: UIViewController {
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
         
         let nameLabel = UILabel()
-        nameLabel.text = "이름란"
+        nameLabel.text = "Guest"
         nameLabel.font = UIFont(name: "Pretendard-Medium", size: 16)
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         
@@ -69,8 +69,9 @@ class MyPageViewController: UIViewController {
         
         let settingButton = UIButton()
 //        settingButton.setImage(UIImage(systemName: "gearshape"), for: .normal)
-        settingButton.setTitle("편집하기", for: .normal)
+        settingButton.setTitle("로그인하기", for: .normal)
         settingButton.setTitleColor(UIColor(hex: "#999999"), for: .normal)
+        settingButton.addAction(UIAction { [weak self] _ in self?.coordinator?.showLogin()}, for: .touchUpInside)
         settingButton.translatesAutoresizingMaskIntoConstraints = false
         
         sectionView.backgroundColor = UIColor(hex: "#F5F5F5")
