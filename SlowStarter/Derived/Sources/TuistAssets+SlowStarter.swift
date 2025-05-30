@@ -26,6 +26,10 @@ public enum SlowStarterAsset: Sendable {
     public static let cookingClassWomanChef = SlowStarterImages(name: "cookingClassWomanChef")
     public static let pinkRaccoon = SlowStarterImages(name: "pinkRaccoon")
     public static let ramen = SlowStarterImages(name: "ramen")
+    public static let tabChatBubble = SlowStarterImages(name: "tabChatBubble")
+    public static let tabLaptopChromebook = SlowStarterImages(name: "tabLaptopChromebook")
+    public static let tabLectureList = SlowStarterImages(name: "tabLectureList")
+    public static let tabMypage = SlowStarterImages(name: "tabMypage")
   }
   public enum PreviewAssets {
   }
