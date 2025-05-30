@@ -62,7 +62,8 @@ let project = Project(
                 "SlowStarter/Resources/Util/**",
                 "SlowStarter/Sources/Domain/Models/CoreData/CoreDataModel.xcdatamodeld",
                 "SlowStarter/Sources/Domain/Models/CoreData/Config.xcdatamodeld",
-                "SlowStarter/Resources/Util/Font/**"
+                "SlowStarter/Resources/Util/Font/**",
+                "SlowStarter/Resources/Assets.xcassets"
             ],
             scripts: [
                 .pre(
@@ -96,7 +97,8 @@ let project = Project(
             ],
             dependencies: [
                 .external(name: "SnapKit", condition: .none),
-                .external(name:"Supabase", condition: .none)
+                .external(name:"Supabase", condition: .none),
+                .external(name: "Lottie", condition: .none)
             ]
         ),
         .target(

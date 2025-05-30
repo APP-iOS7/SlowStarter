@@ -8,7 +8,8 @@
 import UIKit
 
 final class SendedMessageCell: UICollectionViewCell {
-    var chat: Messages? {
+    // MARK: - Properties
+    var message: AIChatMessage? {
         didSet {
             configure()
         }
@@ -45,6 +46,7 @@ final class SendedMessageCell: UICollectionViewCell {
     private let cellMargin: CGFloat = 8.0
     private let minimumLeftMargin: CGFloat = 100.0
     
+    // MARK: - initializer
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -54,32 +56,20 @@ final class SendedMessageCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - LifyCycle
     // 모든 frame이 결정된 이후에 필요한 동작 정의
     override func layoutSubviews() {
         super.layoutSubviews()
         messageLabel.preferredMaxLayoutWidth = bounds.width - cellMargin - minimumLeftMargin // label 최대 너비
     }
     
-    // Self-Sizing 셀의 최종 크기를 반환
-    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
-        let attributes = super.preferredLayoutAttributesFitting(layoutAttributes)
-        
-        let targetSize = CGSize(
-            width: UIScreen.main.bounds.width, // width: 최대 크기
-            height: UIView.layoutFittingCompressedSize.height // height: auto
-        )
-        
-        // AutoLayout을 기반으로 실제 사이즈를 계산
-        let autoLayoutSize = contentView.systemLayoutSizeFitting(
-            targetSize,
-            withHorizontalFittingPriority: .required, // Priority = 1000, 제약이 반드시 지켜짐
-            verticalFittingPriority: .fittingSizeLevel // Priority = 50, 유연한 제약, 컨텐츠에 맞는 최소 높이를 계산
-        )
-        
-        attributes.frame.size = autoLayoutSize
-        return attributes
+    // MARK: - Functions
+    private func configure() {
+        messageLabel.text = message?.text
+        timeLabel.text = message?.timeText
     }
     
+    // Self-Sizing 셀의 최종 크기를 반환
     private func setupUI() {
         contentView.addSubview(messageView)
         contentView.addSubview(timeLabel)
@@ -103,9 +93,8 @@ final class SendedMessageCell: UICollectionViewCell {
         messageView.layer.cornerRadius = 8
     }
     
-    private func configure() {
-        messageLabel.text = chat?.text
-        timeLabel.text = chat?.timeText
+    func getMessageLableHeight() -> CGFloat {
+        return messageLabel.frame.height
     }
     
     // 재사용을 위해 내용물 초기화

@@ -1,6 +1,12 @@
+////
+////  RepeatitiveDetailCoordinator.swift
+////  SlowStarter
+////
+////  Created by jdios on 5/23/25.
+////
 //
-//  RepeatitiveDetailCoordinator.swift
-//  SlowStarter
+//import Foundation
+//import UIKit
 //
 //  Created by jdios on 5/23/25.
 //

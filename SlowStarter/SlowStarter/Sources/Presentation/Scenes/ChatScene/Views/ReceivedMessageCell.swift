@@ -8,7 +8,8 @@
 import UIKit
 
 final class ReceivedMessageCell: UICollectionViewCell {
-    var chat: Messages? {
+    // MARK: - Properties
+    var message: AIChatMessage? {
         didSet {
             configure()
         }
@@ -21,7 +22,7 @@ final class ReceivedMessageCell: UICollectionViewCell {
         return view
     }()
     
-    private lazy var messageLabel: UILabel = {
+    private let messageLabel: UILabel = {
         let label: UILabel = UILabel()
         label.font = UIFont.systemFont(ofSize: 16)
         label.textColor = .white
@@ -56,6 +57,7 @@ final class ReceivedMessageCell: UICollectionViewCell {
     private let cellMargin: CGFloat = 8.0
     private let minimumLeftMargin: CGFloat = 100.0
     
+    // MARK: - Initializer
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -65,30 +67,17 @@ final class ReceivedMessageCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - LifeCycle
     // 모든 frame이 결정된 이후에 필요한 동작 정의
     override func layoutSubviews() {
         super.layoutSubviews()
         messageLabel.preferredMaxLayoutWidth = bounds.width - cellMargin - minimumLeftMargin // label 최대 너비
     }
     
-    // Self-Sizing 셀의 최종 크기를 반환
-    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
-        let attributes = super.preferredLayoutAttributesFitting(layoutAttributes)
-        
-        let targetSize = CGSize(
-            width: UIScreen.main.bounds.width, // width: 최대 크기
-            height: UIView.layoutFittingCompressedSize.height // height: auto
-        )
-        
-        // AutoLayout을 기반으로 실제 사이즈를 계산
-        let autoLayoutSize = contentView.systemLayoutSizeFitting(
-            targetSize,
-            withHorizontalFittingPriority: .required, // Priority = 1000, 제약이 반드시 지켜짐
-            verticalFittingPriority: .fittingSizeLevel // Priority = 50, 유연한 제약, 컨텐츠에 맞는 최소 높이를 계산
-        )
-        
-        attributes.frame.size = autoLayoutSize
-        return attributes
+    // MARK: - Functions
+    private func configure() {
+        messageLabel.text = message?.text
+        timeLabel.text = message?.timeText
     }
     
     private func setupUI() {
@@ -110,6 +99,8 @@ final class ReceivedMessageCell: UICollectionViewCell {
             
             summaryButtom.trailingAnchor.constraint(equalTo: messageView.trailingAnchor, constant: -4),
             summaryButtom.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4),
+            summaryButtom.widthAnchor.constraint(equalToConstant: 30),
+            summaryButtom.heightAnchor.constraint(equalTo: summaryButtom.widthAnchor),
             
             timeLabel.leadingAnchor.constraint(equalTo: messageView.trailingAnchor, constant: 5),
             timeLabel.bottomAnchor.constraint(equalTo: messageView.bottomAnchor, constant: -5)
@@ -119,15 +110,14 @@ final class ReceivedMessageCell: UICollectionViewCell {
         summaryButtom.layer.cornerRadius = 8
     }
     
-    private func configure() {
-        messageLabel.text = chat?.text
-        timeLabel.text = chat?.timeText
+    func getMessageLableHeight() -> CGFloat {
+        return messageLabel.frame.height
     }
     
     // 재사용을 위해 내용물 초기화
     override func prepareForReuse() {
         super.prepareForReuse()
-        chat = nil
+        message = nil
         messageLabel.text = nil
         timeLabel.text = nil
         summaryButtom.removeTarget(nil, action: nil, for: .allEvents)

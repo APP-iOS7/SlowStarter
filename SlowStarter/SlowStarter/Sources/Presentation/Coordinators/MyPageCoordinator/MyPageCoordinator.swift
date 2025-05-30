@@ -40,6 +40,12 @@ class MyPageCoordinator: NSObject, Coordinator {
         let coordinator = SettingCoordinator(navigationController: navigationController)
         coordinator.start()
     }
+    
+    func showLogin() {
+        let coordinator = LoginCoordinator(navigationController: navigationController)
+        childCoordinator = coordinator
+        coordinator.start()
+    }
 }
 
 extension MyPageCoordinator: UINavigationControllerDelegate {
@@ -47,6 +53,9 @@ extension MyPageCoordinator: UINavigationControllerDelegate {
         guard let fromViewController = navigationController.transitionCoordinator?.viewController(forKey: .from), !navigationController.viewControllers.contains(fromViewController) else { return }
         
         if fromViewController is CourseHistoryViewController {
+            childCoordinator = nil
+        }
+        else if fromViewController is LoginViewController {
             childCoordinator = nil
         }
     }
