@@ -6,42 +6,22 @@
 //
 
 import Foundation
-import Combine
 
 final class ChatViewModel: ObservableObject {
     // MARK: - Properties
-    @Published var messages: [Messages] = []
+    @Published private(set) var messages: [AIChatMessage] = []
+    @Published private(set) var isLoading: Bool = false
+    
+    private var page: Int = 0
     
     private let chatUseCase: DefaultChatUseCase
     private let summaryUseCase: DefaultSummaryUseCase
-    
     private let coreDataManager: CoreDataManager
     
-//    private let saveMessageUseCase: SaveMessageUseCase
-//    private let fetchMessagesUseCase: FetchMessageUseCase
-//    private let deleteMessageUseCase: DeleteMessageUseCase
-//    private let updateMessageUseCase: UpdateMessageUseCase
-    
-    var allMessages: [Messages] {
-        return messages
-    }
-    
-    private var recentMessages: [String] {
+    private var recentMessages: [AIChatMessage] {
         let size: Int = min(10, messages.count) // 10개, 그보다 적다면 있는 만큼
-        return Array(messages[(messages.count - size)...]).map { $0.text } // 뒤에서부터 size 만큼 꺼냄
+        return Array(messages[(messages.count - size)...]) // 뒤에서부터 size 만큼 꺼냄
     }
-    
-    // MARK: - Initializer
-//    init(chat: DefaultChatUseCase, summary: DefaultSummaryUseCase,
-//         save: SaveMessageUseCase, fetch: FetchMessageUseCase,
-//         delete: DeleteMessageUseCase, update: UpdateMessageUseCase) {
-//        self.chatUseCase = chat
-//        self.summaryUseCase = summary
-//        self.saveMessageUseCase = save
-//        self.fetchMessagesUseCase = fetch
-//        self.deleteMessageUseCase = delete
-//        self.updateMessageUseCase = update
-//    }
     
     init(chat: DefaultChatUseCase, summary: DefaultSummaryUseCase, coreDataManager: CoreDataManager
          ) {
@@ -51,14 +31,23 @@ final class ChatViewModel: ObservableObject {
     }
     
     // MARK: - Functions
-    func message(with id: UUID) -> Messages? {
+    func message(with id: UUID) -> AIChatMessage? {
         return messages.first { $0.id == id }
+    }
+    
+    func message(at index: Int) -> AIChatMessage? {
+        guard messages.indices.contains(index) else { return nil }
+        return messages[index]
     }
     
     func fetchMessages() {
         Task {
             do {
-                messages = try await coreDataManager.fetchMessages()
+                let messages: [AIChatMessage] = try await coreDataManager.fetchMessages(at: page).reversed()
+                guard !messages.isEmpty else { return }
+                
+                self.messages.insert(contentsOf: messages, at: 0)
+                page += 1
             } catch {
                 
             }
@@ -68,36 +57,45 @@ final class ChatViewModel: ObservableObject {
     func didTapSendButton(text: String) {
         Task {
             do {
-                let myMessage: Messages = Messages(text: text, isSended: true, timestamp: Date())
+                let myMessage: AIChatMessage = AIChatMessage(text: text, isSended: true, timestamp: Date())
                 messages.append(myMessage)
-//                try await saveMessageUseCase.execute(myMessage) // CoreData에 보낸 메시지 저장
+                
+                isLoading = true
                 try await coreDataManager.saveMessage(myMessage)
                 
                 // 대화의 맥락을 유지하기 위해 최근 메시지를 함께 보냄
-                //TODO: 이부분 오류
-//                let sendMessages: [String] = recentMessages
-//                let newMessage = try await chatUseCase.execute(messages: sendMessages) // 답장 받아오기
-//                messages.append(newMessage)
-//                try await saveMessageUseCase.execute(newMessage) // CoreData에 답장 저장
-//                try await coreDataManager.saveMessage(newMessage)
+                let sendMessages: [AIChatMessage] = recentMessages
+                let newMessage = try await chatUseCase.execute(messages: sendMessages) // 답장 받아오기
+                messages.append(newMessage)
+                
+                try await coreDataManager.saveMessage(newMessage) // CoreData에 답장 저장
+                isLoading = false
             } catch {
+                isLoading = false
+                
                 if let apiError = error as? ChatAPIError {
-                    
+                    print(apiError)
                 } else {
+                    
                 }
             }
         }
     }
     
-    func didTapSummaryButton(index: Int, message: Messages) {
+    func didTapSummaryButton(message: AIChatMessage) {
         Task {
             do {
-                let summaryMessage: Messages = try await summaryUseCase.execute(message: message)
-                messages[index] = summaryMessage
-//                try await updateMessageUseCase.execute(summaryMessage)
+                guard let index = messages.firstIndex(where: { $0.id == message.id }) else { return }
+                let summaryMessage: AIChatMessage = try await summaryUseCase.execute(message: message)
+                
+                var updatedMessages = messages
+                updatedMessages[index] = summaryMessage
+                messages = updatedMessages
+                
                 try await coreDataManager.updateMessage(summaryMessage)
             } catch {
                 if let apiError = error as? ChatAPIError {
+                    print(apiError)
                 } else {
                     print(error.localizedDescription)
                 }
