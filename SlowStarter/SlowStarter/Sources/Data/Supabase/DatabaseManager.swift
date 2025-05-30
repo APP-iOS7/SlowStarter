@@ -8,7 +8,7 @@ public class DataBaseManager: DataBaseManagerProtocol {
         self.client = client
     }
     
-    //MARK: - Read
+    // MARK: - Read
     /// 선택한 타입의 모든 값을 조회하는 함수입니다.
     ///
     /// - Parameter type: 조회할 모델 타입 (예: `User.self`)
@@ -175,7 +175,7 @@ public class DataBaseManager: DataBaseManagerProtocol {
     /// ```
     /// let users: [User] = try await networkManager.fetchData(as: User.self, select: "name, age", conditionColumn: "age", conditionValue: 30)
     /// ```
-    func fetchData<T1: Decodable, T2:Decodable>(as type: T1.Type, select: String, conditionColumn: String, conditionValue: T2) async throws -> [T1] {
+    func fetchData<T1: Decodable, T2: Decodable>(as type: T1.Type, select: String, conditionColumn: String, conditionValue: T2) async throws -> [T1] {
         let tableName: String
         do {
             tableName = try self.tableName(for: type)
@@ -199,7 +199,7 @@ public class DataBaseManager: DataBaseManagerProtocol {
     }
     
     
-    //MARK: - Create
+    // MARK: - Create
     
     /// 단일 데이터를 삽입하는 함수입니다.
     ///
@@ -300,7 +300,7 @@ public class DataBaseManager: DataBaseManagerProtocol {
         }
     }
     
-    //MARK: - Update
+    // MARK: - Update
     
     /// 데이터를 업데이트하는 함수입니다.
     ///
@@ -339,7 +339,7 @@ public class DataBaseManager: DataBaseManagerProtocol {
         }
     }
     
-    //MARK: - Delete
+    // MARK: - Delete
     
     /// 데이터를 업데이트하는 함수입니다.
     ///
