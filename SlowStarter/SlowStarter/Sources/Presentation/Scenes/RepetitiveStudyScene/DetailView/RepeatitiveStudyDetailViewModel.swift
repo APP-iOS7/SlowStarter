@@ -8,21 +8,14 @@
 import Foundation
 import UIKit
 
-class RepeatitiveStudyDetailViewModel: ObservableObject {
-    var playingLectureData: RepetitiveStudyDetailData?
-    var repeatitiveStudyListCellDataset: [RepeatitiveStudyListCellData] = []
-}
-struct RepetitiveStudyDetailData {
-    var lectureTitle: String
-    var description: String
-    var vods: [VOD]
-    
-}
-
-
-struct RepeatitiveStudyListCellData {
-    let title: String
-    let url: URL
+struct RepeatLearnData {
+    static let sample = RepeatLearnData(lectureTitle: "예시 강의명",
+                                        lectureDescription: "기타 정보 / 기타 정보 / 기타 정보 / 영상길이",
+                                        lectureURL: bigbunny,
+                                        assignments: Assignment.sampleAssignments)
+    let lectureTitle: String
+    let lectureDescription: String
+    let lectureURL: URL
     var assignments: [Assignment]
     
 }

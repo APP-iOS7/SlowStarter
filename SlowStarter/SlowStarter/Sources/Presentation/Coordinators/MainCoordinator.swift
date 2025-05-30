@@ -14,7 +14,7 @@ class MainCoordinator: Coordinator {
         self.tabBarController = UITabBarController()
 
         let chatNavigationController = UINavigationController()
-        let repeatitiveStudayDetailViewController = RepeatitiveStudyDetailViewController()
+        let repeatitiveStudayDetailViewController = RepeatLearnDetailViewController(currentPlayingData: RepeatLearnData.sample)
         self.chatCoordinator = ChatCoordinator(
             navigationController: chatNavigationController,
             coreDataManager: coreDataManager
