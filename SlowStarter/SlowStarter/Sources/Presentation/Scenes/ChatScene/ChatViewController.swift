@@ -295,13 +295,8 @@ final class ChatViewController: UIViewController {
     private func scrollToLatestMessage() {
         let snapshot = dataSource.snapshot()
         
-        guard !snapshot.itemIdentifiers.isEmpty,
-              let lastID = snapshot.itemIdentifiers.last,
-              case .message(let id) = lastID,
-              let lastItem = viewModel.message(with: id) else { return }
-        
-        let section = Section.date(Calendar.current.startOfDay(for: lastItem.timestamp))
-        guard let sectionIndex = snapshot.sectionIdentifiers.firstIndex(of: section) else { return }
+        guard let section = snapshot.sectionIdentifiers.last,
+              let sectionIndex = snapshot.sectionIdentifiers.firstIndex(of: section) else { return }
         
         let indexPath: IndexPath = IndexPath(
             item: snapshot.numberOfItems(inSection: section) - 1,
@@ -496,12 +491,7 @@ extension ChatViewController {
     // 컬렉션뷰 로딩셀 추가, 삭제
     private func applyLoadingSnapshot(_ isLoading: Bool) {
         var snapshot: NSDiffableDataSourceSnapshot<Section, ChatItemIdentifier> = dataSource.snapshot()
-        
-        guard let lastItem = snapshot.itemIdentifiers.last,
-              case .message(let id) = lastItem,
-              let message = viewModel.message(with: id) else { return }
-        
-        let section: Section = .date(Calendar.current.startOfDay(for: message.timestamp))
+        guard let section = snapshot.sectionIdentifiers.last else { return }
         
         // isLoading = true 면
         if isLoading {
