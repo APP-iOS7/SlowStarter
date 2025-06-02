@@ -31,4 +31,10 @@ extension UserPointLog {
         balance: 120,
         createdAt: Date()
     )
+    
+    static func zero(userId: String) -> UserPointLog {
+        return UserPointLog(
+            userId: userId, actionType: "First login", description: "First Registration",amount: 0, balance: 0, createdAt: Date()
+        )
+    }
 }

@@ -23,6 +23,13 @@ class MyPageViewController: UIViewController {
         logoutButton.titleLabel?.font = UIFont(name: "Pretendard-Thin", size: 8)
         logoutButton.translatesAutoresizingMaskIntoConstraints = false
         
+        // TODO: 나중에 바꿀 내용
+        logoutButton.addAction(UIAction { _ in
+            Task {
+                try await SupabaseDataManager.shared.deleteAccount()
+            }
+        }, for: .touchUpInside)
+        
         view.addSubview(profileSection)
         view.addSubview(menuSection)
         view.addSubview(logoutButton)

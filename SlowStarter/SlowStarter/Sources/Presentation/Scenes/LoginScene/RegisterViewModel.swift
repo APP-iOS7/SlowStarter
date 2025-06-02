@@ -209,7 +209,7 @@ class RegisterViewModel {
                 )
                 
                 // 데이터 베이스에 정보 저장
-                let _ = await dataManager.insertData(data)
+                let _ = await dataManager.createUserInfo(data)
 
                 await MainActor.run {
                     self.isLoading = false

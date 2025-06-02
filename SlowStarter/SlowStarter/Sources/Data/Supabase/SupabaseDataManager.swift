@@ -1,8 +1,6 @@
 import Foundation
 import Supabase
 
-//TODO: 필요에 의해 변경하면 될듯
-
 class SupabaseDataManager {
     private var client: SupabaseClient?
     private var databaseManager: DataBaseManager?
@@ -73,7 +71,6 @@ class SupabaseDataManager {
         var name: String? = nil
         var nickname: String? = nil
         var profileImageURL: String? = nil
-        // var age: Int? = nil // age 변수 제거
         
         let metadata = supabaseUser.userMetadata
         
@@ -89,7 +86,7 @@ class SupabaseDataManager {
             }
         }
         
-        if let profileURLValue = metadata["profile_image_url"] { // 또는 "avatar_url"
+        if let profileURLValue = metadata["profile_image_url"] {
             if case .string(let metaProfileURL) = profileURLValue {
                 profileImageURL = metaProfileURL
             }
@@ -129,50 +126,73 @@ class SupabaseDataManager {
         }
     }
     
+    func deleteAccount() async throws {
+        do {
+            try await loginManager?.getCurrentSession()
+            try await loginManager?.deleteUser()
+            try await loginManager?.logout()
+        } catch {
+            print("delete error")
+            throw error
+        }
+    }
+    
     
     // MARK: DataBase
-    func insertData<T>(_ data: T) async -> Bool {
+    
+    // Create
+    func createUserInfo<T>(_ data: T) async -> Bool {
         guard let databaseManager = databaseManager else {
             print("DatabaseManager not initialized.")
             return false
         }
         
         do {
-            try await databaseManager.insertData(as: Users.self, data: data as! Users)
+            if let user = data as? Users {
+                try await databaseManager.insertData(as: Users.self, data: user)
+                
+                let pointLog = UserPointLog.zero(userId: user.userId)
+                let setting = UserSetting.zero(userId: user.userId, notifyChat: true, notifyPush: true)
+                
+                try await databaseManager.insertData(as: UserPointLog.self, data: pointLog)
+                try await databaseManager.insertData(as: UserSetting.self, data: setting)
+            }
             return true
         } catch {
             print("error: \(error)")
             return false
         }
-}
-
-func fetchData<T>(_ type: T.Type) -> [T]? {
+    }
     
-    return []
-}
-
-func deleteData<T>(_ data: T) -> Bool {
+    func fetchData<T>(_ type: T.Type) -> [T]? {
+        
+        return []
+    }
     
-    return true
-}
-
-func updateData<T>(_ data: T) -> Bool {
+    // Delete
+    func deleteData<T>(_ data: T) -> Bool {
+        
+        return true
+    }
     
-    return true
-}
-
-func insertFile(file: Data) -> Bool {
     
-    return true
-}
-
-func fetchFile(filePath: String) -> Data? {
+    func updateData<T>(_ data: T) -> Bool {
+        
+        return true
+    }
     
-    return Data()
-}
-
-func createSignedURL(filePath: String) -> URL? {
+    func insertFile(file: Data) -> Bool {
+        
+        return true
+    }
     
-    return URL(string: "")
-}
+    func fetchFile(filePath: String) -> Data? {
+        
+        return Data()
+    }
+    
+    func createSignedURL(filePath: String) -> URL? {
+        
+        return URL(string: "")
+    }
 }

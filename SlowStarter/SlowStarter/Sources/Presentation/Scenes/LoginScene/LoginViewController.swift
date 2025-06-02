@@ -74,7 +74,7 @@ class LoginViewController: UIViewController {
                     try await self.viewModel.login(email: email, password: password)
                     self.coordinator?.didFinishLogin()
                 } catch {
-                    print(error)
+                    self.showToast(message: "로그인 정보가 잘못되었습니다.")
                 }
             }
             
@@ -145,6 +145,93 @@ extension LoginViewController: UITextFieldDelegate {
             textField.resignFirstResponder()
         }
         return true
+    }
+}
+
+// MARK: Toast
+extension LoginViewController {
+    private func showToast(message: String, duration: TimeInterval = 2.5, backgroundColor: UIColor = UIColor.black.withAlphaComponent(0.75), textColor: UIColor = .white, completion: (() -> Void)? = nil) {
+        guard let keyWindow = UIApplication.shared.connectedScenes
+            .filter({$0.activationState == .foregroundActive})
+            .compactMap({$0 as? UIWindowScene})
+            .first?.windows
+            .filter({$0.isKeyWindow}).first else {
+            print("Key window not found for toast.")
+            completion?()
+            return
+        }
+        
+        keyWindow.subviews.filter { $0.tag == 9999 }.forEach { $0.removeFromSuperview() }
+        
+        let toastView = UIView()
+        toastView.tag = 9999
+        toastView.backgroundColor = backgroundColor
+        toastView.layer.cornerRadius = 10
+        toastView.clipsToBounds = true
+        toastView.alpha = 0.0
+        
+        let toastLabel = UILabel()
+        toastLabel.text = message
+        toastLabel.textColor = textColor
+        toastLabel.textAlignment = .center
+        toastLabel.font = UIFont.systemFont(ofSize: 15, weight: .medium)
+        toastLabel.numberOfLines = 0
+        
+        toastView.addSubview(toastLabel)
+        keyWindow.addSubview(toastView)
+        
+        toastLabel.translatesAutoresizingMaskIntoConstraints = false
+        toastView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let initialBottomConstant: CGFloat = 80
+        let finalBottomConstant: CGFloat = -60
+        let bottomConstraint = toastView.bottomAnchor.constraint(equalTo: keyWindow.safeAreaLayoutGuide.bottomAnchor, constant: initialBottomConstant)
+        
+        NSLayoutConstraint.activate([
+            toastLabel.leadingAnchor.constraint(equalTo: toastView.leadingAnchor, constant: 16),
+            toastLabel.trailingAnchor.constraint(equalTo: toastView.trailingAnchor, constant: -16),
+            toastLabel.topAnchor.constraint(equalTo: toastView.topAnchor, constant: 10),
+            toastLabel.bottomAnchor.constraint(equalTo: toastView.bottomAnchor, constant: -10),
+            
+            toastView.leadingAnchor.constraint(greaterThanOrEqualTo: keyWindow.leadingAnchor, constant: 30),
+            toastView.trailingAnchor.constraint(lessThanOrEqualTo: keyWindow.trailingAnchor, constant: -30),
+            toastView.centerXAnchor.constraint(equalTo: keyWindow.centerXAnchor),
+            bottomConstraint
+        ])
+        
+        keyWindow.layoutIfNeeded()
+        
+        toastView.transform = CGAffineTransform(translationX: 0, y: 50)
+        
+        UIView.animate(
+            withDuration: 0.5,
+            delay: 0,
+            usingSpringWithDamping: 0.7,
+            initialSpringVelocity: 0.5,
+            options: .curveEaseOut,
+            animations: {
+                toastView.alpha = 1.0
+                toastView.transform = .identity
+                bottomConstraint.constant = finalBottomConstant
+                keyWindow.layoutIfNeeded()
+            },
+            completion: { _ in
+                UIView.animate(
+                    withDuration: 0.5,
+                    delay: duration - 0.5,
+                    options: .curveEaseIn,
+                    animations: {
+                        toastView.alpha = 0.0
+                        toastView.transform = CGAffineTransform(translationX: 0, y: 50)
+                    },
+                    completion: { _ in
+                        toastView.removeFromSuperview()
+                        completion?()
+                    }
+                )
+            }
+        )
+        
     }
 }
 
