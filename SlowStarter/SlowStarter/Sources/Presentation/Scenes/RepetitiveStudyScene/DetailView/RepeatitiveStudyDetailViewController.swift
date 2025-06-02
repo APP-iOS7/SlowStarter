@@ -63,9 +63,15 @@ class RepeatLearnDetailViewController: UIViewController {
         button.backgroundColor = UIColor(red: 76/255, green: 175/255, blue: 80/255, alpha: 1.0) // 녹색
         button.layer.cornerRadius = 8
         button.clipsToBounds = true
-        // button.addTarget(self, action: #selector(submitButtonTapped), for: .touchUpInside)
+        button.addAction(UIAction(handler: { _ in
+            print("dfs")
+        }), for: .touchUpInside)
         return button
     }()
+    
+    private func submitButtonTapped() {
+        present(SubmittedAssignmentViewController(), animated: true)
+    }
     
     private let weeklyUpdateAnnouncingLabel: UILabel = {
         let label = UILabel()
