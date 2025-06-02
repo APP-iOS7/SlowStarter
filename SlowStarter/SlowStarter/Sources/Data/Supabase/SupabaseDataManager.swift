@@ -164,6 +164,26 @@ class SupabaseDataManager {
         }
     }
     
+    // Read
+    func fetchUserInfo() async throws -> Users? {
+        let authUser = try await fetchCurrentUserSession()
+        
+        guard let userId = authUser?.id else {
+            throw LoginManagerError.userNotFound
+        }
+        
+        guard let user = try await databaseManager?.fetchData(
+            as: Users.self,
+            select: "*",
+            conditionColumn: "user_id",
+            conditionValue: userId
+        ) else {
+            return nil
+        }
+        
+        return user[0]
+    }
+    
     func fetchData<T>(_ type: T.Type) -> [T]? {
         
         return []
@@ -194,5 +214,11 @@ class SupabaseDataManager {
     func createSignedURL(filePath: String) -> URL? {
         
         return URL(string: "")
+    }
+    
+    
+    // Auth
+    func logout() async throws {
+        try await loginManager?.logout()
     }
 }

@@ -1,9 +1,6 @@
 import UIKit
 import CoreData
-
-//TODO: - 테스트 필요
-
-
+import Combine
 
 final class CoreDataManager: CoreDataManagerProtocol {
     static let shared = CoreDataManager()
@@ -160,4 +157,13 @@ final class CoreDataManager: CoreDataManagerProtocol {
             try messageContext.save()
         }
     }
+    
+    
+    // MARK: - Combine
+    var userInfoDidChangePublisher: AnyPublisher<Void, Never> {
+        NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange, object: configContext)
+            .map { _ in () }
+            .eraseToAnyPublisher()
+    }
+    
 }

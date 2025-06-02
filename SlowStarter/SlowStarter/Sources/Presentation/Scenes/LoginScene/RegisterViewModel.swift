@@ -130,7 +130,7 @@ class RegisterViewModel {
     func requestOtp() {
         guard isFormValid, isEmailValid else {
             isOTPSent = false
-            //infoMessageSubject.send("모든 정보를 올바르게 입력해주세요.")
+            // infoMessageSubject.send("모든 정보를 올바르게 입력해주세요.")
             return
         }
 
