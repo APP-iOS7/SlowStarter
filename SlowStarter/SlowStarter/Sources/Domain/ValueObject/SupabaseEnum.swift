@@ -26,6 +26,8 @@ enum LoginManagerError: Error {
     case missingEmailOrPhone
     case invalidRefreshToken
     case invalidClaim
+    case verificationError(error: String)
+    case passwordValidationError(error: String)
     case unknownError(message: String)
 }
 

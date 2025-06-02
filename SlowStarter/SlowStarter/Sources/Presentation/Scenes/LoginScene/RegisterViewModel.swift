@@ -4,41 +4,41 @@ import Combine
 class RegisterViewModel {
     private let dataManager = SupabaseDataManager.shared
     
-    // MARK: - Input Properties (@Published)
+    //input
     @Published var name: String = ""
     @Published var email: String = ""
     @Published var password: String = ""
     @Published var confirmPassword: String = ""
     @Published var otpCode: String = ""
 
-    // MARK: - Output Validation States (@Published private(set))
+    // validation
     @Published private(set) var isNameValid: Bool = false
     @Published private(set) var isEmailValid: Bool = false
     @Published private(set) var isPasswordValid: Bool = false
     @Published private(set) var isPasswordConfirmed: Bool = false
-    // isFormValid는 OTP 입력 전 사용자 입력 필드(이름, 비밀번호, 비밀번호 확인)의 유효성
+    // 전체 유효성 검사하는 프로퍼티
     @Published private(set) var isFormValid: Bool = false
 
-    // MARK: - Output Error Messages (@Published private(set))
-    // 이 프로퍼티들은 private(set)으로 클래스 내부에서만 set 가능해야 하며, var로 선언되어야 합니다.
+    // 형식에 맞지 않을 시 표시할 메세지
     @Published private(set) var nameErrorMessage: String = ""
     @Published private(set) var emailErrorMessage: String = ""
     @Published private(set) var passwordErrorMessage: String = ""
     @Published private(set) var confirmPasswordErrorMessage: String = ""
 
-    // MARK: - OTP Flow State (@Published private(set))
+    // OTP 상태 관련 프로퍼티
     @Published private(set) var isOTPSent: Bool = false
-    @Published var otpVerificationError: String? // VC에서 직접 관찰 또는 토스트로 사용
+    // 토스트로 표시할 OTP에러 메세지
+    @Published var otpVerificationError: String?
 
-    // MARK: - Loading State (@Published private(set))
+    // 로딩 서클 상태 프로퍼티
     @Published private(set) var isLoading: Bool = false
     var isLoadingPublisher: AnyPublisher<Bool, Never> { $isLoading.eraseToAnyPublisher() }
 
-    // MARK: - Registration Result
+    // 결과 전달 컴바인
     private let registrationResultSubject = PassthroughSubject<Bool, Never>()
     var registrationResultPublisher: AnyPublisher<Bool, Never> { registrationResultSubject.eraseToAnyPublisher() }
 
-    // 이메일 중복과 같은 특정 알림을 위한 Subject
+    // 등록 시 현 상태를 나타낼 컴바인
     let infoMessageSubject = PassthroughSubject<String, Never>()
     var infoMessagePublisher: AnyPublisher<String, Never> { infoMessageSubject.eraseToAnyPublisher() }
 
@@ -57,7 +57,7 @@ class RegisterViewModel {
             .store(in: &cancellables)
 
         $email
-            .map { NSPredicate(format:"SELF MATCHES %@", "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}").evaluate(with: $0) }
+            .map { NSPredicate(format: "SELF MATCHES %@", "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}").evaluate(with: $0) }
             .receive(on: RunLoop.main)
             .assign(to: \.isEmailValid, on: self)
             .store(in: &cancellables)
@@ -74,7 +74,6 @@ class RegisterViewModel {
             .assign(to: \.isPasswordConfirmed, on: self)
             .store(in: &cancellables)
 
-        // isFormValid는 사용자가 OTP 입력 전에 채워야 할 모든 필드(이름, 비밀번호, 비밀번호 확인)의 유효성을 나타냄.
         Publishers.CombineLatest3($isNameValid, $isPasswordValid, $isPasswordConfirmed)
             .map { name, pass, confirmPass in name && pass && confirmPass }
             .receive(on: RunLoop.main)
@@ -91,7 +90,7 @@ class RegisterViewModel {
             .map { isValid, isEmpty in isEmpty ? "이름을 입력해주세요." : (isValid ? "" : "이름을 확인해주세요.") }
             .removeDuplicates()
             .receive(on: RunLoop.main)
-            .assign(to: \.nameErrorMessage, on: self) // 오류 발생 가능 지점
+            .assign(to: \.nameErrorMessage, on: self)
             .store(in: &cancellables)
 
         $isEmailValid.combineLatest($email.map { $0.isEmpty })
@@ -100,7 +99,7 @@ class RegisterViewModel {
             .map { isValid, isEmpty in isEmpty ? "이메일을 입력해주세요." : (isValid ? "" : "올바른 이메일 형식이 아닙니다.") }
             .removeDuplicates()
             .receive(on: RunLoop.main)
-            .assign(to: \.emailErrorMessage, on: self) // 오류 발생 가능 지점
+            .assign(to: \.emailErrorMessage, on: self)
             .store(in: &cancellables)
 
         $isPasswordValid.combineLatest($password.map { $0.isEmpty })
@@ -109,7 +108,7 @@ class RegisterViewModel {
             .map { isValid, isEmpty in isEmpty ? "비밀번호를 입력해주세요." : (isValid ? "" : "비밀번호는 6자 이상이어야 합니다.") }
             .removeDuplicates()
             .receive(on: RunLoop.main)
-            .assign(to: \.passwordErrorMessage, on: self) // 오류 발생 가능 지점
+            .assign(to: \.passwordErrorMessage, on: self)
             .store(in: &cancellables)
 
         Publishers.CombineLatest3($isPasswordConfirmed, $password, $confirmPassword)
@@ -123,15 +122,15 @@ class RegisterViewModel {
             }
             .removeDuplicates()
             .receive(on: RunLoop.main)
-            .assign(to: \.confirmPasswordErrorMessage, on: self) // 오류 발생 가능 지점
+            .assign(to: \.confirmPasswordErrorMessage, on: self)
             .store(in: &cancellables)
     }
 
-    /// "인증번호 받기" 버튼에 연결될 함수
+    /// "인증번호 받기" 버튼용 함수
     func requestOtp() {
         guard isFormValid, isEmailValid else {
             isOTPSent = false
-            // 필요하다면 infoMessageSubject.send("모든 정보를 올바르게 입력해주세요.")
+            //infoMessageSubject.send("모든 정보를 올바르게 입력해주세요.")
             return
         }
 
@@ -168,7 +167,7 @@ class RegisterViewModel {
         }
     }
 
-    /// "인증하고 가입 완료" 버튼에 연결될 함수
+    /// "인증하고 가입 완료" 버튼용 함수
     func verifyOtpAndCompleteRegistration() {
         guard isOTPSent else {
             otpVerificationError = "먼저 인증번호를 요청해주세요."
@@ -194,7 +193,7 @@ class RegisterViewModel {
                 try await dataManager.checkOtpForEmail(self.email, otp: self.otpCode)
 
                 guard let authUser = dataManager.getCurrentAuthenticatedUser() else {
-                    throw VerificationError(errorDescription: "OTP 검증 후 사용자 세션을 확인할 수 없습니다.")
+                    throw LoginManagerError.verificationError(error: "OTP 검증 후 사용자 세션을 확인할 수 없습니다.")
                 }
 
                 try await updatePasswordAfterOtpVerification()
@@ -209,6 +208,7 @@ class RegisterViewModel {
                     createdAt: Date()
                 )
                 
+                // 데이터 베이스에 정보 저장
                 let _ = await dataManager.insertData(data)
 
                 await MainActor.run {
@@ -228,14 +228,10 @@ class RegisterViewModel {
     /// OTP 검증 후 비밀번호만 업데이트하는 함수
     private func updatePasswordAfterOtpVerification() async throws {
         if isPasswordValid && isPasswordConfirmed && !password.isEmpty {
-            let passwordUpdate = UserUpdateField.password(self.password) // UserUpdateField가 정의되어 있다고 가정
+            let passwordUpdate = UserUpdateField.password(self.password)
             try await SupabaseDataManager.shared.updateUserField(passwordUpdate)
         } else if !password.isEmpty {
-            throw PasswordValidationError(errorDescription: "설정하려는 비밀번호가 유효하지 않습니다.")
+            throw LoginManagerError.passwordValidationError(error: "설정하려는 비밀번호가 유효하지 않습니다.")
         }
     }
-
-    // MARK: - Custom Error Types
-    struct VerificationError: LocalizedError { var errorDescription: String? }
-    struct PasswordValidationError: LocalizedError { var errorDescription: String? }
 }
