@@ -126,23 +126,6 @@ class LectureDetailViewController: UIViewController {
         return label
     }()
     
-    private var recommendLectureLabel: UILabel = {
-        let label = UILabel()
-        label.text = "추천 강의"
-        label.font = UIFont(name: "Pretendard-Bold", size: 20)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let recommendLectureImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.image = UIImage(named: "ramen")
-        return imageView
-    }()
-    
     private let selectDateButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("상담날짜 예약하기", for: .normal)
@@ -184,9 +167,6 @@ class LectureDetailViewController: UIViewController {
         
         descriptionScrollView.addSubview(descriptionTitleLabel)
         descriptionScrollView.addSubview(descriptionLabel)
-        
-        descriptionScrollView.addSubview(recommendLectureLabel)
-        descriptionScrollView.addSubview(recommendLectureImageView)
         
         view.addSubview(selectDateButton)
     }
@@ -242,21 +222,12 @@ class LectureDetailViewController: UIViewController {
             descriptionLabel.leadingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.leadingAnchor, constant: 20),
             descriptionLabel.trailingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.trailingAnchor, constant: -20),
             descriptionLabel.widthAnchor.constraint(equalTo: descriptionScrollView.frameLayoutGuide.widthAnchor, constant: -40),
-            
-            recommendLectureLabel.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 30),
-            recommendLectureLabel.leadingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.leadingAnchor, constant: 20),
-            recommendLectureLabel.trailingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.trailingAnchor, constant: -20),
-            
-            recommendLectureImageView.topAnchor.constraint(equalTo: recommendLectureLabel.bottomAnchor),
-            recommendLectureImageView.leadingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.leadingAnchor),
-            recommendLectureImageView.trailingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.trailingAnchor),
-            recommendLectureImageView.heightAnchor.constraint(equalToConstant: 400),
-            recommendLectureImageView.bottomAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.bottomAnchor, constant: -20),
+            descriptionLabel.bottomAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.bottomAnchor, constant: -20),
             
             selectDateButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
             selectDateButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
             selectDateButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -5),
-            selectDateButton.heightAnchor.constraint(equalToConstant: 50),
+            selectDateButton.heightAnchor.constraint(equalToConstant: 50)
                     ])
     }
     

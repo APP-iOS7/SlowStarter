@@ -7,7 +7,8 @@
 
 import UIKit
 
-class LectureListViewController: UIViewController {
+class LectureListViewController: UIViewController, LectureCardCellDelegate {
+    
     weak var coordinator: LectureCoordinator?
     // 코디네이터 주입을 위한 프로퍼티 추가
     
@@ -48,7 +49,7 @@ class LectureListViewController: UIViewController {
         return label
     }()
     
-    lazy private var searchBar: UISearchBar = {
+    private let searchBar: UISearchBar = {
         let searchBar = UISearchBar()
         searchBar.placeholder = ""
         searchBar.translatesAutoresizingMaskIntoConstraints = false
@@ -67,13 +68,15 @@ class LectureListViewController: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(LectureCardCell.self, forCellReuseIdentifier: LectureCardCell.identifier) // 사용자 정의 셀 등록
         tableView.separatorStyle = .none // 셀 구분선 제거
-        tableView.showsVerticalScrollIndicator = true // 스크롤 인디케이터 표시
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 580
+        //        tableView.showsVerticalScrollIndicator = true // 스크롤 인디케이터 표시
         return tableView
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground // 뷰의 배경색 설정
+        view.backgroundColor = .systemBackground
         
         setupUI()
         setupConstraints()
@@ -109,7 +112,7 @@ class LectureListViewController: UIViewController {
             tableView.topAnchor.constraint(equalTo: topStackView.bottomAnchor, constant: 30),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
 }
@@ -123,18 +126,24 @@ extension LectureListViewController: UITableViewDataSource, UITableViewDelegate 
         guard let cell = tableView.dequeueReusableCell(withIdentifier: LectureCardCell.identifier, for: indexPath) as? LectureCardCell else {
             return UITableViewCell()
         }
+        cell.delegate = self
         let lecture = viewModel.lectures[indexPath.row]
         cell.configure(with: lecture) // 사용자 정의 셀 구성
         return cell
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 580 // 카드에 대한 대략적인 높이
-    }
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         coordinator?.showLectureDetail() // 코디네이터에게 화면 전환 요청
+    }
+}
+
+extension LectureListViewController {
+    func didTapReadMoreButton(in cell: LectureCardCell) {
+        if let indexPath = tableView.indexPath(for: cell) {
+            tableView.beginUpdates()
+            tableView.endUpdates()
+        }
     }
 }
 
