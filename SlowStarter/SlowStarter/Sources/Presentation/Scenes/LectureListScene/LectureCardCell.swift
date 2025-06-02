@@ -121,7 +121,7 @@ class LectureCardCell: UITableViewCell {
             lectureImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             lectureImageView.heightAnchor.constraint(equalToConstant: 340),
             
-            titleLabel.topAnchor.constraint(equalTo: lectureImageView.topAnchor, constant: 360),
+            titleLabel.topAnchor.constraint(equalTo: lectureImageView.bottomAnchor, constant: 20),
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             
@@ -141,21 +141,22 @@ class LectureCardCell: UITableViewCell {
             descriptionLabel.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 5),
             descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
-            descriptionLabel.heightAnchor.constraint(equalToConstant: 70),
             
-            readMoreButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 0),
+            readMoreButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 5),
             readMoreButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             readMoreButton.heightAnchor.constraint(equalToConstant: 20),
             
-//            detailShowButton.topAnchor.constraint(equalTo: readMoreButton.bottomAnchor, constant: 10),
+            detailShowButton.topAnchor.constraint(equalTo: readMoreButton.bottomAnchor, constant: 10),
             detailShowButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             detailShowButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             detailShowButton.heightAnchor.constraint(equalToConstant: 40),
-            detailShowButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
+//            detailShowButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
         ])
     }
     
-    func configure(with lecture: Lecture) {
+    func configure(with lecture: Lecture, isExpanded: Bool) {
+        self.isDescriptionExpanded = isExpanded
+        
         titleLabel.text = "메시 선생님과 배우는 쿠킹클래스"
         priceLabel.text = "KRW 99,000"
         likesCountLabel.text = "5,602"
@@ -167,11 +168,7 @@ class LectureCardCell: UITableViewCell {
     }
     
     @objc private func readMoreButtonTapped() {
-        isDescriptionExpanded.toggle()
-        
-        descriptionLabel.numberOfLines = isDescriptionExpanded ? 0 : 3
-        readMoreButton.setTitle(isDescriptionExpanded ? "간략히보기" : "자세히보기", for: .normal)
-        
+//        isDescriptionExpanded.toggle()
         delegate?.didTapReadMoreButton(in: self)
     }
 }

@@ -14,6 +14,9 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
     
     private let viewModel = LectureListViewModel()
     
+    // 각 강의의 확장 상태를 저장할 배열 추가
+    private var lectureExpansionStates: [Bool] = []
+    
     // MARK: - UI Components
     lazy private var titleLabel: UILabel = {
         let label = UILabel()
@@ -66,8 +69,8 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
     private let tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.register(LectureCardCell.self, forCellReuseIdentifier: LectureCardCell.identifier) // 사용자 정의 셀 등록
-        tableView.separatorStyle = .none // 셀 구분선 제거
+        tableView.register(LectureCardCell.self, forCellReuseIdentifier: LectureCardCell.identifier)
+        tableView.separatorStyle = .none
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 580
         //        tableView.showsVerticalScrollIndicator = true // 스크롤 인디케이터 표시
@@ -78,12 +81,14 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         
+        // 강의 개수만큼 확장 상태 배열 초기화
+        lectureExpansionStates = Array(repeating: false, count: viewModel.lectures.count)
+        
         setupUI()
         setupConstraints()
         tableView.delegate = self
         tableView.dataSource = self
         
-        // 내비게이션 바 숨김 해제
         self.navigationController?.navigationBar.isHidden = false
     }
     
@@ -96,8 +101,7 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            // 상단 스택 뷰 (제목 및 부제목)
-            topStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10), // 상단 앵커 조정
+            topStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
             topStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
             topStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
             
@@ -128,7 +132,9 @@ extension LectureListViewController: UITableViewDataSource, UITableViewDelegate 
         }
         cell.delegate = self
         let lecture = viewModel.lectures[indexPath.row]
-        cell.configure(with: lecture) // 사용자 정의 셀 구성
+        let isExpanded = lectureExpansionStates[indexPath.row] // 해당 셀의 확장 상태 가져오기
+        cell.configure(with: lecture, isExpanded: isExpanded) // 확장 상태를 전달
+        cell.selectionStyle = .none // 셀 선택 시 회색 하이라이트 제거
         return cell
     }
     
@@ -141,6 +147,10 @@ extension LectureListViewController: UITableViewDataSource, UITableViewDelegate 
 extension LectureListViewController {
     func didTapReadMoreButton(in cell: LectureCardCell) {
         if let indexPath = tableView.indexPath(for: cell) {
+            // 해당 셀의 확장 상태 토글
+            lectureExpansionStates[indexPath.row].toggle()
+            
+            // 테이블 뷰에 해당 셀의 높이가 변경되었음을 알림
             tableView.beginUpdates()
             tableView.endUpdates()
         }
