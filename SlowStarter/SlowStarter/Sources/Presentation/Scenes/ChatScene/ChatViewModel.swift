@@ -6,13 +6,24 @@
 //
 
 import Foundation
+import Combine
+
+enum MessageUpdate {
+    case initialRoad([AIChatMessage]) // 초기화
+    case append(AIChatMessage) // 최신 메시지 추가
+    case prepend([AIChatMessage]) // 이전 메시지 추가
+    case summarize(UUID) // 요약 메시지
+}
 
 final class ChatViewModel: ObservableObject {
     // MARK: - Properties
-    @Published private(set) var messages: [AIChatMessage] = []
+    private(set) var messages: [AIChatMessage] = []
     @Published private(set) var isLoading: Bool = false
     
-    private var page: Int = 0
+    private let messageUpdateSubject: PassthroughSubject<MessageUpdate, Never> = PassthroughSubject()
+    var messageUpdatePublisher: AnyPublisher<MessageUpdate, Never> {
+        return messageUpdateSubject.eraseToAnyPublisher()
+    }
     
     private let chatUseCase: DefaultChatUseCase
     private let summaryUseCase: DefaultSummaryUseCase
@@ -40,14 +51,25 @@ final class ChatViewModel: ObservableObject {
         return messages[index]
     }
     
-    func fetchMessages() {
+    func initialFetchMessages() {
         Task {
             do {
-                let messages: [AIChatMessage] = try await coreDataManager.fetchMessages(before: messages.first).reversed()
-                guard !messages.isEmpty else { return }
+                let newMessages: [AIChatMessage] = try await coreDataManager.fetchMessages().reversed()
+                guard !newMessages.isEmpty else { return } // 코어데이터가 비어있으면 종료
+                messages = newMessages // 뷰모델에 배열 저장
+                messageUpdateSubject.send(.initialRoad(messages)) // 컨트롤러에 초기 배열 발행
+            }
+        }
+    }
+    
+    func fetchPreviousMessages() {
+        Task {
+            do {
+                let prependMessages: [AIChatMessage] = try await coreDataManager.fetchMessages(before: messages.first).reversed()
+                guard !prependMessages.isEmpty else { return } // 더이상 불러올 데이터가 없으면 종료
                 
-                self.messages.insert(contentsOf: messages, at: 0)
-                page += 1
+                messages.insert(contentsOf: prependMessages, at: 0) // 배열 앞에 저장
+                messageUpdateSubject.send(.prepend(prependMessages)) // 컨트롤러에 이전 메시지 발행
             } catch {
                 
             }
@@ -58,18 +80,20 @@ final class ChatViewModel: ObservableObject {
         Task {
             do {
                 let myMessage: AIChatMessage = AIChatMessage(text: text, isSended: true, timestamp: Date())
-                messages.append(myMessage)
+                messages.append(myMessage) // 내 메시지 저장
+                messageUpdateSubject.send(.append(myMessage)) // 컨트롤러에 내 메시지 발행
                 
-                isLoading = true
-                try await coreDataManager.saveMessage(myMessage)
+                isLoading = true // 로딩 시작
+                try await coreDataManager.saveMessage(myMessage) // 코어데이터에 내 메시지 저장
                 
                 // 대화의 맥락을 유지하기 위해 최근 메시지를 함께 보냄
                 let sendMessages: [AIChatMessage] = recentMessages
                 let newMessage = try await chatUseCase.execute(messages: sendMessages) // 답장 받아오기
-                messages.append(newMessage)
+                messages.append(newMessage) // 뷰모델에 답장 저장
+                messageUpdateSubject.send(.append(newMessage)) // 컨트롤러에 답장 발행
                 
-                try await coreDataManager.saveMessage(newMessage) // CoreData에 답장 저장
-                isLoading = false
+                try await coreDataManager.saveMessage(newMessage) // 코어데이터에 답장 저장
+                isLoading = false // 로딩 종료
             } catch {
                 isLoading = false
                 
@@ -86,10 +110,11 @@ final class ChatViewModel: ObservableObject {
         Task {
             do {
                 guard let index = messages.firstIndex(where: { $0.id == message.id }) else { return }
-                let summaryMessage: AIChatMessage = try await summaryUseCase.execute(message: message)
-                messages[index] = summaryMessage
+                let summaryMessage: AIChatMessage = try await summaryUseCase.execute(message: message) // 요약 요청
+                messages[index] = summaryMessage // 요약 메시지 저장
+                messageUpdateSubject.send(.summarize(summaryMessage.id)) // 컨트롤러에 요약메시지 발행
                 
-                try await coreDataManager.updateMessage(summaryMessage)
+                try await coreDataManager.updateMessage(summaryMessage) // 코어데이터에 요약메시지 저장
             } catch {
                 if let apiError = error as? ChatAPIError {
                     print(apiError)

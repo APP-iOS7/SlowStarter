@@ -125,11 +125,9 @@ final class ReceivedMessageCell: UICollectionViewCell {
     
     func showSummaryLoading(_ isLoading: Bool) {
         if isLoading {
-            print("start")
             activityIndicator.startAnimating()
             summaryButtom.isHidden = true
         } else {
-            print("stop")
             activityIndicator.stopAnimating()
             summaryButtom.isHidden = false
         }
