@@ -8,9 +8,10 @@
 import UIKit
 
 protocol LectureCardCellDelegate: AnyObject {
+    func didTapThumb(in cell: LectureCardCell)
     func didTapReadMoreButton(in cell: LectureCardCell)
     func didTapShowDetail(in cell: LectureCardCell)
-    func didTapThumb(in cell: LectureCardCell)
+    func didTapSelectDate(in cell: LectureCardCell)
 }
 
 class LectureCardCell: UITableViewCell {
@@ -104,6 +105,18 @@ class LectureCardCell: UITableViewCell {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
+
+    private let selectDateButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("상담날짜 예약하기", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = UIFont(name: "Pretendard-Medium", size: 20)
+        button.backgroundColor = .black
+        button.layer.cornerRadius = 5
+        button.layer.borderWidth = 1
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -127,6 +140,7 @@ class LectureCardCell: UITableViewCell {
         contentView.addSubview(descriptionLabel)
         contentView.addSubview(readMoreButton)
         contentView.addSubview(detailShowButton)
+        contentView.addSubview(selectDateButton)
         
         // Add tap gesture to thumbContainer
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(thumbTapped))
@@ -174,7 +188,12 @@ class LectureCardCell: UITableViewCell {
             detailShowButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             detailShowButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             detailShowButton.heightAnchor.constraint(equalToConstant: 40),
-            detailShowButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16)
+
+            selectDateButton.topAnchor.constraint(equalTo: detailShowButton.bottomAnchor, constant: 16),
+            selectDateButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            selectDateButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            selectDateButton.heightAnchor.constraint(equalToConstant: 40),
+            selectDateButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16)
         ])
     }
     
@@ -186,6 +205,7 @@ class LectureCardCell: UITableViewCell {
         // 버튼 액션 추가
         readMoreButton.addTarget(self, action: #selector(readMoreButtonTapped), for: .touchUpInside)
         detailShowButton.addTarget(self, action: #selector(showDetailTapped), for: .touchUpInside)
+        selectDateButton.addTarget(self, action: #selector(selectDateButtonTapped), for: .touchUpInside)
     }
     
     func configure(with lecture: Lecture, isExpanded: Bool) {
@@ -210,6 +230,10 @@ class LectureCardCell: UITableViewCell {
         delegate?.didTapShowDetail(in: self)
     }
     
+    @objc private func selectDateButtonTapped() {
+        delegate?.didTapSelectDate(in: self)
+    }
+
     @objc private func thumbTapped() {
         delegate?.didTapThumb(in: self)
     }

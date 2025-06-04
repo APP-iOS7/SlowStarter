@@ -14,8 +14,8 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
     
     private var viewModel = LectureListViewModel()
     
-    // 각 강의의 확장 상태를 저장할 배열 추가
     private var lectureExpansionStates: [Bool] = []
+    // 각 강의의 확장 상태를 저장할 배열 추가
     
     // MARK: - UI Components
     lazy private var titleLabel: UILabel = {
@@ -59,8 +59,6 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
         searchBar.searchBarStyle = .default
         let searchTextField = searchBar.searchTextField
         searchTextField.backgroundColor = .clear // 배경 투명하게 설정
-        //        searchTextField.leftView = nil // 기본 검색 아이콘 제거
-        //        searchTextField.rightView = UIImageView(image: UIImage(systemName: "magnifyingglass")) // 돋보기 아이콘 추가
         searchTextField.rightViewMode = .always
         searchTextField.tintColor = .black
         return searchBar
@@ -73,7 +71,6 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
         tableView.separatorStyle = .none
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 580
-        //        tableView.showsVerticalScrollIndicator = true // 스크롤 인디케이터 표시
         return tableView
     }()
     
@@ -144,6 +141,22 @@ extension LectureListViewController: UITableViewDataSource, UITableViewDelegate 
 }
 
 extension LectureListViewController {
+    func didTapThumb(in cell: LectureCardCell) {
+        guard let indexPath = tableView.indexPath(for: cell) else {
+            return
+        }
+        
+        let lectureId = viewModel.lectures[indexPath.row].lectureId
+        
+        // 엄지척 카운트 증가 및 업데이트
+        if viewModel.incrementThumbCount(for: lectureId) != nil {
+            // 해당 셀만 업데이트
+            if let updatedLecture = viewModel.lectures.first(where: { $0.lectureId == lectureId }) {
+                cell.configure(with: updatedLecture, isExpanded: lectureExpansionStates[indexPath.row])
+            }
+        }
+    }
+
     func didTapReadMoreButton(in cell: LectureCardCell) {
         if let indexPath = tableView.indexPath(for: cell) {
             lectureExpansionStates[indexPath.row].toggle()
@@ -160,20 +173,8 @@ extension LectureListViewController {
         coordinator?.showLectureDetail()
     }
     
-    func didTapThumb(in cell: LectureCardCell) {
-        guard let indexPath = tableView.indexPath(for: cell) else {
-            return
-        }
-        
-        let lectureId = viewModel.lectures[indexPath.row].lectureId
-        
-        // 엄지척 카운트 증가 및 업데이트
-        if viewModel.incrementThumbCount(for: lectureId) != nil {
-            // 해당 셀만 업데이트
-            if let updatedLecture = viewModel.lectures.first(where: { $0.lectureId == lectureId }) {
-                cell.configure(with: updatedLecture, isExpanded: lectureExpansionStates[indexPath.row])
-            }
-        }
+    func didTapSelectDate(in cell: LectureCardCell) {
+        coordinator?.showLectureDateSelection()
     }
 }
 

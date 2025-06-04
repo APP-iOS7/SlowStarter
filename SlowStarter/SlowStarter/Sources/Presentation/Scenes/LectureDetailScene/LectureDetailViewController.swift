@@ -150,7 +150,7 @@ class LectureDetailViewController: UIViewController {
     }()
     
     private func setupSlideImages() {
-        let images = ["cookie1", "cookie2", "cookie3", "cookie4", "cookie5"]
+        let images = ["bread01", "bread02", "bread03", "bread01", "bread02"]
         
         for (index, imageName) in images.enumerated() {
             let imageView = UIImageView()
@@ -160,6 +160,7 @@ class LectureDetailViewController: UIViewController {
             imageView.translatesAutoresizingMaskIntoConstraints = false
             imageView.image = UIImage(named: imageName)
             imageView.isUserInteractionEnabled = true
+            imageView.backgroundColor = .systemGray6  // 이미지가 로드되지 않았을 때 보여줄 배경색
             
             // 탭 제스처 추가
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(imageTapped(_:)))

@@ -66,6 +66,15 @@ class ImageDetailViewController: UIViewController {
         containerView.addSubview(imageView)
         containerView.addSubview(descriptionLabel)
         view.addSubview(closeButton)
+        
+        containerView.backgroundColor = .systemBackground
+        containerView.layer.cornerRadius = 12
+        
+        descriptionLabel.backgroundColor = .systemBackground
+        descriptionLabel.textColor = .label
+        
+        closeButton.tintColor = .white
+        closeButton.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
     }
     
     private func setupConstraints() {
@@ -75,11 +84,11 @@ class ImageDetailViewController: UIViewController {
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
-            containerView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            containerView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            containerView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            containerView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            containerView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            containerView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 50),
+            containerView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 20),
+            containerView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -20),
+            containerView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -20),
+            containerView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -40),
             
             imageView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 20),
             imageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
