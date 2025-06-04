@@ -57,8 +57,12 @@ final class ChatViewController: UIViewController {
             UICollectionView.CellRegistration { [weak self] cell, _, message in
                 cell.message = message
                 cell.summaryButtom.addAction(UIAction { _ in
-                    self?.isLoadingSummaryMessage = true
-                    self?.viewModel.didTapSummaryButton(message: message)
+                    guard let self = self else { return }
+                    
+                    self.isLoadingSummaryMessage = true // 요약중인 상태 표시
+                    self.viewModel.didTapSummaryButton(message: message) // 텍스트 요약 요청 전송
+                    cell.showSummaryLoading(self.isLoadingSummaryMessage) // indicator start, stop
+                    self.summarizingMessageID = cell.message?.id // reloadItems를 위해 id 저장
                 }, for: .touchUpInside)
             }
         }()
@@ -71,7 +75,7 @@ final class ChatViewController: UIViewController {
         
         let dateHeaderRegistration = UICollectionView.SupplementaryRegistration<DateHeaderView>(
             elementKind: UICollectionView.elementKindSectionHeader
-        ) { [weak self] headerView, kind, indexPath in
+        ) { [weak self] headerView, _, indexPath in
             guard let self = self else { return }
             
             let snapshot = self.dataSource.snapshot()
@@ -161,12 +165,13 @@ final class ChatViewController: UIViewController {
         return button
     }()
     
-    private var lastKeyboardVisibleHeight: CGFloat = 0
-    private var isInitialLoad: Bool = true
-    private var isLoadingPreviousMessages: Bool = false
-    private var isLoadingSummaryMessage: Bool = false
-    private var anchorMessageID: UUID?
-    private var cellHeightCache: [UUID: CGFloat] = .init()
+    private var lastKeyboardVisibleHeight: CGFloat = 0 // 키보드 높이
+    private var isInitialLoad: Bool = true // 초기화 상태
+    private var isLoadingPreviousMessages: Bool = false // 이전 대화가 추가 되는 상태
+    private var isLoadingSummaryMessage: Bool = false // 메시지가 요약중인 상태
+    private var anchorMessageID: UUID? // 이전 대화를 추가하는 기준이 되는 메시지 id
+    private var summarizingMessageID: UUID? // 현재 요약중인 메시지 id
+    private var cellHeightCache: [UUID: CGFloat] = .init() // 셀 높이를 저장 배열
     
     // MARK: - Initializer
     init(viewModel: ChatViewModel) {
@@ -261,6 +266,7 @@ final class ChatViewController: UIViewController {
                 print(completion)
             } receiveValue: { [weak self] messages in
                 self?.cellHeightCache.removeAll() // cell size 다시 계산
+                self?.isLoadingSummaryMessage = false // 요약 대기 상태 x
                 self?.applySnapshot(for: messages)
             }
             .store(in: &cancellables)
@@ -505,17 +511,27 @@ extension ChatViewController {
             }
         }
         
+        // 요약 작업이라면 해당 셀을 다시 생성.
+        if let summarizingID = summarizingMessageID {
+            snapshot.reloadItems([.message(summarizingID)])
+        }
+        
         let animatingDifferences: Bool = !(isInitialLoad || isLoadingPreviousMessages)
+        
         dataSource.apply(snapshot, animatingDifferences: animatingDifferences) { [weak self] in
             guard let self = self else { return }
-            guard !isLoadingSummaryMessage else {
-                isLoadingSummaryMessage = false
+            
+            // 요약중일 때 이동 x
+            if let _ = self.summarizingMessageID {
+                self.summarizingMessageID = nil
                 return
             }
             
             if self.anchorMessageID == nil {
+                // 새 메시지가 추가될 때 마지막 메시지로 스크롤
                 self.scrollToLatestMessage()
             } else {
+                // 이전 메시지가 추가될 때 현재 위치에 고정
                 self.scrollToCurrentMessage()
             }
         }
@@ -539,8 +555,7 @@ extension ChatViewController {
         }
         
         dataSource.apply(snapshot, animatingDifferences: true) { [weak self] in
-            self?.collectionView.layoutIfNeeded()
-            self?.scrollToLatestMessage()
+            self?.scrollToLatestMessage() // 마지막 메시지로 이동
         }
     }
 }

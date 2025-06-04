@@ -54,6 +54,13 @@ final class ReceivedMessageCell: UICollectionViewCell {
         return button
     }()
     
+    private let activityIndicator: UIActivityIndicatorView = {
+        let indicator: UIActivityIndicatorView = UIActivityIndicatorView()
+        indicator.color = .black
+        indicator.translatesAutoresizingMaskIntoConstraints = false 
+        return indicator
+    }()
+    
     private let cellMargin: CGFloat = 8.0
     private let minimumLeftMargin: CGFloat = 100.0
     
@@ -84,6 +91,7 @@ final class ReceivedMessageCell: UICollectionViewCell {
         contentView.addSubview(messageView)
         contentView.addSubview(timeLabel)
         contentView.addSubview(summaryButtom)
+        contentView.addSubview(activityIndicator)
         messageView.addSubview(messageLabel)
         
         NSLayoutConstraint.activate([
@@ -103,15 +111,28 @@ final class ReceivedMessageCell: UICollectionViewCell {
             summaryButtom.heightAnchor.constraint(equalTo: summaryButtom.widthAnchor),
             
             timeLabel.leadingAnchor.constraint(equalTo: messageView.trailingAnchor, constant: 5),
-            timeLabel.bottomAnchor.constraint(equalTo: messageView.bottomAnchor, constant: -5)
+            timeLabel.bottomAnchor.constraint(equalTo: messageView.bottomAnchor, constant: -5),
+            
+            activityIndicator.topAnchor.constraint(equalTo: summaryButtom.topAnchor),
+            activityIndicator.leadingAnchor.constraint(equalTo: summaryButtom.leadingAnchor),
+            activityIndicator.trailingAnchor.constraint(equalTo: summaryButtom.trailingAnchor),
+            activityIndicator.bottomAnchor.constraint(equalTo: summaryButtom.bottomAnchor)
         ])
         
         messageView.layer.cornerRadius = 8
         summaryButtom.layer.cornerRadius = 8
     }
     
-    func getMessageLableHeight() -> CGFloat {
-        return messageLabel.frame.height
+    func showSummaryLoading(_ isLoading: Bool) {
+        if isLoading {
+            print("start")
+            activityIndicator.startAnimating()
+            summaryButtom.isHidden = true
+        } else {
+            print("stop")
+            activityIndicator.stopAnimating()
+            summaryButtom.isHidden = false
+        }
     }
     
     // 재사용을 위해 내용물 초기화
