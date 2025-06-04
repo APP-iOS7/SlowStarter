@@ -14,13 +14,7 @@ class LectureDetailViewController: UIViewController {
     
     private let viewModel = LectureDetailViewModel()
     
-    private let imageDescriptions = [
-        "신선한 재료로 만드는 쿠키 반죽",
-        "크랜베리를 올린 데니쉬 페이스트리",
-        "갓 구운 부드러운 모닝빵",
-        "초코칩이 가득한 쿠키",
-        "바삭한 크로와상"
-    ]
+    private lazy var imageDescriptions = viewModel.imageDescriptions
     
     private var slideImages: [UIImageView] = []
     
@@ -144,7 +138,6 @@ class LectureDetailViewController: UIViewController {
         button.backgroundColor = .black
         button.layer.cornerRadius = 10
         button.layer.borderWidth = 1
-        //        button.layer.borderColor = UIColor.white.cgColor
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
