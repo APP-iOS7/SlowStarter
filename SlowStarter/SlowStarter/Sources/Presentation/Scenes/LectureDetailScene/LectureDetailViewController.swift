@@ -14,6 +14,16 @@ class LectureDetailViewController: UIViewController {
     
     private let viewModel = LectureDetailViewModel()
     
+    private let imageDescriptions = [
+        "신선한 재료로 만드는 쿠키 반죽",
+        "크랜베리를 올린 데니쉬 페이스트리",
+        "갓 구운 부드러운 모닝빵",
+        "초코칩이 가득한 쿠키",
+        "바삭한 크로와상"
+    ]
+    
+    private var slideImages: [UIImageView] = []
+    
     // MARK: - UI Components
     private let descriptionScrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -113,7 +123,7 @@ class LectureDetailViewController: UIViewController {
     private var descriptionTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "강의 설명"
-        label.font = UIFont(name: "Pretendard-Regular", size: 20)
+        label.font = UIFont(name: "Pretendard-SemiBold", size: 20)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -139,10 +149,64 @@ class LectureDetailViewController: UIViewController {
         return button
     }()
     
+    private func setupSlideImages() {
+        let images = ["cookie1", "cookie2", "cookie3", "cookie4", "cookie5"]
+        
+        for (index, imageName) in images.enumerated() {
+            let imageView = UIImageView()
+            imageView.contentMode = .scaleAspectFill
+            imageView.clipsToBounds = true
+            imageView.layer.cornerRadius = 10
+            imageView.translatesAutoresizingMaskIntoConstraints = false
+            imageView.image = UIImage(named: imageName)
+            imageView.isUserInteractionEnabled = true
+            
+            // 탭 제스처 추가
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(imageTapped(_:)))
+            imageView.addGestureRecognizer(tapGesture)
+            imageView.tag = index // 이미지 인덱스 저장
+            
+            slideImageScrollView.addSubview(imageView)
+            slideImages.append(imageView)
+            
+            // 이미지 제약조건 설정
+            NSLayoutConstraint.activate([
+                imageView.topAnchor.constraint(equalTo: slideImageScrollView.topAnchor),
+                imageView.heightAnchor.constraint(equalTo: slideImageScrollView.heightAnchor),
+                imageView.widthAnchor.constraint(equalTo: slideImageScrollView.widthAnchor, multiplier: 0.8),
+                imageView.bottomAnchor.constraint(equalTo: slideImageScrollView.bottomAnchor)
+            ])
+            
+            // 첫 번째 이미지
+            if index == 0 {
+                imageView.leadingAnchor.constraint(equalTo: slideImageScrollView.leadingAnchor).isActive = true
+            }
+            // 중간 이미지들
+            else {
+                imageView.leadingAnchor.constraint(equalTo: slideImages[index - 1].trailingAnchor, constant: 10).isActive = true
+            }
+            // 마지막 이미지
+            if index == images.count - 1 {
+                imageView.trailingAnchor.constraint(equalTo: slideImageScrollView.trailingAnchor).isActive = true
+            }
+        }
+    }
+    
+    @objc private func imageTapped(_ sender: UITapGestureRecognizer) {
+        guard let imageView = sender.view as? UIImageView else { return }
+        let index = imageView.tag
+        let description = imageDescriptions[index]
+        
+        let detailVC = ImageDetailViewController(image: imageView.image, description: description)
+        present(detailVC, animated: true)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .systemBackground
         setupUI()
         setupConstraints()
+        setupSlideImages()
         
         // 버튼 액션 추가
         selectDateButton.addTarget(self, action: #selector(selectDateButtonTapped), for: .touchUpInside)
@@ -183,7 +247,6 @@ class LectureDetailViewController: UIViewController {
             introVideoView.leadingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.leadingAnchor),
             introVideoView.trailingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.trailingAnchor),
             introVideoView.heightAnchor.constraint(equalToConstant: 400),
-//            introVideoView.widthAnchor.constraint(equalTo: descriptionScrollView.widthAnchor), // 스크롤 뷰의 너비와 일치
             
             titleLabel.topAnchor.constraint(equalTo: introVideoView.bottomAnchor, constant: 20),
             titleLabel.leadingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.leadingAnchor, constant: 20),
@@ -203,7 +266,6 @@ class LectureDetailViewController: UIViewController {
             slideImageStackView.topAnchor.constraint(equalTo: slideImageScrollView.contentLayoutGuide.topAnchor),
             slideImageStackView.leadingAnchor.constraint(equalTo: slideImageScrollView.contentLayoutGuide.leadingAnchor, constant: 20),
             slideImageStackView.trailingAnchor.constraint(equalTo: slideImageScrollView.contentLayoutGuide.trailingAnchor, constant: -20),
-//            slideImageStackView.bottomAnchor.constraint(equalTo: slideImageScrollView.contentLayoutGuide.bottomAnchor),
             slideImageStackView.heightAnchor.constraint(equalTo: slideImageScrollView.heightAnchor), // 스크롤 뷰의 높이와 일치
             
             // 스택 뷰 내부의 각 이미지에 대한 제약 조건
@@ -214,7 +276,7 @@ class LectureDetailViewController: UIViewController {
             slideImageView_4.widthAnchor.constraint(equalTo: descriptionScrollView.frameLayoutGuide.widthAnchor, constant: -260),
             slideImageView_5.widthAnchor.constraint(equalTo: descriptionScrollView.frameLayoutGuide.widthAnchor, constant: -260),
             
-            descriptionTitleLabel.topAnchor.constraint(equalTo: slideImageView_1.bottomAnchor, constant: 30),
+            descriptionTitleLabel.topAnchor.constraint(equalTo: slideImageStackView.bottomAnchor, constant: 30),
             descriptionTitleLabel.leadingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.leadingAnchor, constant: 20),
             descriptionTitleLabel.trailingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.trailingAnchor, constant: -20),
             

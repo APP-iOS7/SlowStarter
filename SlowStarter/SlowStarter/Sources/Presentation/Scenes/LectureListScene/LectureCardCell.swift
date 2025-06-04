@@ -9,6 +9,8 @@ import UIKit
 
 protocol LectureCardCellDelegate: AnyObject {
     func didTapReadMoreButton(in cell: LectureCardCell)
+    func didTapShowDetail(in cell: LectureCardCell)
+    func didTapThumb(in cell: LectureCardCell)
 }
 
 class LectureCardCell: UITableViewCell {
@@ -16,7 +18,8 @@ class LectureCardCell: UITableViewCell {
     static let identifier = "LectureCardCell"
     
     weak var delegate: LectureCardCellDelegate?
-    private var isDescriptionExpanded: Bool = false
+    
+    private var lecture: Lecture?
     
     private let lectureImageView: UIImageView = {
         let imageView = UIImageView()
@@ -25,6 +28,7 @@ class LectureCardCell: UITableViewCell {
         imageView.layer.cornerRadius = 10
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = UIImage(named: "cookingClassWomanChef")
+        imageView.isUserInteractionEnabled = true  // 이미지뷰 터치 활성화
         return imageView
     }()
     
@@ -44,17 +48,27 @@ class LectureCardCell: UITableViewCell {
         return label
     }()
     
-    private let likesIcon: UIImageView = {
-        let imageView = UIImageView(image: UIImage(systemName: "hand.thumbsup"))
+    private let thumbContainer: UIView = {
+        let view = UIView()
+        view.backgroundColor = .systemBackground
+        view.layer.cornerRadius = 15
+        view.isUserInteractionEnabled = true
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private let thumbIcon: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(systemName: "hand.thumbsup")
         imageView.tintColor = .systemGray
+        imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
-    private let likesCountLabel: UILabel = {
+    private let thumbCountLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont(name: "Pretendard-Regular", size: 18)
-        label.textColor = .systemGray
         label.textAlignment = .right
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -64,16 +78,17 @@ class LectureCardCell: UITableViewCell {
         let label = UILabel()
         label.font = UIFont(name: "Pretendard-Regular", size: 16)
         label.textColor = .systemGray
-        label.numberOfLines = 3 // 라인수 제한
+        label.numberOfLines = 3
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    private let readMoreButton: UIButton = { // New: Read More Button
+    private let readMoreButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("자세히보기", for: .normal)
         button.titleLabel?.font = UIFont(name: "Pretendard-Regular", size: 14)
-        button.tintColor = .systemPink
+        button.tintColor = .systemGray
+        button.contentHorizontalAlignment = .left
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -94,9 +109,8 @@ class LectureCardCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
         setupConstraints()
-        contentView.backgroundColor = .systemBackground // 셀 자체의 배경색
-        
-        readMoreButton.addTarget(self, action: #selector(readMoreButtonTapped), for: .touchUpInside)
+        setupActions()
+        contentView.backgroundColor = .systemBackground
     }
     
     required init?(coder: NSCoder) {
@@ -107,11 +121,16 @@ class LectureCardCell: UITableViewCell {
         contentView.addSubview(lectureImageView)
         contentView.addSubview(titleLabel)
         contentView.addSubview(priceLabel)
-        contentView.addSubview(likesIcon)
-        contentView.addSubview(likesCountLabel)
+        contentView.addSubview(thumbContainer)
+        contentView.addSubview(thumbIcon)
+        contentView.addSubview(thumbCountLabel)
         contentView.addSubview(descriptionLabel)
         contentView.addSubview(readMoreButton)
         contentView.addSubview(detailShowButton)
+        
+        // Add tap gesture to thumbContainer
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(thumbTapped))
+        thumbContainer.addGestureRecognizer(tapGesture)
     }
     
     private func setupConstraints() {
@@ -127,48 +146,71 @@ class LectureCardCell: UITableViewCell {
             
             priceLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
             priceLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            priceLabel.trailingAnchor.constraint(equalTo: likesIcon.leadingAnchor, constant: -10),
+            priceLabel.trailingAnchor.constraint(equalTo: thumbContainer.leadingAnchor, constant: -10),
             
-            likesIcon.centerYAnchor.constraint(equalTo: priceLabel.centerYAnchor),
-            likesIcon.trailingAnchor.constraint(equalTo: likesCountLabel.leadingAnchor),
-            likesIcon.widthAnchor.constraint(equalToConstant: 20),
-            likesIcon.heightAnchor.constraint(equalToConstant: 20),
+            thumbContainer.centerYAnchor.constraint(equalTo: priceLabel.centerYAnchor),
+            thumbContainer.trailingAnchor.constraint(equalTo: thumbCountLabel.leadingAnchor),
+            thumbContainer.widthAnchor.constraint(equalToConstant: 30),
+            thumbContainer.heightAnchor.constraint(equalToConstant: 30),
             
-            likesCountLabel.centerYAnchor.constraint(equalTo: priceLabel.centerYAnchor),
-            likesCountLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
-            likesCountLabel.widthAnchor.constraint(equalToConstant: 60),
+            thumbIcon.centerXAnchor.constraint(equalTo: thumbContainer.centerXAnchor),
+            thumbIcon.centerYAnchor.constraint(equalTo: thumbContainer.centerYAnchor),
+            thumbIcon.widthAnchor.constraint(equalToConstant: 20),
+            thumbIcon.heightAnchor.constraint(equalToConstant: 20),
             
-            descriptionLabel.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 5),
+            thumbCountLabel.centerYAnchor.constraint(equalTo: priceLabel.centerYAnchor),
+            thumbCountLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            thumbCountLabel.widthAnchor.constraint(equalToConstant: 60),
+            
+            descriptionLabel.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 12),
             descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             
-            readMoreButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 5),
+            readMoreButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 8),
             readMoreButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             readMoreButton.heightAnchor.constraint(equalToConstant: 20),
             
-            detailShowButton.topAnchor.constraint(equalTo: readMoreButton.bottomAnchor, constant: 10),
+            detailShowButton.topAnchor.constraint(equalTo: readMoreButton.bottomAnchor, constant: 16),
             detailShowButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             detailShowButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             detailShowButton.heightAnchor.constraint(equalToConstant: 40),
-//            detailShowButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
+            detailShowButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16)
         ])
     }
     
+    private func setupActions() {
+        // 이미지뷰 탭 제스처 추가
+        let imageTapGesture = UITapGestureRecognizer(target: self, action: #selector(showDetailTapped))
+        lectureImageView.addGestureRecognizer(imageTapGesture)
+        
+        // 버튼 액션 추가
+        readMoreButton.addTarget(self, action: #selector(readMoreButtonTapped), for: .touchUpInside)
+        detailShowButton.addTarget(self, action: #selector(showDetailTapped), for: .touchUpInside)
+    }
+    
     func configure(with lecture: Lecture, isExpanded: Bool) {
-        self.isDescriptionExpanded = isExpanded
-        
-        titleLabel.text = "메시 선생님과 배우는 쿠킹클래스"
+        self.lecture = lecture
+        titleLabel.text = lecture.title
         priceLabel.text = "KRW 99,000"
-        likesCountLabel.text = "5,602"
-        descriptionLabel.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nisl tincidunt eget nullam non. Quis hendrerit dolor magna eget est lorem ipsum dolor sit. Volutpat odio facilisis mauris sit amet massa. Commodo odio aenean sed adipiscing diam donec adipiscing tristique. Mi eget mauris pharetra et. Non tellus orci ac auctor augue. Elit at imperdiet dui accumsan sit. Ornare arcu dui vivamus arcu felis. Egestas integer eget aliquet nibh praesent. In hac habitasse platea dictumst quisque sagittis purus. Pulvinar elementum integer enim neque volutpat ac. Senectus et netus et malesuada. Nunc pulvinar sapien et ligula ullamcorper malesuada proin. Neque convallis a cras semper auctor. Libero id faucibus nisl tincidunt eget. Leo a diam sollicitudin tempor id. A lacus vestibulum sed arcu non odio euismod lacinia. In tellus integer feugiat scelerisque."
+        thumbCountLabel.text = String(format: "\(lecture.thumbCount)")
+        descriptionLabel.text = lecture.description
         
-        descriptionLabel.numberOfLines = isDescriptionExpanded ? 0 : 3
-        readMoreButton.setTitle(isDescriptionExpanded ? "간략히보기" : "자세히보기", for: .normal)
-        // lectureImageView.image = UIImage(named: lecture.imageName)
+        descriptionLabel.numberOfLines = isExpanded ? 0 : 3
+        let buttonTitle = isExpanded ? "간략히보기" : "자세히보기"
+        readMoreButton.setTitle(buttonTitle, for: .normal)
+        
+        contentView.layoutIfNeeded()
     }
     
     @objc private func readMoreButtonTapped() {
-//        isDescriptionExpanded.toggle()
         delegate?.didTapReadMoreButton(in: self)
+    }
+    
+    @objc private func showDetailTapped() {
+        delegate?.didTapShowDetail(in: self)
+    }
+    
+    @objc private func thumbTapped() {
+        delegate?.didTapThumb(in: self)
     }
 }

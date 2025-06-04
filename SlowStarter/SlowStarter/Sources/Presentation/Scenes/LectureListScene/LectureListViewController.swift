@@ -12,7 +12,7 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
     weak var coordinator: LectureCoordinator?
     // 코디네이터 주입을 위한 프로퍼티 추가
     
-    private let viewModel = LectureListViewModel()
+    private var viewModel = LectureListViewModel()
     
     // 각 강의의 확장 상태를 저장할 배열 추가
     private var lectureExpansionStates: [Bool] = []
@@ -101,7 +101,7 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            topStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            topStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
             topStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
             topStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
             
@@ -132,27 +132,47 @@ extension LectureListViewController: UITableViewDataSource, UITableViewDelegate 
         }
         cell.delegate = self
         let lecture = viewModel.lectures[indexPath.row]
-        let isExpanded = lectureExpansionStates[indexPath.row] // 해당 셀의 확장 상태 가져오기
-        cell.configure(with: lecture, isExpanded: isExpanded) // 확장 상태를 전달
-        cell.selectionStyle = .none // 셀 선택 시 회색 하이라이트 제거
+        let isExpanded = lectureExpansionStates[indexPath.row]
+        cell.configure(with: lecture, isExpanded: isExpanded)
+        cell.selectionStyle = .none
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        coordinator?.showLectureDetail() // 코디네이터에게 화면 전환 요청
     }
 }
 
 extension LectureListViewController {
     func didTapReadMoreButton(in cell: LectureCardCell) {
         if let indexPath = tableView.indexPath(for: cell) {
-            // 해당 셀의 확장 상태 토글
             lectureExpansionStates[indexPath.row].toggle()
             
-            // 테이블 뷰에 해당 셀의 높이가 변경되었음을 알림
-            tableView.beginUpdates()
-            tableView.endUpdates()
+            UIView.animate(withDuration: 0.1) {
+                self.tableView.performBatchUpdates({
+                    self.tableView.reloadRows(at: [indexPath], with: .none)
+                })
+            }
+        }
+    }
+    
+    func didTapShowDetail(in cell: LectureCardCell) {
+        coordinator?.showLectureDetail()
+    }
+    
+    func didTapThumb(in cell: LectureCardCell) {
+        guard let indexPath = tableView.indexPath(for: cell) else {
+            return
+        }
+        
+        let lectureId = viewModel.lectures[indexPath.row].lectureId
+        
+        // 엄지척 카운트 증가 및 업데이트
+        if viewModel.incrementThumbCount(for: lectureId) != nil {
+            // 해당 셀만 업데이트
+            if let updatedLecture = viewModel.lectures.first(where: { $0.lectureId == lectureId }) {
+                cell.configure(with: updatedLecture, isExpanded: lectureExpansionStates[indexPath.row])
+            }
         }
     }
 }
