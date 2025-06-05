@@ -61,8 +61,7 @@ final class ReceivedMessageCell: UICollectionViewCell {
         return indicator
     }()
     
-    private let cellMargin: CGFloat = 8.0
-    private let minimumLeftMargin: CGFloat = 100.0
+    private let minimumRightMargin: CGFloat = 100.0
     
     // MARK: - Initializer
     override init(frame: CGRect) {
@@ -72,13 +71,6 @@ final class ReceivedMessageCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    // MARK: - LifeCycle
-    // 모든 frame이 결정된 이후에 필요한 동작 정의
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        messageLabel.preferredMaxLayoutWidth = bounds.width - cellMargin - minimumLeftMargin // label 최대 너비
     }
     
     // MARK: - Functions
@@ -121,6 +113,11 @@ final class ReceivedMessageCell: UICollectionViewCell {
         
         messageView.layer.cornerRadius = 8
         summaryButtom.layer.cornerRadius = 8
+    }
+    
+    func setPreferredMaxLayoutWidth(forCellWidth cellWidth: CGFloat) {
+        // 전체크기 - messageView 좌측여백 - messageLabel 좌측여백 - messageLabel 우측여백 - 우측최소여백
+        messageLabel.preferredMaxLayoutWidth = cellWidth - 12 - 12 - 12 - minimumRightMargin
     }
     
     func showSummaryLoading(_ isLoading: Bool) {

@@ -40,13 +40,13 @@ final class DateHeaderView: UICollectionReusableView {
             containerView.centerXAnchor.constraint(equalTo: centerXAnchor),
             containerView.centerYAnchor.constraint(equalTo: centerYAnchor),
             
-            dateLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 10),
+            dateLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 5),
             dateLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
             dateLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20),
-            dateLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -10)
+            dateLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -5)
         ])
         
-        containerView.layer.cornerRadius = 15
+        containerView.layer.cornerRadius = 10
     }
     
     func configure(_ date: Date) {

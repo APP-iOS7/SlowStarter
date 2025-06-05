@@ -48,21 +48,25 @@ final class ChatViewController: UIViewController {
     
     private lazy var dataSource: UICollectionViewDiffableDataSource<Section, ChatItemIdentifier> = {
         let sendedCellRegistration: UICollectionView.CellRegistration<SendedMessageCell, AIChatMessage> = {
-            UICollectionView.CellRegistration { cell, _, message in
+            UICollectionView.CellRegistration { [weak self] cell, _, message in
+                guard let self = self else { return }
+                
                 cell.message = message
+                cell.setPreferredMaxLayoutWidth(forCellWidth: self.collectionView.frame.width)
             }
         }()
         
         let receivedCellRegistration: UICollectionView.CellRegistration<ReceivedMessageCell, AIChatMessage> = {
             UICollectionView.CellRegistration { [weak self] cell, _, message in
+                guard let self = self else { return }
+                
                 cell.message = message
                 cell.summaryButtom.addAction(UIAction { _ in
-                    guard let self = self else { return }
-                    
                     self.isLoadingSummaryMessage = true // 요약중인 상태 표시
                     self.viewModel.didTapSummaryButton(message: message) // 텍스트 요약 요청 전송
                     cell.showSummaryLoading(self.isLoadingSummaryMessage) // indicator start, stop
                 }, for: .touchUpInside)
+                cell.setPreferredMaxLayoutWidth(forCellWidth: self.collectionView.frame.width)
             }
         }()
         
@@ -470,6 +474,7 @@ extension ChatViewController: UICollectionViewDelegateFlowLayout {
         } else {
             let dummyCell: ReceivedMessageCell = ReceivedMessageCell()
             dummyCell.message = message
+            dummyCell.setPreferredMaxLayoutWidth(forCellWidth: collectionView.frame.width)
             
             let autoLayoutSize = dummyCell.contentView.systemLayoutSizeFitting(
                 CGSize(width: cellWidth, height: UIView.layoutFittingCompressedSize.height),
