@@ -270,7 +270,7 @@ final class ChatViewController: UIViewController {
                 
                 switch update {
                 case .initialLoad(let messages):
-                    self?.initialRoad(for: messages)
+                    self?.initialLoad(for: messages)
                 case .append(let message):
                     self?.append(for: message)
                 case .prepend(let messages):
@@ -499,7 +499,7 @@ extension ChatViewController: UICollectionViewDelegateFlowLayout {
 // MARK: - Diffable DataSource
 extension ChatViewController {
     // 초기 메시지 배열 추가
-    private func initialRoad(for messages: [AIChatMessage]) {
+    private func initialLoad(for messages: [AIChatMessage]) {
         var snapshot: NSDiffableDataSourceSnapshot<Section, ChatItemIdentifier> = NSDiffableDataSourceSnapshot()
         
         // 날짜별로 그룹핑, 오름차 순으로 정렬
