@@ -14,6 +14,10 @@ class LectureDetailViewController: UIViewController {
     
     private let viewModel = LectureDetailViewModel()
     
+    private lazy var imageDescriptions = viewModel.imageDescriptions
+    
+    private var slideImages: [UIImageView] = []
+    
     // MARK: - UI Components
     private let descriptionScrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -60,7 +64,7 @@ class LectureDetailViewController: UIViewController {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
-        stackView.spacing = 5 // 기존과 동일한 간격
+        stackView.spacing = 5
         stackView.distribution = .fillEqually // 이미지를 동일하게 분배
         return stackView
     }()
@@ -71,7 +75,6 @@ class LectureDetailViewController: UIViewController {
         imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = UIImage(named: "bread01")
-        imageView.backgroundColor = .lightGray.withAlphaComponent(0.5)
         return imageView
     }()
     
@@ -81,7 +84,6 @@ class LectureDetailViewController: UIViewController {
         imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = UIImage(named: "bread02")
-        imageView.backgroundColor = .lightGray.withAlphaComponent(0.5)
         return imageView
     }()
     
@@ -91,7 +93,6 @@ class LectureDetailViewController: UIViewController {
         imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = UIImage(named: "bread03")
-        imageView.backgroundColor = .lightGray.withAlphaComponent(0.5)
         return imageView
     }()
     
@@ -101,7 +102,6 @@ class LectureDetailViewController: UIViewController {
         imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = UIImage(named: "bread01")
-        imageView.backgroundColor = .lightGray.withAlphaComponent(0.5)
         return imageView
     }()
     
@@ -111,14 +111,13 @@ class LectureDetailViewController: UIViewController {
         imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = UIImage(named: "bread02")
-        imageView.backgroundColor = .lightGray.withAlphaComponent(0.5)
         return imageView
     }()
     
     private var descriptionTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "강의 설명"
-        label.font = UIFont(name: "Pretendard-Regular", size: 20)
+        label.font = UIFont(name: "Pretendard-SemiBold", size: 20)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -131,23 +130,6 @@ class LectureDetailViewController: UIViewController {
         return label
     }()
     
-    private var recommendLectureLabel: UILabel = {
-        let label = UILabel()
-        label.text = "추천 강의"
-        label.font = UIFont(name: "Pretendard-Bold", size: 20)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let recommendLectureImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.image = UIImage(named: "ramen")
-        return imageView
-    }()
-    
     private let selectDateButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("상담날짜 예약하기", for: .normal)
@@ -156,27 +138,69 @@ class LectureDetailViewController: UIViewController {
         button.backgroundColor = .black
         button.layer.cornerRadius = 10
         button.layer.borderWidth = 1
-        //        button.layer.borderColor = UIColor.white.cgColor
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
-    private let tabBar: UITabBar = {
-        let tabBar = UITabBar()
-        tabBar.translatesAutoresizingMaskIntoConstraints = false
-        tabBar.tintColor = .systemGreen // 활성 탭 색상
-        tabBar.unselectedItemTintColor = .systemGray // 비활성 탭 색상
-        tabBar.backgroundColor = .white // 탭 바 배경색
-        return tabBar
-    }()
+    private func setupSlideImages() {
+        let images = ["bread01", "bread02", "bread03", "bread01", "bread02"]
+        
+        for (index, imageName) in images.enumerated() {
+            let imageView = UIImageView()
+            imageView.contentMode = .scaleAspectFill
+            imageView.clipsToBounds = true
+            imageView.layer.cornerRadius = 10
+            imageView.translatesAutoresizingMaskIntoConstraints = false
+            imageView.image = UIImage(named: imageName)
+            imageView.isUserInteractionEnabled = true
+            imageView.backgroundColor = .systemGray6  // 이미지가 로드되지 않았을 때 보여줄 배경색
+            
+            // 탭 제스처 추가
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(imageTapped(_:)))
+            imageView.addGestureRecognizer(tapGesture)
+            imageView.tag = index // 이미지 인덱스 저장
+            
+            slideImageScrollView.addSubview(imageView)
+            slideImages.append(imageView)
+            
+            // 이미지 제약조건 설정
+            NSLayoutConstraint.activate([
+                imageView.topAnchor.constraint(equalTo: slideImageScrollView.topAnchor),
+                imageView.heightAnchor.constraint(equalTo: slideImageScrollView.heightAnchor),
+                imageView.widthAnchor.constraint(equalTo: slideImageScrollView.widthAnchor, multiplier: 0.8),
+                imageView.bottomAnchor.constraint(equalTo: slideImageScrollView.bottomAnchor)
+            ])
+            
+            // 첫 번째 이미지
+            if index == 0 {
+                imageView.leadingAnchor.constraint(equalTo: slideImageScrollView.leadingAnchor).isActive = true
+            }
+            // 중간 이미지들
+            else {
+                imageView.leadingAnchor.constraint(equalTo: slideImages[index - 1].trailingAnchor, constant: 10).isActive = true
+            }
+            // 마지막 이미지
+            if index == images.count - 1 {
+                imageView.trailingAnchor.constraint(equalTo: slideImageScrollView.trailingAnchor).isActive = true
+            }
+        }
+    }
+    
+    @objc private func imageTapped(_ sender: UITapGestureRecognizer) {
+        guard let imageView = sender.view as? UIImageView else { return }
+        let index = imageView.tag
+        let description = imageDescriptions[index]
+        
+        let detailVC = ImageDetailViewController(image: imageView.image, description: description)
+        present(detailVC, animated: true)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .systemBackground
         setupUI()
         setupConstraints()
-        
-        tabBar.delegate = self
-        setupTabBarItems()
+        setupSlideImages()
         
         // 버튼 액션 추가
         selectDateButton.addTarget(self, action: #selector(selectDateButtonTapped), for: .touchUpInside)
@@ -202,11 +226,7 @@ class LectureDetailViewController: UIViewController {
         descriptionScrollView.addSubview(descriptionTitleLabel)
         descriptionScrollView.addSubview(descriptionLabel)
         
-        descriptionScrollView.addSubview(recommendLectureLabel)
-        descriptionScrollView.addSubview(recommendLectureImageView)
-        
         view.addSubview(selectDateButton)
-        view.addSubview(tabBar)
     }
     
     private func setupConstraints() {
@@ -221,7 +241,6 @@ class LectureDetailViewController: UIViewController {
             introVideoView.leadingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.leadingAnchor),
             introVideoView.trailingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.trailingAnchor),
             introVideoView.heightAnchor.constraint(equalToConstant: 400),
-//            introVideoView.widthAnchor.constraint(equalTo: descriptionScrollView.widthAnchor), // 스크롤 뷰의 너비와 일치
             
             titleLabel.topAnchor.constraint(equalTo: introVideoView.bottomAnchor, constant: 20),
             titleLabel.leadingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.leadingAnchor, constant: 20),
@@ -241,7 +260,6 @@ class LectureDetailViewController: UIViewController {
             slideImageStackView.topAnchor.constraint(equalTo: slideImageScrollView.contentLayoutGuide.topAnchor),
             slideImageStackView.leadingAnchor.constraint(equalTo: slideImageScrollView.contentLayoutGuide.leadingAnchor, constant: 20),
             slideImageStackView.trailingAnchor.constraint(equalTo: slideImageScrollView.contentLayoutGuide.trailingAnchor, constant: -20),
-//            slideImageStackView.bottomAnchor.constraint(equalTo: slideImageScrollView.contentLayoutGuide.bottomAnchor),
             slideImageStackView.heightAnchor.constraint(equalTo: slideImageScrollView.heightAnchor), // 스크롤 뷰의 높이와 일치
             
             // 스택 뷰 내부의 각 이미지에 대한 제약 조건
@@ -252,7 +270,7 @@ class LectureDetailViewController: UIViewController {
             slideImageView_4.widthAnchor.constraint(equalTo: descriptionScrollView.frameLayoutGuide.widthAnchor, constant: -260),
             slideImageView_5.widthAnchor.constraint(equalTo: descriptionScrollView.frameLayoutGuide.widthAnchor, constant: -260),
             
-            descriptionTitleLabel.topAnchor.constraint(equalTo: slideImageView_1.bottomAnchor, constant: 30),
+            descriptionTitleLabel.topAnchor.constraint(equalTo: slideImageStackView.bottomAnchor, constant: 30),
             descriptionTitleLabel.leadingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.leadingAnchor, constant: 20),
             descriptionTitleLabel.trailingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.trailingAnchor, constant: -20),
             
@@ -260,52 +278,18 @@ class LectureDetailViewController: UIViewController {
             descriptionLabel.leadingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.leadingAnchor, constant: 20),
             descriptionLabel.trailingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.trailingAnchor, constant: -20),
             descriptionLabel.widthAnchor.constraint(equalTo: descriptionScrollView.frameLayoutGuide.widthAnchor, constant: -40),
-            
-            recommendLectureLabel.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 30),
-            recommendLectureLabel.leadingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.leadingAnchor, constant: 20),
-            recommendLectureLabel.trailingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.trailingAnchor, constant: -20),
-            
-            recommendLectureImageView.topAnchor.constraint(equalTo: recommendLectureLabel.bottomAnchor),
-            recommendLectureImageView.leadingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.leadingAnchor),
-            recommendLectureImageView.trailingAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.trailingAnchor),
-            recommendLectureImageView.heightAnchor.constraint(equalToConstant: 400),
-            recommendLectureImageView.bottomAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.bottomAnchor, constant: -20),
+            descriptionLabel.bottomAnchor.constraint(equalTo: descriptionScrollView.contentLayoutGuide.bottomAnchor, constant: -20),
             
             selectDateButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
             selectDateButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            selectDateButton.bottomAnchor.constraint(equalTo: tabBar.topAnchor, constant: -5),
-            selectDateButton.heightAnchor.constraint(equalToConstant: 50),
-            
-            tabBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tabBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tabBar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            tabBar.heightAnchor.constraint(equalToConstant: 60)
-        ])
-    }
-    
-    func setupTabBarItems() {
-        var items: [UITabBarItem] = []
-        for (index, tabData) in viewModel.tabTitles.enumerated() {
-            let image = UIImage(named: tabData.tabIcon)
-            let item = UITabBarItem(title: tabData.title, image: image, tag: index)
-            items.append(item)
-        }
-        tabBar.setItems(items, animated: false)
+            selectDateButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -5),
+            selectDateButton.heightAnchor.constraint(equalToConstant: 50)
+                    ])
     }
     
     // 코디네이터에게 화면 전환 요청
     @objc private func selectDateButtonTapped() {
         coordinator?.showLectureDateSelection()
-    }
-}
-
-// MARK: - UITabBarDelegate
-extension LectureDetailViewController: UITabBarDelegate {
-    func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
-        guard let title = item.title else {
-            return print("Selected tab: No title")
-        }
-        print("Selected tab: \(title)")
     }
 }
 

@@ -23,14 +23,10 @@ public enum SlowStarterAsset: Sendable {
     public static let bread01 = SlowStarterImages(name: "bread01")
     public static let bread02 = SlowStarterImages(name: "bread02")
     public static let bread03 = SlowStarterImages(name: "bread03")
+    public static let cookie1 = SlowStarterImages(name: "cookie1")
     public static let cookingClassWomanChef = SlowStarterImages(name: "cookingClassWomanChef")
-    public static let pinkRaccoon = SlowStarterImages(name: "pinkRaccoon")
     public static let ramen = SlowStarterImages(name: "ramen")
     public static let sampleImg = SlowStarterImages(name: "sample_img")
-    public static let tabChatBubble = SlowStarterImages(name: "tabChatBubble")
-    public static let tabLaptopChromebook = SlowStarterImages(name: "tabLaptopChromebook")
-    public static let tabLectureList = SlowStarterImages(name: "tabLectureList")
-    public static let tabMypage = SlowStarterImages(name: "tabMypage")
   }
   public enum PreviewAssets {
   }
@@ -143,5 +139,5 @@ public extension SwiftUI.Image {
 }
 #endif
 
-// swiftlint:enable all
 // swiftformat:enable all
+// swiftlint:enable all
