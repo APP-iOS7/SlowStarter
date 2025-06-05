@@ -29,7 +29,6 @@ final class ReceivedMessageCell: UICollectionViewCell {
         label.textAlignment = .left
         label.numberOfLines = 0
         label.clipsToBounds = true
-        
         // 세로 압축 저항 최대로 설정 (텍스트 잘림 방지)
         label.setContentCompressionResistancePriority(.required, for: .vertical)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -54,8 +53,14 @@ final class ReceivedMessageCell: UICollectionViewCell {
         return button
     }()
     
-    private let cellMargin: CGFloat = 8.0
-    private let minimumLeftMargin: CGFloat = 100.0
+    private let activityIndicator: UIActivityIndicatorView = {
+        let indicator: UIActivityIndicatorView = UIActivityIndicatorView()
+        indicator.color = .black
+        indicator.translatesAutoresizingMaskIntoConstraints = false 
+        return indicator
+    }()
+    
+    private let minimumRightMargin: CGFloat = 100.0
     
     // MARK: - Initializer
     override init(frame: CGRect) {
@@ -65,13 +70,6 @@ final class ReceivedMessageCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    // MARK: - LifeCycle
-    // 모든 frame이 결정된 이후에 필요한 동작 정의
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        messageLabel.preferredMaxLayoutWidth = bounds.width - cellMargin - minimumLeftMargin // label 최대 너비
     }
     
     // MARK: - Functions
@@ -84,6 +82,7 @@ final class ReceivedMessageCell: UICollectionViewCell {
         contentView.addSubview(messageView)
         contentView.addSubview(timeLabel)
         contentView.addSubview(summaryButtom)
+        contentView.addSubview(activityIndicator)
         messageView.addSubview(messageLabel)
         
         NSLayoutConstraint.activate([
@@ -103,15 +102,31 @@ final class ReceivedMessageCell: UICollectionViewCell {
             summaryButtom.heightAnchor.constraint(equalTo: summaryButtom.widthAnchor),
             
             timeLabel.leadingAnchor.constraint(equalTo: messageView.trailingAnchor, constant: 5),
-            timeLabel.bottomAnchor.constraint(equalTo: messageView.bottomAnchor, constant: -5)
+            timeLabel.bottomAnchor.constraint(equalTo: messageView.bottomAnchor, constant: -5),
+            
+            activityIndicator.topAnchor.constraint(equalTo: summaryButtom.topAnchor),
+            activityIndicator.leadingAnchor.constraint(equalTo: summaryButtom.leadingAnchor),
+            activityIndicator.trailingAnchor.constraint(equalTo: summaryButtom.trailingAnchor),
+            activityIndicator.bottomAnchor.constraint(equalTo: summaryButtom.bottomAnchor)
         ])
         
         messageView.layer.cornerRadius = 8
         summaryButtom.layer.cornerRadius = 8
     }
     
-    func getMessageLableHeight() -> CGFloat {
-        return messageLabel.frame.height
+    func setPreferredMaxLayoutWidth(forCellWidth cellWidth: CGFloat) {
+        // 전체크기 - messageView 좌측여백 - messageLabel 좌측여백 - messageLabel 우측여백 - 우측최소여백(100)
+        messageLabel.preferredMaxLayoutWidth = cellWidth - 12 - 12 - 12 - minimumRightMargin
+    }
+    
+    func showSummaryLoading(_ isLoading: Bool) {
+        if isLoading {
+            activityIndicator.startAnimating()
+            summaryButtom.isHidden = true
+        } else {
+            activityIndicator.stopAnimating()
+            summaryButtom.isHidden = false
+        }
     }
     
     // 재사용을 위해 내용물 초기화
