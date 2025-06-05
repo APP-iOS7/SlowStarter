@@ -29,7 +29,6 @@ final class ReceivedMessageCell: UICollectionViewCell {
         label.textAlignment = .left
         label.numberOfLines = 0
         label.clipsToBounds = true
-        
         // 세로 압축 저항 최대로 설정 (텍스트 잘림 방지)
         label.setContentCompressionResistancePriority(.required, for: .vertical)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -116,7 +115,7 @@ final class ReceivedMessageCell: UICollectionViewCell {
     }
     
     func setPreferredMaxLayoutWidth(forCellWidth cellWidth: CGFloat) {
-        // 전체크기 - messageView 좌측여백 - messageLabel 좌측여백 - messageLabel 우측여백 - 우측최소여백
+        // 전체크기 - messageView 좌측여백 - messageLabel 좌측여백 - messageLabel 우측여백 - 우측최소여백(100)
         messageLabel.preferredMaxLayoutWidth = cellWidth - 12 - 12 - 12 - minimumRightMargin
     }
     

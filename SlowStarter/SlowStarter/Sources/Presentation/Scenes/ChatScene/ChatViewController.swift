@@ -269,7 +269,7 @@ final class ChatViewController: UIViewController {
                 self?.cellHeightCache.removeAll() // 이미 계산된 셀 크기를 다시 계산
                 
                 switch update {
-                case .initialRoad(let messages):
+                case .initialLoad(let messages):
                     self?.initialRoad(for: messages)
                 case .append(let message):
                     self?.append(for: message)
