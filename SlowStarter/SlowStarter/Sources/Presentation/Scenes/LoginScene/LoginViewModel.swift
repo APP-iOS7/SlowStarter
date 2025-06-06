@@ -9,7 +9,7 @@ class LoginViewModel {
         try await dataManager.login(email: email, password: password)
         let user = try await dataManager.fetchUserInfo()
         
-        let _ = coredataManager.createUserInfo(userId: user?.id ?? "", name: user?.name ?? "")
+        let _ = coredataManager.createUserInfo(userId: user?.id ?? "", name: user?.name ?? "", image: user?.profileImageURL ?? "")
         
         let result = coredataManager.fetchUserInfo()
         for a in result {

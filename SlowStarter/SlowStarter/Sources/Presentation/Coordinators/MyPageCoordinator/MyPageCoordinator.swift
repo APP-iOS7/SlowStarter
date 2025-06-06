@@ -46,6 +46,19 @@ class MyPageCoordinator: NSObject, Coordinator {
         childCoordinator = coordinator
         coordinator.start()
     }
+    
+    func showEditProfile() {
+        let editProfileViewController = EditProfileViewController()
+        navigationController.pushViewController(editProfileViewController, animated: true)
+    }
+    
+    func didFinishEditingProfile() {
+        print("finished editing profile")
+    }
+    
+    func didFinishAccountDeletion() {
+        print("finished account deletion")
+    }
 }
 
 extension MyPageCoordinator: UINavigationControllerDelegate {

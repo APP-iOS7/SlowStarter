@@ -54,6 +54,7 @@ enum StorageManagerError: Error {
     case downloadFileFailed(String)
     case deleteFileFailed(String)
     case createFileURLFailed(String)
+    case unknown(String)
 }
 
 enum StorageType: String {

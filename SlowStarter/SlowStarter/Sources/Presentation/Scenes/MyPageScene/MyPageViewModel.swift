@@ -1,7 +1,9 @@
 import Combine
+import Foundation
 
 class MyPageViewModel {
     @Published private(set) var profileName: String = "Guest"
+    @Published private(set) var profileImageURL: URL? = nil
     @Published private(set) var profilePoint: Int = 0
     @Published private(set) var isLoggedIn: Bool = false
     
@@ -19,14 +21,23 @@ class MyPageViewModel {
             .store(in: &cancellables)
     }
     
-    private func fetchProfile() {
+    func fetchProfile() {
         let users = coreDataManager.fetchUserInfo()
         if let user = users.first {
             profileName = user.userName ?? "Guest"
             profilePoint = 0
             isLoggedIn = true
+            
+            if let profileImageURLString = user.profileImage, !profileImageURLString.isEmpty {
+                profileImageURL = URL(string: profileImageURLString)
+                print(profileImageURL)
+            } else {
+                profileImageURL = nil
+            }
+            
         } else {
             profileName = "Guest"
+            profileImageURL = nil
             profilePoint = 0
             isLoggedIn = false
         }

@@ -7,7 +7,9 @@ class LoginViewController: UIViewController {
     let idTextField = UITextField()
     let passwordTextField = UITextField()
     let loginButton = UIButton(type: .system)
+    private let loginSpinner = UIActivityIndicatorView(style: .medium)
     let signupButton = UIButton(type: .system)
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,10 +56,13 @@ class LoginViewController: UIViewController {
     func setupButton() {
         // Elements
         loginButton.setTitle("로그인하기", for: .normal)
-        loginButton.backgroundColor = .black
+        loginButton.backgroundColor = .brown
         loginButton.setTitleColor(.white, for: .normal)
         loginButton.layer.cornerRadius = 8
         loginButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        loginSpinner.hidesWhenStopped = true
+        loginSpinner.translatesAutoresizingMaskIntoConstraints = false
         
         signupButton.setTitle("회원가입하기", for: .normal)
         signupButton.setTitleColor(.black, for: .normal)
@@ -67,13 +72,19 @@ class LoginViewController: UIViewController {
         // action
         loginButton.addAction(UIAction {[weak self] _ in
             guard let self = self else { return }
+            
             let email = self.idTextField.text ?? ""
             let password = self.passwordTextField.text ?? ""
+            
+            self.setLoginButtonLoading(true)
+            
             Task {
                 do {
                     try await self.viewModel.login(email: email, password: password)
+                    self.setLoginButtonLoading(false)
                     self.coordinator?.didFinishLogin()
                 } catch {
+                    self.setLoginButtonLoading(false)
                     self.showToast(message: "로그인 정보가 잘못되었습니다.")
                 }
             }
@@ -85,7 +96,14 @@ class LoginViewController: UIViewController {
         }, for: .touchUpInside)
         
         view.addSubview(loginButton)
+        loginButton.addSubview(loginSpinner)
         view.addSubview(signupButton)
+    }
+    
+    private func setLoginButtonLoading(_ isLoding: Bool) {
+        loginButton.setTitle(isLoding ? "" : "로그인하기", for: .normal)
+        isLoding ? loginSpinner.startAnimating() : loginSpinner.stopAnimating()
+        loginButton.isEnabled = !isLoding
     }
     
     func setupLayout() {
@@ -104,6 +122,9 @@ class LoginViewController: UIViewController {
             loginButton.leadingAnchor.constraint(equalTo: idTextField.leadingAnchor),
             loginButton.trailingAnchor.constraint(equalTo: idTextField.trailingAnchor),
             loginButton.heightAnchor.constraint(equalToConstant: 44),
+            
+            loginSpinner.centerXAnchor.constraint(equalTo: loginButton.centerXAnchor),
+            loginSpinner.centerYAnchor.constraint(equalTo: loginButton.centerYAnchor),
             
             signupButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 20),
             signupButton.leadingAnchor.constraint(equalTo: idTextField.leadingAnchor)
