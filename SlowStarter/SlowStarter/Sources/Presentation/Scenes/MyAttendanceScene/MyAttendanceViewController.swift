@@ -1,8 +1,10 @@
 import UIKit
+import Combine
 
 class MyAttendanceViewController: UIViewController, UICollectionViewDelegateFlowLayout {
     
     weak var coordinator: MyAttendanceCoordinator?
+    private var viewModel = MyAttendanceViewModel()
     
     let padding: CGFloat = 10
     
@@ -20,6 +22,9 @@ class MyAttendanceViewController: UIViewController, UICollectionViewDelegateFlow
     private var currentDate = Date()
     private var currentMonthDates: [Date] = []
     
+    // Combine
+    private var cancellables = Set<AnyCancellable>()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -29,6 +34,7 @@ class MyAttendanceViewController: UIViewController, UICollectionViewDelegateFlow
         setupDiaryCollectionView()
         setupDiaryView()
         updateCalendar()
+        bindViewModel()
     }
     
     // MARK: - Header
@@ -84,7 +90,6 @@ class MyAttendanceViewController: UIViewController, UICollectionViewDelegateFlow
         ])
     }
 
-    
     private func didTapYearButton() {
         let currentYear = calendar.component(.year, from: currentDate)
         let currentMonth = calendar.component(.month, from: currentDate)
@@ -184,7 +189,7 @@ class MyAttendanceViewController: UIViewController, UICollectionViewDelegateFlow
         datePickerButton.setTitle("\(year)년 \(month)월", for: .normal)
         
         generateDates(for: currentDate)
-        diaryCollectionView.reloadData()
+        viewModel.fetchAttendances(for: currentDate)
     }
     
     private func formattedMonth(from date: Date) -> String {
@@ -246,6 +251,16 @@ class MyAttendanceViewController: UIViewController, UICollectionViewDelegateFlow
         }
     }
     
+    // MARK: ViewModel
+    private func bindViewModel() {
+        viewModel.$monthlyAttendances
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.diaryCollectionView.reloadData()
+            }
+            .store(in: &cancellables)
+    }
+    
 }
 
 
@@ -268,18 +283,18 @@ extension MyAttendanceViewController: UICollectionViewDataSource {
         formatter.locale = Locale(identifier: "ko_KR")
         
         cell.dayLabel.text = formatter.string(from: date)
-        cell.configure(date: date,
-                       currentMonth: currentDate,
-                       selectedDate: selectedDate,
-                       calendar: calendar,
-                       today: today,
-                       markedDates: makeDummyMarkedDate())
+        let markedDates = viewModel.monthlyAttendances.compactMap { $0.attendedDateAsDate }
+        
+        cell.configure(date: date, currentMonth: currentDate, selectedDate: selectedDate, calendar: calendar, today: today, markedDates: markedDates
+        )
+        
         return cell
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let tappedDate = currentMonthDates[indexPath.item]
         
+        // 이미 선택된 날짜를 다시 탭하면 선택 해제
         if let selected = selectedDate, calendar.isDate(tappedDate, inSameDayAs: selected) {
             selectedDate = nil
             animateDiaryLabel(show: false)
@@ -288,51 +303,83 @@ extension MyAttendanceViewController: UICollectionViewDataSource {
         }
         
         selectedDate = tappedDate
-        diaryLabel.isHidden = false
-        animateDiaryLabel(show: true)
+        
+        // 1. 레이블에 표시할 내용을 먼저 설정합니다.
         showDiary(for: tappedDate)
         
+        // 2. 내용이 설정된 레이블을 애니메이션과 함께 보여줍니다.
+        animateDiaryLabel(show: true)
+        
+        // 달력 UI 업데이트 로직 (이 부분은 기존과 동일)
         if calendar.isDate(tappedDate, equalTo: currentDate, toGranularity: .month) {
             collectionView.reloadData()
         } else {
             currentDate = tappedDate
-            updateCalendar()
+            updateCalendar() // 이 함수는 내부적으로 ViewModel에 데이터 요청을 다시 보냅니다.
         }
     }
     
     private func showDiary(for date: Date) {
+        // 1. .first 대신 .filter를 사용하여 해당 날짜의 '모든' 기록을 찾습니다.
+        let diaryEntries = viewModel.monthlyAttendances.filter { attendance in
+            guard let attendedDate = attendance.attendedDateAsDate else { return false }
+            return calendar.isDate(attendedDate, inSameDayAs: date)
+        }
+
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy년 M월 d일"
         formatter.locale = Locale(identifier: "ko_KR")
-        diaryLabel.text = "\(formatter.string(from: date))의 다이어리 내용을 여기에 표시합니다."
+        let dateString = formatter.string(from: date)
+
+        var displayText = ""
+
+        // 2. 찾은 기록이 있는지 확인합니다. (배열이 비어있지 않은지)
+        if !diaryEntries.isEmpty {
+            // 3. description만 추출하고, nil이 아닌 값들만 모아 하나의 문자열로 합칩니다.
+            //    - compactMap: description이 nil인 경우는 제외시킵니다.
+            //    - joined(separator: "\n"): 각 항목을 줄바꿈으로 연결하여 목록처럼 보이게 합니다.
+            let descriptions = diaryEntries.compactMap { $0.description }.joined(separator: "\n")
+            
+            // 4. 최종적으로 표시할 텍스트를 구성합니다.
+            // descriptions가 비어있을 경우 (모든 기록에 내용이 없는 경우)도 처리합니다.
+            if descriptions.isEmpty {
+                displayText = "\(dateString)\n\n출석은 했지만, 기록된 내용은 없어요."
+            } else {
+                displayText = "\(dateString)\n\n[오늘의 활동]\n\(descriptions)"
+            }
+        } else {
+            // 해당 날짜에 대한 기록을 전혀 찾지 못한 경우
+            displayText = "\(dateString)\n기록이 없습니다."
+        }
+
+        // 5. 완성된 텍스트를 레이블에 설정합니다.
+        self.diaryLabel.text = displayText
+        print("✍️ diaryLabel 텍스트 설정 완료: \(displayText.replacingOccurrences(of: "\n", with: " "))")
     }
     
     private func animateDiaryLabel(show: Bool) {
         if show {
-            diaryLabel.transform = CGAffineTransform(translationX: 0, y: 20)
+            // 애니메이션 시작 전에 상태를 명확히 설정
+            diaryLabel.isHidden = false
             diaryLabel.alpha = 0
-            UIView.animate(withDuration: 0.3, animations: {
-                self.diaryLabel.transform = .identity
+            diaryLabel.transform = CGAffineTransform(translationX: 0, y: 20)
+            
+            UIView.animate(withDuration: 0.3) {
+                // 최종 상태
                 self.diaryLabel.alpha = 1
-            })
+                self.diaryLabel.transform = .identity
+            }
         } else {
             UIView.animate(withDuration: 0.2) {
-                self.diaryLabel.transform = CGAffineTransform(translationX: 0, y: 20)
+                // 최종 상태
                 self.diaryLabel.alpha = 0
+                self.diaryLabel.transform = CGAffineTransform(translationX: 0, y: 20)
             } completion: { _ in
+                // 애니메이션이 끝난 후 완전히 숨김
                 self.diaryLabel.isHidden = true
             }
         }
     }
-    
-    private func makeDummyMarkedDate() -> [Date] {
-        let calendar = Calendar.current
-        return (5...10).compactMap {
-            calendar.date(from: DateComponents(year: 2025, month: 5, day: $0))
-        }
-    }
-    
-    
 }
 
 

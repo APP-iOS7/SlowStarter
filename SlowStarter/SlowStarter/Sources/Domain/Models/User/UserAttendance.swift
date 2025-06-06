@@ -6,9 +6,15 @@ struct UserAttendance: Identifiable, Codable {
     var userId: String
     var attendedDate: String  // yyyy-MM-dd 형태의 날짜
     var description: String?
-
+    
     var id: String { userId + "_" + attendedDate }
-
+    
+    var attendedDateAsDate: Date? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.date(from: attendedDate)
+    }
+    
     enum CodingKeys: String, CodingKey {
         case userId = "user_id"
         case attendedDate = "attended_date"

@@ -206,6 +206,27 @@ class SupabaseDataManager {
 
         return user[0]
     }
+    
+    /// 특정 사용자의 지정된 기간 동안의 출석 기록을 조회합니다.
+    /// - Parameters:
+    ///   - userId: 조회할 사용자 ID
+    ///   - from: 조회 시작 날짜 (yyyy-MM-dd)
+    ///   - to: 조회 종료 날짜 (yyyy-MM-dd)
+    /// - Returns: UserAttendance 배열
+    func fetchUserAttendances(userId: String, from: String, to: String) async throws -> [UserAttendance] {
+        guard let databaseManager = databaseManager else {
+            throw DatabaseError.unknown
+        }
+        
+        return try await databaseManager.fetchDateRangeData(
+            as: UserAttendance.self,
+            select: "*",
+            filterColumn: "attended_date",
+            from: from,
+            to: to,
+            userId: userId 
+        )
+    }
 
     // MARK: - Storage
 
