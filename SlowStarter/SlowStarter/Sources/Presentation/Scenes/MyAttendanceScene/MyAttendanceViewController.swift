@@ -162,7 +162,6 @@ class MyAttendanceViewController: UIViewController, UICollectionViewDelegateFlow
         ])
     }
     
-    // TODO: - 기획에 따라 이 내용 바꾸기
     private func setupDiaryView() {
         diaryLabel.font = .systemFont(ofSize: 16)
         diaryLabel.textAlignment = .center
@@ -270,7 +269,6 @@ extension MyAttendanceViewController: UICollectionViewDataSource {
         return currentMonthDates.count
     }
     
-    // TODO: viewModel 추가시 markedDates부분에 적용해주기
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let date = currentMonthDates[indexPath.item]
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DateCell", for: indexPath) as? MyAttendanceCollectionViewCell
@@ -294,7 +292,6 @@ extension MyAttendanceViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let tappedDate = currentMonthDates[indexPath.item]
         
-        // 이미 선택된 날짜를 다시 탭하면 선택 해제
         if let selected = selectedDate, calendar.isDate(tappedDate, inSameDayAs: selected) {
             selectedDate = nil
             animateDiaryLabel(show: false)
@@ -304,23 +301,19 @@ extension MyAttendanceViewController: UICollectionViewDataSource {
         
         selectedDate = tappedDate
         
-        // 1. 레이블에 표시할 내용을 먼저 설정합니다.
         showDiary(for: tappedDate)
-        
-        // 2. 내용이 설정된 레이블을 애니메이션과 함께 보여줍니다.
+    
         animateDiaryLabel(show: true)
         
-        // 달력 UI 업데이트 로직 (이 부분은 기존과 동일)
         if calendar.isDate(tappedDate, equalTo: currentDate, toGranularity: .month) {
             collectionView.reloadData()
         } else {
             currentDate = tappedDate
-            updateCalendar() // 이 함수는 내부적으로 ViewModel에 데이터 요청을 다시 보냅니다.
+            updateCalendar()
         }
     }
     
     private func showDiary(for date: Date) {
-        // 1. .first 대신 .filter를 사용하여 해당 날짜의 '모든' 기록을 찾습니다.
         let diaryEntries = viewModel.monthlyAttendances.filter { attendance in
             guard let attendedDate = attendance.attendedDateAsDate else { return false }
             return calendar.isDate(attendedDate, inSameDayAs: date)
@@ -333,49 +326,36 @@ extension MyAttendanceViewController: UICollectionViewDataSource {
 
         var displayText = ""
 
-        // 2. 찾은 기록이 있는지 확인합니다. (배열이 비어있지 않은지)
         if !diaryEntries.isEmpty {
-            // 3. description만 추출하고, nil이 아닌 값들만 모아 하나의 문자열로 합칩니다.
-            //    - compactMap: description이 nil인 경우는 제외시킵니다.
-            //    - joined(separator: "\n"): 각 항목을 줄바꿈으로 연결하여 목록처럼 보이게 합니다.
             let descriptions = diaryEntries.compactMap { $0.description }.joined(separator: "\n")
-            
-            // 4. 최종적으로 표시할 텍스트를 구성합니다.
-            // descriptions가 비어있을 경우 (모든 기록에 내용이 없는 경우)도 처리합니다.
+
             if descriptions.isEmpty {
                 displayText = "\(dateString)\n\n출석은 했지만, 기록된 내용은 없어요."
             } else {
                 displayText = "\(dateString)\n\n[오늘의 활동]\n\(descriptions)"
             }
         } else {
-            // 해당 날짜에 대한 기록을 전혀 찾지 못한 경우
             displayText = "\(dateString)\n기록이 없습니다."
         }
 
-        // 5. 완성된 텍스트를 레이블에 설정합니다.
         self.diaryLabel.text = displayText
-        print("✍️ diaryLabel 텍스트 설정 완료: \(displayText.replacingOccurrences(of: "\n", with: " "))")
     }
     
     private func animateDiaryLabel(show: Bool) {
         if show {
-            // 애니메이션 시작 전에 상태를 명확히 설정
             diaryLabel.isHidden = false
             diaryLabel.alpha = 0
             diaryLabel.transform = CGAffineTransform(translationX: 0, y: 20)
             
             UIView.animate(withDuration: 0.3) {
-                // 최종 상태
                 self.diaryLabel.alpha = 1
                 self.diaryLabel.transform = .identity
             }
         } else {
             UIView.animate(withDuration: 0.2) {
-                // 최종 상태
                 self.diaryLabel.alpha = 0
                 self.diaryLabel.transform = CGAffineTransform(translationX: 0, y: 20)
             } completion: { _ in
-                // 애니메이션이 끝난 후 완전히 숨김
                 self.diaryLabel.isHidden = true
             }
         }

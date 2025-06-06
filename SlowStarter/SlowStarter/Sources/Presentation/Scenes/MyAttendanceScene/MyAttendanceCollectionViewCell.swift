@@ -59,7 +59,6 @@ class MyAttendanceCollectionViewCell: UICollectionViewCell {
 //        dayLabel.layer.borderWidth = 1
 
         if calendar.isDate(date, inSameDayAs: today) {
-            //켈린더에 오늘 날짜라면 표시할 것 정의 부
             dayLabel.backgroundColor = UIColor(hex: "#FFD700")
             
 //            dayLabel.layer.borderColor = UIColor(hex: "#FFD700")?.cgColor
