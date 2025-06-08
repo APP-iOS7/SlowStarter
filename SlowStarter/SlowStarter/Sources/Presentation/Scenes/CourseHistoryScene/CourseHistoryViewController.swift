@@ -2,46 +2,73 @@ import UIKit
 
 class CourseHistoryViewController: UIViewController {
     weak var coordinator: CourseHistoryCoordinator?
-    
-    let tableView = UITableView()
-    
-    let padding: CGFloat = 10
+    private let tableView = UITableView()
+    private var data: [UserCourseHistory] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
-        setupUI()
+        view.backgroundColor = UIColor(hex: "#FEEAE6")
+        setupTableView()
+        fetchData()
     }
-    
-    func setupUI() {
+
+    private func setupTableView() {
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.backgroundColor = UIColor(hex: "#FEEAE6")
+        tableView.register(CourseHistoryTableViewCell.self, forCellReuseIdentifier: "CourseHistoryCell")
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.rowHeight = 60
+        tableView.separatorStyle = .none
+
         view.addSubview(tableView)
 
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.register(CourseHistoryTableViewCell.self, forCellReuseIdentifier: "CourseHistoryCell")
-        tableView.rowHeight = 60
-
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: padding),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding)
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10)
         ])
     }
+
+    private func fetchData() {
+        Task {
+            do {
+                data = try await SupabaseDataManager.shared.fetchCourseHistories()
+                self.tableView.reloadData()
+            } catch {
+                print("Fetch error:", error)
+            }
+        }
+    }
 }
+
 
 // MARK: - Data Source
 extension CourseHistoryViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return data.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "CourseHistoryCell", for: indexPath) as? CourseHistoryTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: "CourseHistoryCell",
+            for: indexPath
+        ) as? CourseHistoryTableViewCell else {
             return UITableViewCell()
         }
-        cell.configure(with: "Course #\(indexPath.row + 1)", status: indexPath.row % 2 == 0 ? true : false)
+
+        let course = data[indexPath.row]
+        cell.configure(
+            title: course.courseTitle,
+            isActive: course.isActive
+        )
+
+        cell.backgroundColor = .clear
+        let bgView = UIView()
+        bgView.backgroundColor = UIColor(hex: "#FEEAE6")
+        cell.selectedBackgroundView = bgView
+
         return cell
     }
 }
@@ -50,8 +77,9 @@ extension CourseHistoryViewController: UITableViewDataSource {
 extension CourseHistoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        
-        coordinator?.showDetail()
+
+        let selectedCourse = data[indexPath.row]
+        coordinator?.showDetail(selectedCourse)
     }
 }
 

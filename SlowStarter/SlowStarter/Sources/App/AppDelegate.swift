@@ -23,6 +23,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return container
     }()
     
+    lazy var persistentPaymentContainer: NSPersistentContainer = {
+        let container = NSPersistentContainer(name: "PaymentEntity")
+        container.loadPersistentStores { _, error in
+            if let error = error {
+                fatalError("Unresolved error \(error)")
+            }
+        }
+        return container
+    }()
+    
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.

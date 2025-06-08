@@ -7,6 +7,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
     
     private let configContext: NSManagedObjectContext
     private let messageContext: NSManagedObjectContext
+    private let paymentContext: NSManagedObjectContext
     
     private init() {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
@@ -14,6 +15,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
         }
         self.configContext = appDelegate.persistentConfigContainer.viewContext
         self.messageContext = appDelegate.persistentMessageContainer.viewContext
+        self.paymentContext = appDelegate.persistentPaymentContainer.viewContext
     }
     
     // MARK: - Create
@@ -47,6 +49,27 @@ final class CoreDataManager: CoreDataManagerProtocol {
         try messageContext.save()
     }
     
+    func savePaymentsToCoreData(_ payments: [UserPayment]) {
+        for payment in payments {
+            let entity = PaymentEntity(context: paymentContext)
+            entity.paymentId = payment.paymentId
+            entity.userId = payment.userId
+            entity.amount = Int64(payment.amount)
+            entity.paymentDescription = payment.description
+            entity.paymentMethod = payment.paymentMethod
+            entity.paymentGateway = payment.paymentGateway
+            entity.paymentStatus = payment.paymentStatus
+            entity.externalId = payment.externalTransactionId
+            entity.createdAt = payment.createdAt
+        }
+        
+        do {
+            try paymentContext.save()
+        } catch {
+            print("COREDATA SAVE PAYMENTS ERROR: \(error.localizedDescription)")
+        }
+    }
+    
     // MARK: - Read
     
     /// 조건에 따라 사용자 정보를 조회함
@@ -78,6 +101,20 @@ final class CoreDataManager: CoreDataManagerProtocol {
         request.fetchOffset = 20 * page
         
         return try messageContext.fetch(request).compactMap { AIChatMessage.from($0) }
+    }
+    
+    func fetchPayments(forUserId userId: String?) -> [PaymentEntity] {
+        guard let userId else { return [] }
+        let request: NSFetchRequest<PaymentEntity> = PaymentEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "userId == %@", userId)
+        request.sortDescriptors = [NSSortDescriptor(key: "createdAt", ascending: false)]
+
+        do {
+            return try paymentContext.fetch(request)
+        } catch {
+            print("COREDATA FETCH PAYMENTS ERROR: \(error.localizedDescription)")
+            return []
+        }
     }
     
     // MARK: - Update

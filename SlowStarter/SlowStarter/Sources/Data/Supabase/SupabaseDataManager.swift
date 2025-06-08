@@ -224,9 +224,45 @@ class SupabaseDataManager {
             filterColumn: "attended_date",
             from: from,
             to: to,
-            userId: userId 
+            userId: userId
         )
     }
+    
+    func fetchUserPayments() async throws -> [UserPayment] {
+        guard let currentUser = try await fetchCurrentUserSession() else {
+            throw LoginManagerError.userNotFound
+        }
+
+        guard let databaseManager = databaseManager else {
+            throw DatabaseError.unknown
+        }
+
+        return try await databaseManager.fetchData(
+            as: UserPayment.self,
+            select: "*",
+            conditionColumn: "user_id",
+            conditionValue: currentUser.id
+        )
+    }
+    
+    func fetchCourseHistories() async throws -> [UserCourseHistory] {
+        guard let currentUser = try await fetchCurrentUserSession() else {
+            throw LoginManagerError.userNotFound
+        }
+
+        guard let databaseManager = databaseManager else {
+            throw DatabaseError.unknown
+        }
+
+        return try await databaseManager.fetchData(
+            as: UserCourseHistory.self,
+            select: "*",
+            conditionColumn: "user_id",
+            conditionValue: currentUser.id
+        )
+    }
+
+
 
     // MARK: - Storage
 

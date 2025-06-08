@@ -232,6 +232,8 @@ public class DataBaseManager: DataBaseManagerProtocol {
     }
     
     
+    
+    
     // MARK: - Create
     
     /// 단일 데이터를 삽입하는 함수입니다.
@@ -420,6 +422,7 @@ public class DataBaseManager: DataBaseManagerProtocol {
         case is UserPointLog.Type: return "user_point_log"
         case is UserItem.Type: return "user_items"
         case is UserPayment.Type: return "user_payments"
+        case is UserCourseHistory.Type: return "user_course_history"
             
         case is Instructor.Type: return "instructors"
         case is InstructorDetail.Type: return "instructor_detail"

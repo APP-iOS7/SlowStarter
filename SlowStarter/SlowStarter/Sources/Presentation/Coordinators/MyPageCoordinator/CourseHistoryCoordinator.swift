@@ -14,9 +14,9 @@ class CourseHistoryCoordinator: Coordinator {
         navigationController.pushViewController(viewController, animated: true)
     }
     
-    func showDetail() {
-        print("clicked")
+    func showDetail(_ course: UserCourseHistory) {
         let viewController = CourseHistoryDetailViewController()
+        viewController.course = course
         navigationController.pushViewController(viewController, animated: true)
     }
 }
