@@ -1,47 +1,48 @@
 import UIKit
 import Combine
-// import Kingfisher // 또는 SDWebImage 등 이미지 로딩 라이브러리를 사용한다면 import
 
 class MyPageViewController: UIViewController {
     weak var coordinator: MyPageCoordinator?
-    private let viewModel = MyPageViewModel() // ViewModel 인스턴스 생성
+    private let viewModel = MyPageViewModel()
     private var cancellables = Set<AnyCancellable>()
     
-    // MARK: - UI Elements
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.backgroundColor = UIColor(hex: "#E5E5E5") // 이미지 로드 전 배경색
-        imageView.layer.cornerRadius = 30 // 너비/높이의 절반 (크기 60x60 가정)
+        imageView.backgroundColor = UIColor(hex: "#FFFFFF")
+        imageView.layer.cornerRadius = 25
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
-        imageView.isUserInteractionEnabled = true // 탭 제스처를 위해
+        imageView.isUserInteractionEnabled = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.image = UIImage(systemName: "person.circle.fill") // 초기 아이콘 설정
+        imageView.image = UIImage(systemName: "person.circle")
+        imageView.tintColor = UIColor(hex: "#FEDBD0")
         return imageView
     }()
     
     private let nameLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "Pretendard-SemiBold", size: 18)
+        label.font = UIFont(name: "Pretendard-SemiBold", size: 17)
+        label.textColor = UIColor(hex: "#442C2E")
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Guest" // 초기값
+        label.text = "Guest"
         return label
     }()
     
     private let pointLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont(name: "Pretendard-Regular", size: 15)
-        label.textColor = UIColor.darkGray
+        label.textColor = UIColor(hex: "#442C2E")
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "0 P" // 초기값
+        label.text = "0 P"
         return label
     }()
     
-    private let settingButton: UIButton = { // 클래스 프로퍼티로 변경
-        let button = UIButton(type: .system) // .system 타입으로 하면 기본 스타일 활용 용이
-        button.setTitle("로그인하기", for: .normal) // ViewModel 바인딩 전 초기 타이틀
-        button.setTitleColor(UIColor.systemBlue, for: .normal)
-        button.titleLabel?.font = UIFont(name: "Pretendard-Medium", size: 14)
+    private let settingButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("로그인하기", for: .normal)
+        button.setTitleColor(UIColor(hex: "#442C2E"), for: .normal)
+        button.contentHorizontalAlignment = .trailing
+        button.titleLabel?.font = UIFont(name: "Pretendard-Medium", size: 15)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -50,29 +51,19 @@ class MyPageViewController: UIViewController {
         let button = UIButton(type: .system)
         button.setTitle("로그아웃", for: .normal)
         button.setTitleColor(.systemGray, for: .normal)
-        button.titleLabel?.font = UIFont(name: "Pretendard-Regular", size: 14) // 폰트 일관성
+        button.titleLabel?.font = UIFont(name: "Pretendard-Regular", size: 14)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.isHidden = true // 초기에는 숨김
-        // 버튼에 테두리나 배경을 추가하여 더 잘 보이게 할 수 있습니다.
-        // button.layer.borderColor = UIColor.lightGray.cgColor
-        // button.layer.borderWidth = 1
-        // button.layer.cornerRadius = 5
+        button.isHidden = true
         return button
     }()
     
-    // MARK: - Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground // 배경색 설정
+        view.backgroundColor = .white
         
-        setupSubviews() // UI 요소들을 뷰에 추가하고 제약조건 설정
-        setupActions()  // 버튼 액션 및 제스처 설정
-        bindViewModel() // ViewModel 바인딩
-        
-        // ViewModel의 init에서 fetchProfile이 호출되지만,
-        // viewDidLoad 시점에도 명시적으로 호출하여 초기 데이터 로드를 보장할 수 있습니다.
-        // 또는 viewWillAppear에서 호출하는 것으로 충분할 수 있습니다.
-        // viewModel.fetchProfile()
+        setupSubviews()
+        setupActions()
+        bindViewModel()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -80,26 +71,24 @@ class MyPageViewController: UIViewController {
         viewModel.fetchProfile()
     }
     
-    // MARK: - Setup Methods
     private func setupSubviews() {
-        let profileSection = setupProfileSectionView() // UIView 반환
-        let menuSectionStackView = setupMenuSectionStackView() // UIStackView 반환
+        let profileSection = setupProfileSectionView()
+        let menuSectionStackView = setupMenuSectionStackView()
         
         view.addSubview(profileSection)
         view.addSubview(menuSectionStackView)
         view.addSubview(logoutButton)
         
         NSLayoutConstraint.activate([
-            profileSection.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
+            profileSection.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
             profileSection.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             profileSection.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            // profileSection.heightAnchor.constraint(equalToConstant: 100), // 내부 콘텐츠에 따라 높이 자동 조절되도록 변경 가능
             
-            menuSectionStackView.topAnchor.constraint(equalTo: profileSection.bottomAnchor, constant: 24),
+            menuSectionStackView.topAnchor.constraint(equalTo: profileSection.bottomAnchor, constant: 12),
             menuSectionStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             menuSectionStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
-            logoutButton.topAnchor.constraint(greaterThanOrEqualTo: menuSectionStackView.bottomAnchor, constant: 20), // 메뉴와 간격
+            logoutButton.topAnchor.constraint(greaterThanOrEqualTo: menuSectionStackView.bottomAnchor, constant: 20),
             logoutButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             logoutButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
             logoutButton.widthAnchor.constraint(equalToConstant: 120),
@@ -109,8 +98,7 @@ class MyPageViewController: UIViewController {
     
     private func setupActions() {
         let profileTapGesture = UITapGestureRecognizer(target: self, action: #selector(profileSectionTapped))
-        profileImageView.addGestureRecognizer(profileTapGesture) // 이미지 뷰에 직접 제스처 추가
-        // 또는 profileSection 전체에 탭 제스처를 추가할 수도 있습니다.
+        profileImageView.addGestureRecognizer(profileTapGesture)
         
         settingButton.addAction(UIAction { [weak self] _ in
             guard let self = self else { return }
@@ -126,12 +114,11 @@ class MyPageViewController: UIViewController {
         }, for: .touchUpInside)
     }
     
-    // MARK: - ViewModel Binding
     private func bindViewModel() {
         viewModel.$profileName
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] nameValue in // map을 사용하지 않고 직접 sink에서 처리
-                self?.nameLabel.text = nameValue // String을 String?에 할당하는 것은 문제 없음
+            .sink { [weak self] nameValue in
+                self?.nameLabel.text = nameValue
             }
             .store(in: &cancellables)
         
@@ -142,7 +129,7 @@ class MyPageViewController: UIViewController {
                 formatter.numberStyle = .decimal
                 return "\(formatter.string(from: NSNumber(value: point)) ?? "\(point)") P"
             }
-            .assign(to: \.text, on: pointLabel) // 간결한 바인딩
+            .assign(to: \.text, on: pointLabel)
             .store(in: &cancellables)
         
         viewModel.$isLoggedIn
@@ -151,9 +138,8 @@ class MyPageViewController: UIViewController {
                 guard let self = self else { return }
                 self.settingButton.setTitle(isLoggedIn ? "편집하기" : "로그인하기", for: .normal)
                 self.logoutButton.isHidden = !isLoggedIn
-                if !isLoggedIn { // 로그아웃 시 UI 초기화
+                if !isLoggedIn {
                     self.profileImageView.image = UIImage(systemName: "person.circle.fill")
-                    // nameLabel, pointLabel은 ViewModel의 초기값으로 자동 설정됨
                 }
             }
             .store(in: &cancellables)
@@ -167,18 +153,9 @@ class MyPageViewController: UIViewController {
             .store(in: &cancellables)
     }
     
-    // MARK: - UI Helper Methods
     private func setupProfileSectionView() -> UIView {
         let sectionView = UIView()
-        sectionView.backgroundColor = UIColor(hex: "#F7F7F7") // 약간 다른 회색
-        sectionView.layer.cornerRadius = 16
         sectionView.translatesAutoresizingMaskIntoConstraints = false
-        // 그림자 효과 추가 (선택 사항)
-        sectionView.layer.shadowColor = UIColor.black.cgColor
-        sectionView.layer.shadowOffset = CGSize(width: 0, height: 1)
-        sectionView.layer.shadowRadius = 3
-        sectionView.layer.shadowOpacity = 0.05
-        sectionView.layer.masksToBounds = false
         
         let verticalStack = UIStackView(arrangedSubviews: [nameLabel, pointLabel])
         verticalStack.axis = .vertical
@@ -196,15 +173,15 @@ class MyPageViewController: UIViewController {
         sectionView.addSubview(settingButton)
         
         NSLayoutConstraint.activate([
-            profileImageView.widthAnchor.constraint(equalToConstant: 60),
-            profileImageView.heightAnchor.constraint(equalToConstant: 60),
+            profileImageView.widthAnchor.constraint(equalToConstant: 50),
+            profileImageView.heightAnchor.constraint(equalToConstant: 50),
             
-            horizontalStack.leadingAnchor.constraint(equalTo: sectionView.leadingAnchor, constant: 20),
-            horizontalStack.topAnchor.constraint(equalTo: sectionView.topAnchor, constant: 20),
-            horizontalStack.bottomAnchor.constraint(equalTo: sectionView.bottomAnchor, constant: -20),
+            horizontalStack.leadingAnchor.constraint(equalTo: sectionView.leadingAnchor),
+            horizontalStack.topAnchor.constraint(equalTo: sectionView.topAnchor),
+            horizontalStack.bottomAnchor.constraint(equalTo: sectionView.bottomAnchor),
             horizontalStack.trailingAnchor.constraint(lessThanOrEqualTo: settingButton.leadingAnchor, constant: -16),
             
-            settingButton.trailingAnchor.constraint(equalTo: sectionView.trailingAnchor, constant: -20),
+            settingButton.trailingAnchor.constraint(equalTo: sectionView.trailingAnchor),
             settingButton.centerYAnchor.constraint(equalTo: sectionView.centerYAnchor),
             settingButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 80)
         ])
@@ -222,15 +199,16 @@ class MyPageViewController: UIViewController {
         let verticalStack = UIStackView()
         verticalStack.axis = .vertical
         verticalStack.distribution = .fillEqually
-        verticalStack.spacing = 12
+        verticalStack.spacing = 10
         verticalStack.translatesAutoresizingMaskIntoConstraints = false
         
         menuItems.forEach { item in
-            var config = UIButton.Configuration.plain() // .plain으로 변경하여 배경 제거
+            var config = UIButton.Configuration.plain()
             config.title = item.title
             config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
                 var outgoing = incoming
                 outgoing.font = UIFont(name: "Pretendard-Medium", size: 17)
+                outgoing.foregroundColor = UIColor(hex: "#442C2E")
                 return outgoing
             }
             
@@ -239,11 +217,11 @@ class MyPageViewController: UIViewController {
                 config.imagePadding = 10
                 config.imagePlacement = .leading
             }
-            config.baseForegroundColor = UIColor(hex: "#333333")
-            config.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 15, bottom: 15, trailing: 15) // 내부 여백
+            config.baseForegroundColor = UIColor(hex: "#442C2E")
+            config.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 10, bottom: 15, trailing: 15)
             
             let button = UIButton(configuration: config)
-            button.contentHorizontalAlignment = .leading // 텍스트와 아이콘 왼쪽 정렬
+            button.contentHorizontalAlignment = .leading
             button.backgroundColor = UIColor(hex: "#FFFFFF")
             button.layer.cornerRadius = 12
             button.layer.shadowColor = UIColor.black.cgColor
@@ -261,7 +239,7 @@ class MyPageViewController: UIViewController {
     
     private func loadImage(for imageView: UIImageView, with url: URL?) {
         guard let url = url else {
-            imageView.image = UIImage(systemName: "person.circle.fill")
+            imageView.image = UIImage(systemName: "person.circle")
             return
         }
         
@@ -274,26 +252,22 @@ class MyPageViewController: UIViewController {
             do {
                 let (data, response) = try await URLSession.shared.data(from: url)
                 guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                    print("MyPageVC: Image download failed (URL: \(url.absoluteString)) with status: \((response as? HTTPURLResponse)?.statusCode ?? -1)")
-                    await MainActor.run { imageView.image = UIImage(systemName: "person.circle.fill") }
+                    await MainActor.run { imageView.image = UIImage(systemName: "person.circle") }
                     return
                 }
                 if let image = UIImage(data: data) {
                     ImageCacheManager.shared.set(image, for: url.absoluteString)
                     await MainActor.run { imageView.image = image }
                 } else {
-                    print("MyPageVC: Downloaded data could not be converted to UIImage (URL: \(url.absoluteString))")
-                    await MainActor.run { imageView.image = UIImage(systemName: "person.circle.fill") }
+                    await MainActor.run { imageView.image = UIImage(systemName: "person.circle") }
                 }
             } catch {
-                print("MyPageVC: Error loading image from URL (URL: \(url.absoluteString)): \(error.localizedDescription)")
-                await MainActor.run { imageView.image = UIImage(systemName: "person.circle.fill") }
+                await MainActor.run { imageView.image = UIImage(systemName: "person.circle") }
             }
         }
     }
     
-    // MARK: - Actions
-    @objc private func profileSectionTapped() { // 함수 이름 변경 및 private 처리
+    @objc private func profileSectionTapped() {
         if viewModel.isLoggedIn {
             coordinator?.showEditProfile()
         } else {
@@ -302,5 +276,6 @@ class MyPageViewController: UIViewController {
     }
 }
 
-// UIColor(hex:) 확장은 프로젝트 내 다른 곳에 정의되어 있다고 가정합니다.
-// extension UIColor { ... }
+#Preview {
+    MyPageViewController()
+}
