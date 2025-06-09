@@ -33,7 +33,7 @@ class LectureCardCell: UITableViewCell {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "Pretendard-Regular", size: 18)
+        label.font = .systemFont(ofSize: 18)
         //        label.textColor = .label
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -41,7 +41,7 @@ class LectureCardCell: UITableViewCell {
     
     private let priceLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "Pretendard-SemiBold", size: 22)
+        label.font = .systemFont(ofSize: 22, weight: .medium)
         //        label.textColor = .label
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -68,7 +68,7 @@ class LectureCardCell: UITableViewCell {
     
     private let thumbCountLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "Pretendard-Regular", size: 14)
+        label.font = .systemFont(ofSize: 13, weight: .medium)
         label.textAlignment = .right
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -78,7 +78,7 @@ class LectureCardCell: UITableViewCell {
         let button = UIButton(type: .system)
         button.setTitle("강의 상세보기", for: .normal)
         button.setTitleColor(.black, for: .normal)
-        button.titleLabel?.font = UIFont(name: "Pretendard-Medium", size: 20)
+        button.titleLabel?.font = .systemFont(ofSize: 18)
         button.backgroundColor = UIColor(red: 1.0, green: 0.86, blue: 0.82, alpha: 1.0)
         button.layer.cornerRadius = 10
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -129,17 +129,17 @@ class LectureCardCell: UITableViewCell {
             thumbContainer.centerYAnchor.constraint(equalTo: priceLabel.centerYAnchor),
             thumbContainer.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             
-            thumbIcon.topAnchor.constraint(equalTo: thumbContainer.topAnchor, constant: 5),
+            thumbIcon.topAnchor.constraint(equalTo: thumbContainer.topAnchor, constant: 7),
             thumbIcon.leadingAnchor.constraint(equalTo: thumbContainer.leadingAnchor, constant: 10),
-            thumbIcon.bottomAnchor.constraint(equalTo: thumbContainer.bottomAnchor, constant: -5),
+            thumbIcon.bottomAnchor.constraint(equalTo: thumbContainer.bottomAnchor, constant: -7),
             thumbIcon.widthAnchor.constraint(equalToConstant: 20),
             thumbIcon.heightAnchor.constraint(equalTo: thumbIcon.widthAnchor),
             
             thumbCountLabel.centerYAnchor.constraint(equalTo: thumbContainer.centerYAnchor),
-            thumbCountLabel.leadingAnchor.constraint(equalTo: thumbIcon.trailingAnchor, constant: 10),
+            thumbCountLabel.leadingAnchor.constraint(equalTo: thumbIcon.trailingAnchor, constant: 5),
             thumbCountLabel.trailingAnchor.constraint(equalTo: thumbContainer.trailingAnchor, constant: -10),
             
-            detailShowButton.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 10),
+            detailShowButton.topAnchor.constraint(equalTo: thumbContainer.bottomAnchor, constant: 10),
             detailShowButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             detailShowButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             detailShowButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -30),

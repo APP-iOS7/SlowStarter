@@ -93,10 +93,10 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             topStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
-            topStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            topStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             
             searchButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
-            searchButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
+            searchButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             searchButton.widthAnchor.constraint(equalToConstant: 30),
             searchButton.heightAnchor.constraint(equalTo: searchButton.widthAnchor),
             
