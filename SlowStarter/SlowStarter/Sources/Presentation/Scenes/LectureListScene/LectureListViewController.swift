@@ -172,10 +172,6 @@ extension LectureListViewController {
     func didTapShowDetail(in cell: LectureCardCell) {
         coordinator?.showLectureDetail()
     }
-    
-    func didTapSelectDate(in cell: LectureCardCell) {
-        coordinator?.showLectureDateSelection()
-    }
 }
 
 #Preview {
