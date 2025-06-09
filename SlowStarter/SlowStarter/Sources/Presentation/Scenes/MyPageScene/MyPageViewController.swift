@@ -69,6 +69,12 @@ class MyPageViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         viewModel.fetchProfile()
+        navigationController?.setNavigationBarHidden(true, animated: false)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: false)
     }
     
     private func setupSubviews() {
@@ -80,11 +86,11 @@ class MyPageViewController: UIViewController {
         view.addSubview(logoutButton)
         
         NSLayoutConstraint.activate([
-            profileSection.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            profileSection.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
             profileSection.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             profileSection.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
-            menuSectionStackView.topAnchor.constraint(equalTo: profileSection.bottomAnchor, constant: 12),
+            menuSectionStackView.topAnchor.constraint(equalTo: profileSection.bottomAnchor, constant: 30),
             menuSectionStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             menuSectionStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             

@@ -37,7 +37,7 @@ class EditProfileViewController: UIViewController {
 
         profileImageView.image = UIImage(systemName: "person.circle")
         profileImageView.contentMode = .scaleAspectFill
-        profileImageView.tintColor = .gray
+        profileImageView.tintColor = UIColor(hex: "#FEDBD0")
         profileImageView.clipsToBounds = true
         profileImageView.layer.cornerRadius = 50
         profileImageView.layer.borderWidth = 1.0
@@ -51,8 +51,10 @@ class EditProfileViewController: UIViewController {
         nameTextField.autocapitalizationType = .none
 
         saveButton.setTitle("저장하기", for: .normal)
-        saveButton.backgroundColor = .black
-        saveButton.setTitleColor(.white, for: .normal)
+        
+        saveButton.titleLabel?.font = UIFont(name: "Pretendard-Regular", size: 14)
+        saveButton.setTitleColor(UIColor(hex: "#442C2E"), for: .normal)
+        saveButton.backgroundColor = UIColor(hex: "#FEDBD0")
         saveButton.layer.cornerRadius = 8
         saveButton.addTarget(self, action: #selector(saveProfile), for: .touchUpInside)
 
@@ -73,8 +75,8 @@ class EditProfileViewController: UIViewController {
             profileImageView.heightAnchor.constraint(equalToConstant: 100),
             
             nameTextField.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 24),
-            nameTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
-            nameTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            nameTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            nameTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             nameTextField.heightAnchor.constraint(equalToConstant: 44),
             
             saveButton.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 30),
@@ -143,6 +145,7 @@ class EditProfileViewController: UIViewController {
 
     // MARK: - Actions
     @objc private func selectProfileImage() {
+        activityIndicator.startAnimating()
         var config = PHPickerConfiguration(photoLibrary: .shared())
         config.selectionLimit = 1
         config.filter = .images
@@ -210,9 +213,7 @@ class EditProfileViewController: UIViewController {
                 }
                 ImageCacheManager.shared.clear()
 
-                showToast(message: "회원탈퇴가 완료되었습니다.") {
-                    self.coordinator?.didFinishAccountDeletion()
-                }
+                showToast(message: "회원탈퇴가 완료되었습니다.")
 
             } catch {
                 showToast(message: "회원탈퇴 중 오류: \(error.localizedDescription)")
@@ -237,9 +238,7 @@ class EditProfileViewController: UIViewController {
 
     private func handleSuccessfulSave() {
         setSavingUIState(isSaving: false)
-        showToast(message: "프로필이 성공적으로 저장되었습니다.") {
-            self.coordinator?.didFinishEditingProfile()
-        }
+        showToast(message: "프로필이 성공적으로 저장되었습니다.")
     }
 
     private func handleFailedSave(error: Error) {
@@ -384,7 +383,14 @@ extension EditProfileViewController: PHPickerViewControllerDelegate {
 
         guard let itemProvider = results.first?.itemProvider else { return }
         
-        let _ = itemProvider.loadTransferable(type: Data.self) { result in
+        let _ = itemProvider.loadTransferable(type: Data.self) {[weak self] result in
+            guard let self = self else { return }
+            defer {
+                Task { @MainActor in
+                    self.activityIndicator.stopAnimating()
+                }
+            }
+            
             switch result {
             case .success(let data):
                 if let image = UIImage(data: data) {

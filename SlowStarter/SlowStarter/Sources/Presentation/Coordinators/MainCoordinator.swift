@@ -20,7 +20,7 @@ class MainCoordinator: NSObject, Coordinator {
         self.lectureCoordinator = LectureCoordinator(navigationController: lectureNavigationController)
         
         let chatNavigationController = UINavigationController()
-//        let repeatitiveStudayDetailViewController = RepeatLearnDetailViewController(currentPlayingData: RepeatLearnData.sample)
+
         self.chatCoordinator = ChatCoordinator(
             navigationController: chatNavigationController,
             coreDataManager: coreDataManager
@@ -59,19 +59,15 @@ class MainCoordinator: NSObject, Coordinator {
     func setupTabBarStyle() {
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = .white
         
-        // 선택된 탭 바 아이템 색상
-        appearance.stackedLayoutAppearance.selected.iconColor = .systemCyan
+        appearance.stackedLayoutAppearance.selected.iconColor = UIColor(hex: "#442C2E")
         appearance.stackedLayoutAppearance.selected.titleTextAttributes = [
-            .foregroundColor: UIColor.systemRed,
+            .foregroundColor: UIColor(hex: "#442C2E") ?? .black,
             .font: UIFont.systemFont(ofSize: 12, weight: .semibold)
         ]
-        
-        // 선택되지 않은 아이템 색상
         appearance.stackedLayoutAppearance.normal.iconColor = .lightGray
         appearance.stackedLayoutAppearance.normal.titleTextAttributes = [
-            .foregroundColor: UIColor.lightGray,
+            .foregroundColor: UIColor(hex: "#442C2E") ?? .black,
             .font: UIFont.systemFont(ofSize: 12, weight: .regular)
         ]
         
