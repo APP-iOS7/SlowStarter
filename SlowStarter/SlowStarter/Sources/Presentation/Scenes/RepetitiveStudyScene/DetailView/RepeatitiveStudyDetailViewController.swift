@@ -55,7 +55,8 @@ class RepeatLearnDetailViewController: UIViewController {
         return label
     }()
     
-    private let submitAssignmentButton: UIButton = {
+    // submitAssignmentButton을 lazy var로 변경
+    private lazy var submitAssignmentButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setTitle("과제 제출하기", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
@@ -63,14 +64,17 @@ class RepeatLearnDetailViewController: UIViewController {
         button.backgroundColor = UIColor(red: 76/255, green: 175/255, blue: 80/255, alpha: 1.0) // 녹색
         button.layer.cornerRadius = 8
         button.clipsToBounds = true
-        button.addAction(UIAction(handler: { _ in
-            print("dfs")
-        }), for: .touchUpInside)
+        // 'self' (현재 인스턴스)를 target으로 설정
+        button.addTarget(self, action: #selector(submitButtonTapped), for: .touchUpInside)
         return button
     }()
-    
-    private func submitButtonTapped() {
-        present(SubmittedAssignmentViewController(), animated: true)
+
+    @objc private func submitButtonTapped() {
+        let submittedVC = SubmittedAssignmentViewController()
+        submittedVC.updateData(with: self.currentRepeatLearn.assignments)
+        // SubmittedAssignmentViewController에 데이터를 전달해야 한다면 여기서 전달합니다.
+        // 예: submittedVC.assignments = self.currentRepeatLearn.assignments
+        present(submittedVC, animated: true)
     }
     
     private let weeklyUpdateAnnouncingLabel: UILabel = {
@@ -204,12 +208,16 @@ extension RepeatLearnDetailViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let nextData = repeatLearnListCellDataset[indexPath.row]
         
-        self.currentRepeatLearn = nextData
-        self.updateData(with: currentRepeatLearn)
+        if nextData != self.currentRepeatLearn {
+            self.currentRepeatLearn = nextData
+            self.updateData(with: currentRepeatLearn)
+        }
+        
+        
     }
 }
-
-
+//
+//
 #Preview {
     // 실제 샘플 데이터를 사용하여 ViewController 인스턴스화
     // RepeatLearnData.sample은 이미 정의되어 있음 (제공해주신 코드 기준)

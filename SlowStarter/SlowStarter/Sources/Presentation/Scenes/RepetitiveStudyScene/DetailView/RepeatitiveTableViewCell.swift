@@ -133,7 +133,7 @@ class RepeatitiveTableViewCell: UITableViewCell {
 
 }
 
-
+//
 #Preview {
     RepeatitiveTableViewCell()
 }

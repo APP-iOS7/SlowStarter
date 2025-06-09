@@ -10,9 +10,14 @@ import SnapKit
 
 class AssignmentTableViewCell: UITableViewCell {
     
-    weak var delegate: AssignmentTableViewCellDelegate?
+    // MARK: - Properties
     
+    weak var delegate: AssignmentTableViewCellDelegate?
     static let identifier = "AssignmentTableViewCell"
+    
+    private var isEditingCell: Bool = false
+    
+    // MARK: - UI Components
     
     private let imageBaseView: UIView = {
         let view = UIView()
@@ -31,117 +36,179 @@ class AssignmentTableViewCell: UITableViewCell {
     
     private let memoLabel: UILabel = {
         let label = UILabel()
-        label.text = "칼질할 때는 손을 오므리고 두번째 마디에 칼 옆면을 대도록 할것"
         label.numberOfLines = 0
-        label.font = UIFont.systemFont(ofSize: 14)
-        
+        label.font = .systemFont(ofSize: 14)
         return label
+    }()
+    
+    private let editTextField: UITextField = {
+        let textField = UITextField()
+        textField.borderStyle = .roundedRect
+        textField.font = .systemFont(ofSize: 14)
+        textField.returnKeyType = .done
+        textField.clearButtonMode = .whileEditing
+        textField.isHidden = true // Initially hidden
+        return textField
     }()
     
     private let celltitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "번째 인증"
-        label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        label.font = .systemFont(ofSize: 16, weight: .bold)
         return label
     }()
     
-    private let addPhotoButton: UIButton = {
+    private let buttonStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.spacing = 8
+        stackView.distribution = .fillEqually
+        return stackView
+    }()
+    
+    private lazy var deleteButton: UIButton = {
         let button = UIButton(type: .system)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .bold)
-        button.setTitle("사진 추가하기", for: .normal)
-        button.setTitleColor(.black, for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 14, weight: .bold)
+        button.setTitle("삭제", for: .normal)
+        button.setTitleColor(.systemRed, for: .normal)
+        button.addAction(UIAction { [weak self] _ in
+            guard let self = self else { return }
+            self.delegate?.didTapCellDeleteButton(in: self)
+        }, for: .touchUpInside)
         return button
     }()
+    
+    private lazy var editButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.titleLabel?.font = .systemFont(ofSize: 14, weight: .bold)
+        button.setTitle("수정", for: .normal)
+        button.setTitleColor(.systemBlue, for: .normal)
+        button.addAction(UIAction { [weak self] _ in
+            self?.toggleEditingState()
+        }, for: .touchUpInside)
+        return button
+    }()
+    
+    // MARK: - Initializers
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
-        setupButton()
+        editTextField.delegate = self
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
+    // MARK: - Lifecycle
     
-    
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        // Reset cell to its default state before being reused
+        isEditingCell = false
+        memoLabel.isHidden = false
+        editTextField.isHidden = true
+        editButton.setTitle("수정", for: .normal)
+        deleteButton.isEnabled = true
         
-        // Configure the view for the selected state
+        // Clear content
+        memoLabel.text = nil
+        editTextField.text = nil
+        assignmentImageView.image = nil
+        celltitleLabel.text = nil
     }
     
-    private func setupButton() {
-        addPhotoButton.addAction(UIAction(handler: { [weak self] _ in
-            print("button tapped")
-            guard let self = self else {
-                print("no self")
-                return }
-            delegate?.didTapAssignmentButton(in: self)
-        }), for: .touchUpInside)
-    }
+    // MARK: - UI Setup
     
     private func setupUI() {
-        
         contentView.addSubview(celltitleLabel)
         celltitleLabel.snp.makeConstraints { make in
-            make.top.leading.equalToSuperview().offset(10)
+            make.top.leading.equalToSuperview().inset(10)
         }
         
+        buttonStackView.addArrangedSubview(editButton)
+        buttonStackView.addArrangedSubview(deleteButton)
         
-        contentView.addSubview(addPhotoButton)
-        addPhotoButton.snp.makeConstraints { make in
-            make.top.equalTo(celltitleLabel.snp.top).offset(10)
+        contentView.addSubview(buttonStackView)
+        buttonStackView.snp.makeConstraints { make in
+            make.centerY.equalTo(celltitleLabel)
             make.trailing.equalToSuperview().inset(10)
-            
         }
         
         contentView.addSubview(imageBaseView)
         imageBaseView.snp.makeConstraints { make in
-            make.top.equalTo(celltitleLabel.snp.bottom).offset(20)
+            make.top.equalTo(celltitleLabel.snp.bottom).offset(15)
             make.leading.equalToSuperview().offset(20)
             make.width.height.equalTo(50)
         }
         
-        contentView.addSubview(assignmentImageView)
+        imageBaseView.addSubview(assignmentImageView)
         assignmentImageView.snp.makeConstraints { make in
-            make.edges.equalTo(imageBaseView)
+            make.edges.equalToSuperview()
         }
         
         contentView.addSubview(memoLabel)
         memoLabel.snp.makeConstraints { make in
-            make.top.equalTo(assignmentImageView.snp.bottom).offset(12)
-            make.leading.equalToSuperview().offset(10)
-            make.trailing.equalToSuperview().inset(10) // trailing 제약 추가
-            make.bottom.equalToSuperview().inset(10) 
+            make.top.equalTo(imageBaseView.snp.bottom).offset(12)
+            make.leading.trailing.equalToSuperview().inset(10)
+            make.bottom.equalToSuperview().inset(10)
+        }
+        
+        contentView.addSubview(editTextField)
+        editTextField.snp.makeConstraints { make in
+            // Match the memoLabel's constraints
+            make.top.equalTo(memoLabel)
+            make.leading.equalTo(memoLabel)
+            make.trailing.equalTo(memoLabel)
         }
     }
-    // 셀에 데이터를 채우는 메서드
+    
+    // MARK: - Public Methods
+    
     public func configure(with assignment: Assignment, numbering: String) {
         memoLabel.text = assignment.memo
         assignmentImageView.image = assignment.image
         celltitleLabel.text = numbering
     }
     
-    // 셀이 재사용될 때 호출되어 이전 데이터를 초기화 (선택적)
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        memoLabel.text = nil
-        assignmentImageView.image = nil
+    // MARK: - Private Methods
+
+    private func toggleEditingState() {
+        isEditingCell.toggle()
         
+        if isEditingCell {
+            // --- Start Editing ---
+            memoLabel.isHidden = true
+            editTextField.isHidden = false
+            editTextField.text = memoLabel.text
+            editTextField.becomeFirstResponder() // Show keyboard
+            
+            editButton.setTitle("완료", for: .normal)
+            deleteButton.isEnabled = false // Disable delete while editing
+        } else {
+            // --- Finish Editing ---
+            memoLabel.isHidden = false
+            editTextField.isHidden = true
+            memoLabel.text = editTextField.text
+            
+            editButton.setTitle("수정", for: .normal)
+            deleteButton.isEnabled = true
+            
+            // Inform the delegate that editing has finished with the new text
+            delegate?.cell(self, didFinishEditingMemo: editTextField.text ?? "")
+        }
+        
+        // Inform the delegate that the edit mode has toggled, so it can update the table view layout
+        // delegate?.assignmentCellDidToggleEditMode(in: self)
     }
-    
-    deinit {
-        delegate = nil
-    }
-    
 }
 
-//
-//#Preview {
-//    AssignmentTableViewCell()
-//}
+// MARK: - UITextFieldDelegate
+extension AssignmentTableViewCell: UITextFieldDelegate {
+    // Allows finishing the edit by pressing the "Done" key on the keyboard
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder() // Hide keyboard
+        toggleEditingState() // Trigger the "Finish Editing" logic
+        return true
+    }
+}

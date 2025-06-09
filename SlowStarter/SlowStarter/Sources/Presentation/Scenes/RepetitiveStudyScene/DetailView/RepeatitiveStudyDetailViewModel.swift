@@ -8,7 +8,11 @@
 import Foundation
 import UIKit
 
-struct RepeatLearnData {
+struct RepeatLearnData: Equatable {
+    static func == (lhs: RepeatLearnData, rhs: RepeatLearnData) -> Bool {
+        return lhs.lectureTitle == rhs.lectureTitle
+    }
+    
     static let sample = RepeatLearnData(lectureTitle: "예시 강의명",
                                         lectureDescription: "기타 정보 / 기타 정보 / 기타 정보 / 영상길이",
                                         lectureURL: bigbunny,

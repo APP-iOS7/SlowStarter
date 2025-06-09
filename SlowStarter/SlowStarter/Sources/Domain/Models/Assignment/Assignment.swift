@@ -9,8 +9,8 @@ import Foundation
 import UIKit
 struct Assignment: Identifiable {
     let id = UUID()
-    let memo: String
-    let image: UIImage
+    var memo: String
+    var image: UIImage
     
     static let sampleAssignments: [Assignment] = [
         Assignment(memo: "첫 번째 과제: 아이디어 스케치", image: UIImage(systemName: "pencil.and.outline") ?? UIImage()),
