@@ -7,14 +7,13 @@ class CourseHistoryViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor(hex: "#FEEAE6")
         setupTableView()
         fetchData()
     }
 
     private func setupTableView() {
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.backgroundColor = UIColor(hex: "#FEEAE6")
+//        tableView.backgroundColor = UIColor(hex: "#FEEAE6")
         tableView.register(CourseHistoryTableViewCell.self, forCellReuseIdentifier: "CourseHistoryCell")
         tableView.dataSource = self
         tableView.delegate = self
@@ -61,7 +60,8 @@ extension CourseHistoryViewController: UITableViewDataSource {
         let course = data[indexPath.row]
         cell.configure(
             title: course.courseTitle,
-            isActive: course.isActive
+            isActive: course.isActive,
+            isLast: indexPath.row == data.count - 1
         )
 
         cell.backgroundColor = .clear

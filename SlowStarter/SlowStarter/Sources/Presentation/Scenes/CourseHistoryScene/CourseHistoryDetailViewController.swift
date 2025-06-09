@@ -16,7 +16,7 @@ class CourseHistoryDetailViewController: UIViewController {
     }
 
     private func setupUI() {
-        view.backgroundColor = UIColor(hex: "#FEEAE6")
+        view.backgroundColor = .white
         
         titleLabel.font = UIFont(name: "Pretendard-Bold", size: 28)
         titleLabel.textColor = UIColor(hex: "#442C2E")
@@ -81,7 +81,7 @@ class CourseHistoryDetailViewController: UIViewController {
                 nextPaymentLabel.text = "다음 결제 예정일: -"
             }
         } else {
-            nextPaymentLabel.text = "" 
+            nextPaymentLabel.text = ""
         }
     }
 

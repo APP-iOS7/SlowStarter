@@ -3,17 +3,20 @@ import UIKit
 class CourseHistoryTableViewCell: UITableViewCell {
     private let titleLabel = UILabel()
     private let statusLabel = UILabel()
+    private let bottomDivider = UIView()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
     }
+
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupUI()
     }
 
     private func setupUI() {
+        backgroundColor = .clear
         titleLabel.font = UIFont(name: "Pretendard-SemiBold", size: 18)
         titleLabel.textColor = UIColor(hex: "#442C2E")
 
@@ -22,7 +25,10 @@ class CourseHistoryTableViewCell: UITableViewCell {
         statusLabel.layer.cornerRadius = 12
         statusLabel.clipsToBounds = true
 
-        [titleLabel, statusLabel].forEach {
+        bottomDivider.backgroundColor = UIColor(hex: "#FEEAE6")
+        bottomDivider.translatesAutoresizingMaskIntoConstraints = false
+
+        [titleLabel, statusLabel, bottomDivider].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             contentView.addSubview($0)
         }
@@ -34,11 +40,16 @@ class CourseHistoryTableViewCell: UITableViewCell {
             statusLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             statusLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             statusLabel.heightAnchor.constraint(equalToConstant: 24),
-            statusLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 60)
+            statusLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 60),
+
+            bottomDivider.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            bottomDivider.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            bottomDivider.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            bottomDivider.heightAnchor.constraint(equalToConstant: 1)
         ])
     }
 
-    func configure(title: String, isActive: Bool) {
+    func configure(title: String, isActive: Bool, isLast: Bool = false) {
         titleLabel.text = title
         statusLabel.text = isActive ? "수강중" : "수강완료"
 
@@ -49,5 +60,7 @@ class CourseHistoryTableViewCell: UITableViewCell {
             statusLabel.backgroundColor = UIColor(hex: "#FEEAE6")
             statusLabel.textColor = .gray
         }
+
+        bottomDivider.isHidden = isLast
     }
 }
