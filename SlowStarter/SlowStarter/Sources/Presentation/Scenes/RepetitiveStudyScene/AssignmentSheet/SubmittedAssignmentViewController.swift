@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import PhotosUI
 import SnapKit
 
 class SubmittedAssignmentViewController: UIViewController {
@@ -61,9 +62,10 @@ class SubmittedAssignmentViewController: UIViewController {
             make.top.equalTo(uploadButton.snp.bottom).offset(10)
             make.leading.trailing.bottom.equalToSuperview()
         }
+    }
+    private func uploadBtnTapped() {
         
     }
-    
     private func setupTableView() {
         tableView.dataSource = self
         tableView.delegate = self
