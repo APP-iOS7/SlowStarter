@@ -460,6 +460,7 @@ extension ChatViewController: UICollectionViewDelegateFlowLayout {
         if message.isSended {
             let dummyCell: SendedMessageCell = SendedMessageCell()
             dummyCell.message = message
+            dummyCell.setPreferredMaxLayoutWidth(forCellWidth: collectionView.frame.width)
             
             let autoLayoutSize = dummyCell.contentView.systemLayoutSizeFitting(
                 CGSize(width: cellWidth, height: UIView.layoutFittingCompressedSize.height),
