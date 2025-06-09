@@ -9,7 +9,6 @@ import UIKit
 
 protocol LectureCardCellDelegate: AnyObject {
     func didTapThumb(in cell: LectureCardCell)
-    func didTapReadMoreButton(in cell: LectureCardCell)
     func didTapShowDetail(in cell: LectureCardCell)
 }
 
@@ -53,6 +52,7 @@ class LectureCardCell: UITableViewCell {
         view.backgroundColor = .systemBackground
         view.layer.cornerRadius = 15
         view.isUserInteractionEnabled = true
+        view.backgroundColor = UIColor(red: 1.0, green: 0.86, blue: 0.82, alpha: 1.0)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -60,7 +60,7 @@ class LectureCardCell: UITableViewCell {
     private let thumbIcon: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "hand.thumbsup")
-        imageView.tintColor = .systemGray
+        imageView.tintColor = .black
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
@@ -68,39 +68,19 @@ class LectureCardCell: UITableViewCell {
     
     private let thumbCountLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "Pretendard-Regular", size: 18)
+        label.font = UIFont(name: "Pretendard-Regular", size: 14)
         label.textAlignment = .right
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    private let descriptionLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont(name: "Pretendard-Regular", size: 16)
-        label.textColor = .systemGray
-        label.numberOfLines = 3
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let readMoreButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("자세히보기", for: .normal)
-        button.titleLabel?.font = UIFont(name: "Pretendard-Regular", size: 14)
-        button.tintColor = .systemGray
-        button.contentHorizontalAlignment = .left
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
     private let detailShowButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("강의 상세보기", for: .normal)
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(.black, for: .normal)
         button.titleLabel?.font = UIFont(name: "Pretendard-Medium", size: 20)
-        button.backgroundColor = .black
-        button.layer.cornerRadius = 5
-        button.layer.borderWidth = 1
+        button.backgroundColor = UIColor(red: 1.0, green: 0.86, blue: 0.82, alpha: 1.0)
+        button.layer.cornerRadius = 10
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -122,11 +102,9 @@ class LectureCardCell: UITableViewCell {
         contentView.addSubview(titleLabel)
         contentView.addSubview(priceLabel)
         contentView.addSubview(thumbContainer)
-        contentView.addSubview(thumbIcon)
-        contentView.addSubview(thumbCountLabel)
-        contentView.addSubview(descriptionLabel)
-        contentView.addSubview(readMoreButton)
         contentView.addSubview(detailShowButton)
+        thumbContainer.addSubview(thumbIcon)
+        thumbContainer.addSubview(thumbCountLabel)
         
         // Add tap gesture to thumbContainer
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(thumbTapped))
@@ -136,44 +114,35 @@ class LectureCardCell: UITableViewCell {
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             lectureImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 0),
-            lectureImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            lectureImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            lectureImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            lectureImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             lectureImageView.heightAnchor.constraint(equalToConstant: 340),
             
-            titleLabel.topAnchor.constraint(equalTo: lectureImageView.bottomAnchor, constant: 20),
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            titleLabel.topAnchor.constraint(equalTo: lectureImageView.bottomAnchor, constant: 10),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             
             priceLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
-            priceLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            priceLabel.trailingAnchor.constraint(equalTo: thumbContainer.leadingAnchor, constant: -10),
+            priceLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            priceLabel.trailingAnchor.constraint(equalTo: thumbContainer.leadingAnchor, constant: -20),
             
             thumbContainer.centerYAnchor.constraint(equalTo: priceLabel.centerYAnchor),
-            thumbContainer.trailingAnchor.constraint(equalTo: thumbCountLabel.leadingAnchor),
-            thumbContainer.widthAnchor.constraint(equalToConstant: 30),
-            thumbContainer.heightAnchor.constraint(equalToConstant: 30),
+            thumbContainer.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             
-            thumbIcon.centerXAnchor.constraint(equalTo: thumbContainer.centerXAnchor),
-            thumbIcon.centerYAnchor.constraint(equalTo: thumbContainer.centerYAnchor),
+            thumbIcon.topAnchor.constraint(equalTo: thumbContainer.topAnchor, constant: 5),
+            thumbIcon.leadingAnchor.constraint(equalTo: thumbContainer.leadingAnchor, constant: 10),
+            thumbIcon.bottomAnchor.constraint(equalTo: thumbContainer.bottomAnchor, constant: -5),
             thumbIcon.widthAnchor.constraint(equalToConstant: 20),
-            thumbIcon.heightAnchor.constraint(equalToConstant: 20),
+            thumbIcon.heightAnchor.constraint(equalTo: thumbIcon.widthAnchor),
             
-            thumbCountLabel.centerYAnchor.constraint(equalTo: priceLabel.centerYAnchor),
-            thumbCountLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
-            thumbCountLabel.widthAnchor.constraint(equalToConstant: 60),
+            thumbCountLabel.centerYAnchor.constraint(equalTo: thumbContainer.centerYAnchor),
+            thumbCountLabel.leadingAnchor.constraint(equalTo: thumbIcon.trailingAnchor, constant: 10),
+            thumbCountLabel.trailingAnchor.constraint(equalTo: thumbContainer.trailingAnchor, constant: -10),
             
-            descriptionLabel.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 12),
-            descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
-            
-            readMoreButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 8),
-            readMoreButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            readMoreButton.heightAnchor.constraint(equalToConstant: 20),
-            
-            detailShowButton.topAnchor.constraint(equalTo: readMoreButton.bottomAnchor, constant: 16),
-            detailShowButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            detailShowButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
-            detailShowButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
+            detailShowButton.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 10),
+            detailShowButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            detailShowButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            detailShowButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -30),
             detailShowButton.heightAnchor.constraint(equalToConstant: 40)
         ])
     }
@@ -184,7 +153,6 @@ class LectureCardCell: UITableViewCell {
         lectureImageView.addGestureRecognizer(imageTapGesture)
         
         // 버튼 액션 추가
-        readMoreButton.addTarget(self, action: #selector(readMoreButtonTapped), for: .touchUpInside)
         detailShowButton.addTarget(self, action: #selector(showDetailTapped), for: .touchUpInside)
     }
     
@@ -193,17 +161,6 @@ class LectureCardCell: UITableViewCell {
         titleLabel.text = lecture.title
         priceLabel.text = "KRW 99,000"
         thumbCountLabel.text = String(format: "\(lecture.thumbCount)")
-        descriptionLabel.text = lecture.description
-        
-        descriptionLabel.numberOfLines = isExpanded ? 0 : 3
-        let buttonTitle = isExpanded ? "간략히보기" : "자세히보기"
-        readMoreButton.setTitle(buttonTitle, for: .normal)
-        
-        contentView.layoutIfNeeded()
-    }
-    
-    @objc private func readMoreButtonTapped() {
-        delegate?.didTapReadMoreButton(in: self)
     }
     
     @objc private func showDetailTapped() {

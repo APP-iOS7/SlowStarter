@@ -65,8 +65,6 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(LectureCardCell.self, forCellReuseIdentifier: LectureCardCell.identifier)
         tableView.separatorStyle = .none
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 580
         return tableView
     }()
     
@@ -148,18 +146,6 @@ extension LectureListViewController {
             // 해당 셀만 업데이트
             if let updatedLecture = viewModel.lectures.first(where: { $0.lectureId == lectureId }) {
                 cell.configure(with: updatedLecture, isExpanded: lectureExpansionStates[indexPath.row])
-            }
-        }
-    }
-
-    func didTapReadMoreButton(in cell: LectureCardCell) {
-        if let indexPath = tableView.indexPath(for: cell) {
-            lectureExpansionStates[indexPath.row].toggle()
-            
-            UIView.animate(withDuration: 0.1) {
-                self.tableView.performBatchUpdates({
-                    self.tableView.reloadRows(at: [indexPath], with: .none)
-                })
             }
         }
     }
