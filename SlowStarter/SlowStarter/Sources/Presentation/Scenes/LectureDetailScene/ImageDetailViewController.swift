@@ -1,48 +1,35 @@
 import UIKit
 
-class ImageDetailViewController: UIViewController {
+class ImageDetailViewController: UIViewController, UIGestureRecognizerDelegate {
     
-    private let scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        return scrollView
-    }()
-    
-    private let containerView: UIView = {
+    private let dimmedBackgroundView: UIView = {
         let view = UIView()
+        view.backgroundColor = UIColor.black.withAlphaComponent(0.9)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
-    private let imageView: UIImageView = {
+    private let imageContainerView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.clipsToBounds = true
+        return view
+    }()
+    
+    private let zoomableImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
+        imageView.isUserInteractionEnabled = true
+        imageView.contentMode = .scaleAspectFill
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
-    private let descriptionLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont(name: "Pretendard-Regular", size: 16)
-        label.textColor = .label
-        label.numberOfLines = 0
-        label.textAlignment = .left
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
+    private var currentImageTransform: CGAffineTransform = .identity
+    private var isInitialCornerRadiusSet = false
     
-    private let closeButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
-        button.tintColor = .systemGray
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
-    init(image: UIImage?, description: String) {
+    init(image: UIImage?) {
         super.init(nibName: nil, bundle: nil)
-        imageView.image = image
-        descriptionLabel.text = description
+        zoomableImageView.image = image
         modalPresentationStyle = .overFullScreen
         modalTransitionStyle = .crossDissolve
     }
@@ -53,65 +40,114 @@ class ImageDetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupUI()
-        setupConstraints()
-        setupActions()
+        view.addSubview(dimmedBackgroundView)
+        view.addSubview(imageContainerView)
+        imageContainerView.addSubview(zoomableImageView)
+        setupLayoutConstraints()
+        configureGestureRecognizers()
     }
     
-    private func setupUI() {
-        view.backgroundColor = UIColor.black.withAlphaComponent(0.9)
-        
-        view.addSubview(scrollView)
-        scrollView.addSubview(containerView)
-        containerView.addSubview(imageView)
-        containerView.addSubview(descriptionLabel)
-        view.addSubview(closeButton)
-        
-        containerView.backgroundColor = .systemBackground
-        containerView.layer.cornerRadius = 12
-        
-        descriptionLabel.backgroundColor = .systemBackground
-        descriptionLabel.textColor = .label
-        
-        closeButton.tintColor = .white
-        closeButton.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        if !isInitialCornerRadiusSet {
+            updateCornerRadiusBasedOnScale()
+            isInitialCornerRadiusSet = true
+        }
     }
     
-    private func setupConstraints() {
+    private func setupLayoutConstraints() {
+        guard let image = zoomableImageView.image, image.size.height > 0 else { return }
+        
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            dimmedBackgroundView.topAnchor.constraint(equalTo: view.topAnchor),
+            dimmedBackgroundView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            dimmedBackgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            dimmedBackgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
-            containerView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 50),
-            containerView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 20),
-            containerView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -20),
-            containerView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -20),
-            containerView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -40),
+            imageContainerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            imageContainerView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            imageContainerView.widthAnchor.constraint(equalTo: imageContainerView.heightAnchor, multiplier: image.size.width / image.size.height),
+            imageContainerView.widthAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.widthAnchor, constant: -32),
+            imageContainerView.heightAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.heightAnchor, constant: -32),
             
-            imageView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 20),
-            imageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
-            imageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20),
-            imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor),
-            
-            descriptionLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 20),
-            descriptionLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
-            descriptionLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20),
-            descriptionLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -20),
-            
-            closeButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            closeButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            closeButton.widthAnchor.constraint(equalToConstant: 32),
-            closeButton.heightAnchor.constraint(equalToConstant: 32)
+            zoomableImageView.topAnchor.constraint(equalTo: imageContainerView.topAnchor),
+            zoomableImageView.bottomAnchor.constraint(equalTo: imageContainerView.bottomAnchor),
+            zoomableImageView.leadingAnchor.constraint(equalTo: imageContainerView.leadingAnchor),
+            zoomableImageView.trailingAnchor.constraint(equalTo: imageContainerView.trailingAnchor),
         ])
     }
     
-    private func setupActions() {
-        closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
+    private func configureGestureRecognizers() {
+        let pinchRecognizer = UIPinchGestureRecognizer(target: self, action: #selector(handlePinchGesture(_:)))
+        pinchRecognizer.delegate = self
+        imageContainerView.addGestureRecognizer(pinchRecognizer)
+        
+        let panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_:)))
+        panRecognizer.delegate = self
+        imageContainerView.addGestureRecognizer(panRecognizer)
+        
+        let doubleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleDoubleTapGesture(_:)))
+        doubleTapRecognizer.numberOfTapsRequired = 2
+        imageContainerView.addGestureRecognizer(doubleTapRecognizer)
+        
+        let singleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleSingleTapGesture(_:)))
+        singleTapRecognizer.require(toFail: doubleTapRecognizer)
+        view.addGestureRecognizer(singleTapRecognizer)
     }
     
-    @objc private func closeTapped() {
+    @objc private func handlePinchGesture(_ recognizer: UIPinchGestureRecognizer) {
+        let scale = recognizer.scale
+        switch recognizer.state {
+        case .began:
+            recognizer.scale = 1.0
+        case .changed:
+            imageContainerView.transform = currentImageTransform.scaledBy(x: scale, y: scale)
+            updateCornerRadiusBasedOnScale()
+        case .ended, .cancelled:
+            currentImageTransform = imageContainerView.transform
+        default:
+            break
+        }
+    }
+    
+    @objc private func handlePanGesture(_ recognizer: UIPanGestureRecognizer) {
+        let translation = recognizer.translation(in: view)
+        let currentScale = imageContainerView.transform.a
+        guard currentScale > 0.001 else { return }
+        
+        switch recognizer.state {
+        case .began:
+            currentImageTransform = imageContainerView.transform
+        case .changed:
+            let adjustedX = translation.x / currentScale
+            let adjustedY = translation.y / currentScale
+            imageContainerView.transform = currentImageTransform.translatedBy(x: adjustedX, y: adjustedY)
+        case .ended, .cancelled:
+            currentImageTransform = imageContainerView.transform
+        default:
+            break
+        }
+    }
+    
+    @objc private func handleDoubleTapGesture(_ recognizer: UITapGestureRecognizer) {
+        UIView.animate(withDuration: 0.35, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.5, options: .curveEaseInOut) {
+            self.imageContainerView.transform = .identity
+            self.currentImageTransform = .identity
+            self.updateCornerRadiusBasedOnScale()
+        }
+    }
+    
+    @objc private func handleSingleTapGesture(_ recognizer: UITapGestureRecognizer) {
         dismiss(animated: true)
     }
-} 
+    
+    private func updateCornerRadiusBasedOnScale() {
+        let currentScale = imageContainerView.transform.a
+        guard currentScale > 0.001 else { return }
+        imageContainerView.layer.cornerRadius = 12 / currentScale
+    }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+}
