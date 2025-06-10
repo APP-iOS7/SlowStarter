@@ -90,15 +90,22 @@ final class CoreDataManager: CoreDataManagerProtocol {
         }
     }
     
-    /// 페이지 단위로 저장된 메시지를 조회함
-    /// - Parameter page: 페이지 번호 (0부터 시작)
-    /// - Returns: 조회된 메시지 배열
-    /// - Throws: 조회 실패 시 에러 throw함
-    func fetchMessages(at page: Int) async throws -> [AIChatMessage] {
+    /// 저장된 메시지를 비동기적으로 조회
+    /// - Returns: 메시지 객체 배열
+    /// - Throws: Core Data 조회 중 발생할 수 있는 오류
+    func fetchMessages(before item: AIChatMessage? = nil) async throws -> [AIChatMessage] {
         let request: NSFetchRequest<MessageEntity> = MessageEntity.fetchRequest()
         request.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: false)]
         request.fetchLimit = 20
-        request.fetchOffset = 20 * page
+        
+        // 기준 아이템이 없으면 마지막 20개 반환
+        guard let item = item else {
+            let result: [AIChatMessage] = try messageContext.fetch(request).compactMap { AIChatMessage.from($0) }
+            return result
+        }
+        
+        // 기준 아이템보다 이전 20개
+        request.predicate = NSPredicate(format: "timestamp < %@", item.timestamp as CVarArg)
         
         return try messageContext.fetch(request).compactMap { AIChatMessage.from($0) }
     }

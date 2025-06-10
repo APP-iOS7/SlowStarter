@@ -48,17 +48,25 @@ final class ChatViewController: UIViewController {
     
     private lazy var dataSource: UICollectionViewDiffableDataSource<Section, ChatItemIdentifier> = {
         let sendedCellRegistration: UICollectionView.CellRegistration<SendedMessageCell, AIChatMessage> = {
-            UICollectionView.CellRegistration { cell, _, message in
+            UICollectionView.CellRegistration { [weak self] cell, _, message in
+                guard let self = self else { return }
+                
                 cell.message = message
+                cell.setPreferredMaxLayoutWidth(forCellWidth: self.collectionView.frame.width)
             }
         }()
         
         let receivedCellRegistration: UICollectionView.CellRegistration<ReceivedMessageCell, AIChatMessage> = {
             UICollectionView.CellRegistration { [weak self] cell, _, message in
+                guard let self = self else { return }
+                
                 cell.message = message
                 cell.summaryButtom.addAction(UIAction { _ in
-                    self?.viewModel.didTapSummaryButton(message: message)
+                    self.isLoadingSummaryMessage = true // 요약중인 상태 표시
+                    self.viewModel.didTapSummaryButton(message: message) // 텍스트 요약 요청 전송
+                    cell.showSummaryLoading(self.isLoadingSummaryMessage) // indicator start, stop
                 }, for: .touchUpInside)
+                cell.setPreferredMaxLayoutWidth(forCellWidth: self.collectionView.frame.width)
             }
         }()
         
@@ -69,16 +77,17 @@ final class ChatViewController: UIViewController {
         }()
         
         let dateHeaderRegistration = UICollectionView.SupplementaryRegistration<DateHeaderView>(
-            elementKind: UICollectionView.elementKindSectionHeader) { [weak self] headerView, kind, indexPath in
-                guard let self = self else { return }
-                
-                let snapshot = self.dataSource.snapshot()
-                let sectionIdentifier = snapshot.sectionIdentifiers[indexPath.section]
-                
-                if case .date(let date) = sectionIdentifier {
-                    headerView.configure(date)
-                }
+            elementKind: UICollectionView.elementKindSectionHeader
+        ) { [weak self] headerView, _, indexPath in
+            guard let self = self else { return }
+            
+            let snapshot = self.dataSource.snapshot()
+            let sectionIdentifier = snapshot.sectionIdentifiers[indexPath.section]
+            
+            if case .date(let date) = sectionIdentifier {
+                headerView.configure(date)
             }
+        }
         
         let dataSource = UICollectionViewDiffableDataSource<Section, ChatItemIdentifier>(
             collectionView: collectionView
@@ -128,22 +137,19 @@ final class ChatViewController: UIViewController {
         return view
     }()
     
-    private let inputTextFieldView: UIView = {
-        let view: UIView = UIView()
-        view.backgroundColor = .systemGray6
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    private let inputTextField: UITextField = {
-        let tf: UITextField = UITextField()
-        tf.autocapitalizationType = .none
-        tf.autocorrectionType = .no
-        tf.spellCheckingType = .no
-        tf.tintColor = .lightGray
-        tf.placeholder = "메시지 보내기"
-        tf.translatesAutoresizingMaskIntoConstraints = false
-        return tf
+    private lazy var inputTextView: UITextView = {
+        let tv: UITextView = UITextView()
+        tv.autocapitalizationType = .none
+        tv.autocorrectionType = .no
+        tv.spellCheckingType = .no
+        tv.tintColor = .lightGray
+        tv.font = .systemFont(ofSize: 16)
+        tv.backgroundColor = .systemGray6
+        tv.textContainerInset = .init(top: 8, left: 8, bottom: 8, right: 8)
+        tv.delegate = self
+        tv.isScrollEnabled = false
+        tv.translatesAutoresizingMaskIntoConstraints = false
+        return tv
     }()
     
     private lazy var sendButton: UIButton = {
@@ -159,11 +165,13 @@ final class ChatViewController: UIViewController {
         return button
     }()
     
-    private var lastKeyboardVisibleHeight: CGFloat = 0
-    
-    private var isInitialLoad: Bool = true
-    
-    private var cellHeightCache: [UUID: CGFloat] = .init()
+    private var lastKeyboardVisibleHeight: CGFloat = 0 // 키보드 높이
+    private var isInitialLoad: Bool = true // 초기화 상태
+    private var isLoadingPreviousMessages: Bool = false // 이전 대화가 추가 되는 상태
+    private var isLoadingSummaryMessage: Bool = false // 메시지가 요약중인 상태
+    private var anchorMessageID: UUID? // 이전 대화를 추가하는 기준이 되는 메시지 id
+    private var cellHeightCache: [UUID: CGFloat] = .init() // 셀 높이를 저장 배열
+    private var previousTextViewHeight: CGFloat = 0.0
     
     // MARK: - Initializer
     init(viewModel: ChatViewModel) {
@@ -191,43 +199,42 @@ final class ChatViewController: UIViewController {
         fetchMessages()
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        previousTextViewHeight = previousTextViewHeight == 0 ? inputTextView.frame.height : previousTextViewHeight
+    }
+    
     // MARK: Functions
     private func setConstraints() {
         view.addSubview(collectionView)
         view.addSubview(inputContainerView)
-        inputContainerView.addSubview(inputTextFieldView)
+        inputContainerView.addSubview(inputTextView)
         inputContainerView.addSubview(sendButton)
-        inputTextFieldView.addSubview(inputTextField)
         
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: inputContainerView.topAnchor),
             
             inputContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             inputContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             inputContainerView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
-            inputContainerView.heightAnchor.constraint(equalToConstant: 60),
+            inputContainerView.heightAnchor.constraint(greaterThanOrEqualToConstant: 50),
             
-            inputTextFieldView.topAnchor.constraint(equalTo: inputContainerView.topAnchor, constant: 5),
-            inputTextFieldView.leadingAnchor.constraint(equalTo: inputContainerView.leadingAnchor, constant: 10),
-            inputTextFieldView.trailingAnchor.constraint(equalTo: sendButton.leadingAnchor, constant: -10),
-            inputTextFieldView.bottomAnchor.constraint(equalTo: inputContainerView.bottomAnchor, constant: -5),
-            
-            inputTextField.topAnchor.constraint(equalTo: inputTextFieldView.topAnchor),
-            inputTextField.leadingAnchor.constraint(equalTo: inputTextFieldView.leadingAnchor, constant: 10),
-            inputTextField.trailingAnchor.constraint(equalTo: inputTextFieldView.trailingAnchor, constant: -10),
-            inputTextField.bottomAnchor.constraint(equalTo: inputTextFieldView.bottomAnchor),
+            inputTextView.topAnchor.constraint(equalTo: inputContainerView.topAnchor, constant: 10),
+            inputTextView.leadingAnchor.constraint(equalTo: inputContainerView.leadingAnchor, constant: 10),
+            inputTextView.trailingAnchor.constraint(equalTo: sendButton.leadingAnchor, constant: -10),
+            inputTextView.bottomAnchor.constraint(equalTo: inputContainerView.bottomAnchor, constant: -10),
             
             sendButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            sendButton.centerYAnchor.constraint(equalTo: inputContainerView.centerYAnchor),
-            sendButton.widthAnchor.constraint(equalToConstant: 40),
+            sendButton.bottomAnchor.constraint(equalTo: inputContainerView.bottomAnchor, constant: -10),
+            sendButton.widthAnchor.constraint(equalToConstant: 35),
             sendButton.heightAnchor.constraint(equalTo: sendButton.widthAnchor)
         ])
         
-        sendButton.layer.cornerRadius = 20
-        inputTextFieldView.layer.cornerRadius = 20
+        sendButton.layer.cornerRadius = 35 / 2
+        inputTextView.layer.cornerRadius = 15
     }
     
     private func setCollectionView() {
@@ -251,15 +258,23 @@ final class ChatViewController: UIViewController {
     }
     
     private func bindViewModel() {
-        viewModel.$messages
-            .removeDuplicates()
+        viewModel.messageUpdatePublisher
             .receive(on: DispatchQueue.main)
-            .dropFirst() // viewModel에서 초기화 될 때 무시
             .sink { completion in
                 print(completion)
-            } receiveValue: { [weak self] messages in
-                self?.cellHeightCache.removeAll() // cell size 다시 계산
-                self?.applySnapshot(for: messages)
+            } receiveValue: { [weak self] update in
+                self?.cellHeightCache.removeAll() // 이미 계산된 셀 크기를 다시 계산
+                
+                switch update {
+                case .initialLoad(let messages):
+                    self?.initialLoad(for: messages)
+                case .append(let message):
+                    self?.append(for: message)
+                case .prepend(let messages):
+                    self?.prepend(for: messages)
+                case .summarize(let messageID):
+                    self?.summarize(with: messageID)
+                }
             }
             .store(in: &cancellables)
         
@@ -281,26 +296,34 @@ final class ChatViewController: UIViewController {
     }
     
     private func fetchMessages() {
-        viewModel.fetchMessages()
+        viewModel.initialFetchMessages()
     }
     
     private func tappedSendButton() {
-        guard let text: String = inputTextField.text else { return }
-        inputTextField.text = ""
-        inputTextField.resignFirstResponder()
+        guard let text: String = inputTextView.text, !text.isEmpty else { return }
+        
+        inputTextView.text = ""
+        inputTextView.resignFirstResponder()
         viewModel.didTapSendButton(text: text)
+    }
+    
+    private func scrollToCurrentMessage() {
+        guard let anchorID = anchorMessageID,
+              let indexPath = dataSource.indexPath(for: .message(anchorID)) else { return }
+        
+        collectionView.layoutIfNeeded()
+        collectionView.scrollToItem(at: indexPath, at: .top, animated: false)
+        collectionView.contentOffset.y -= 50
+        
+        anchorMessageID = nil
+        isLoadingPreviousMessages = false
     }
     
     private func scrollToLatestMessage() {
         let snapshot = dataSource.snapshot()
         
-        guard !snapshot.itemIdentifiers.isEmpty,
-              let lastID = snapshot.itemIdentifiers.last,
-              case .message(let id) = lastID,
-              let lastItem = viewModel.message(with: id) else { return }
-        
-        let section = Section.date(Calendar.current.startOfDay(for: lastItem.timestamp))
-        guard let sectionIndex = snapshot.sectionIdentifiers.firstIndex(of: section) else { return }
+        guard let section = snapshot.sectionIdentifiers.last,
+              let sectionIndex = snapshot.sectionIdentifiers.firstIndex(of: section) else { return }
         
         let indexPath: IndexPath = IndexPath(
             item: snapshot.numberOfItems(inSection: section) - 1,
@@ -318,8 +341,8 @@ final class ChatViewController: UIViewController {
             if cellHeight > visibleHeight && !self.isInitialLoad { position = .top }
         }
         
-        collectionView.scrollToItem(at: indexPath, at: position, animated: !self.isInitialLoad)
         collectionView.layoutIfNeeded() // UI 갱신
+        collectionView.scrollToItem(at: indexPath, at: position, animated: !self.isInitialLoad)
         
         if self.isInitialLoad { self.isInitialLoad = false } // 최초 진입 시
     }
@@ -335,9 +358,11 @@ final class ChatViewController: UIViewController {
         guard let userInfo = notification.userInfo,
               let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
               let animationDuration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double else { return }
+
         
-        // 컬렉션뷰에 영향을 주지 않는 SafeArea 영역 제거
-        let calculatedKeyboardHeight: CGFloat = keyboardFrame.height - self.view.safeAreaInsets.bottom
+        // 컬렉션뷰에 영향을 주지 않는 TabBar 영역 제거
+        let tabBarHeight: CGFloat = tabBarController?.tabBar.frame.size.height ?? 0.0
+        let calculatedKeyboardHeight: CGFloat = keyboardFrame.height - tabBarHeight
         guard calculatedKeyboardHeight > 0 else { return } // 계산된 키보드 높이가 0 이하일 때 처리 x
         
         self.lastKeyboardVisibleHeight = calculatedKeyboardHeight // 키보드 이벤트 시작
@@ -389,11 +414,19 @@ final class ChatViewController: UIViewController {
     }
 }
 
+// MARK: - CollectionView Delegate
 extension ChatViewController: UICollectionViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView.contentOffset.y <= 0 {
-            if scrollView.isDragging || scrollView.isDecelerating { // 스크롤 중이거나, 관성으로 움직일 때
-                viewModel.fetchMessages()
+            if scrollView.isDragging && !isLoadingPreviousMessages { // 스크롤 중이거나, 관성으로 움직일 때
+                isLoadingPreviousMessages = true // 중복 동작 방지
+                
+                guard let firstIndexPath = collectionView.indexPathsForVisibleItems.sorted().first,
+                      let firstIdentifier = dataSource.itemIdentifier(for: firstIndexPath),
+                      case .message(let id) = firstIdentifier else { return }
+                
+                anchorMessageID = id
+                viewModel.fetchPreviousMessages()
             }
         }
     }
@@ -407,7 +440,7 @@ extension ChatViewController: UICollectionViewDelegateFlowLayout {
         guard let item = dataSource.itemIdentifier(for: indexPath) else { return .zero }
         
         let cellWidth: CGFloat =
-        collectionView.bounds.width - (collectionView.contentInset.left + collectionView.contentInset.right)
+            collectionView.bounds.width - (collectionView.contentInset.left + collectionView.contentInset.right)
         
         // 로딩셀인 경우 정해진 고정 size를 반환
         guard case .message(let id) = item else {
@@ -425,6 +458,7 @@ extension ChatViewController: UICollectionViewDelegateFlowLayout {
         if message.isSended {
             let dummyCell: SendedMessageCell = SendedMessageCell()
             dummyCell.message = message
+            dummyCell.setPreferredMaxLayoutWidth(forCellWidth: collectionView.frame.width)
             
             let autoLayoutSize = dummyCell.contentView.systemLayoutSizeFitting(
                 CGSize(width: cellWidth, height: UIView.layoutFittingCompressedSize.height),
@@ -439,6 +473,7 @@ extension ChatViewController: UICollectionViewDelegateFlowLayout {
         } else {
             let dummyCell: ReceivedMessageCell = ReceivedMessageCell()
             dummyCell.message = message
+            dummyCell.setPreferredMaxLayoutWidth(forCellWidth: collectionView.frame.width)
             
             let autoLayoutSize = dummyCell.contentView.systemLayoutSizeFitting(
                 CGSize(width: cellWidth, height: UIView.layoutFittingCompressedSize.height),
@@ -462,8 +497,8 @@ extension ChatViewController: UICollectionViewDelegateFlowLayout {
 
 // MARK: - Diffable DataSource
 extension ChatViewController {
-    // 컬렉션뷰 채팅셀 추가, 갱신
-    private func applySnapshot(for messages: [AIChatMessage]) {
+    // 초기 메시지 배열 추가
+    private func initialLoad(for messages: [AIChatMessage]) {
         var snapshot: NSDiffableDataSourceSnapshot<Section, ChatItemIdentifier> = NSDiffableDataSourceSnapshot()
         
         // 날짜별로 그룹핑, 오름차 순으로 정렬
@@ -474,33 +509,105 @@ extension ChatViewController {
         
         // 날짜 섹션별로 추가
         for date in sortedDates {
-            let section = Section.date(date)
-            snapshot.appendSections([section])
+            let section = Section.date(date) // 추가될 섹션 정의
+            snapshot.appendSections([section]) // 섹션을 스냅샷에 추가
             
+            // 섹션에 들어갈 메시지 식별자
             let messagesInSection = groupedMessages[date]?
                 .sorted { $0.timestamp < $1.timestamp }
                 .map { ChatItemIdentifier.message($0.id) }
             
             if let items = messagesInSection, !items.isEmpty {
-                snapshot.appendItems(items, toSection: .date(date))
+                snapshot.appendItems(items, toSection: .date(date)) // 섹션에 메시지 추가
             }
         }
         
-        dataSource.apply(snapshot, animatingDifferences: !isInitialLoad) { [weak self] in
-            self?.collectionView.layoutIfNeeded()
-            self?.scrollToLatestMessage()
+        // 스냅샷 변경점 적용
+        dataSource.apply(snapshot, animatingDifferences: false) { [weak self] in
+            self?.scrollToLatestMessage() // 마지막 메시지로 스크롤
         }
+    }
+    
+    // 새 메시지 추가
+    private func append(for message: AIChatMessage) {
+        var snapshot: NSDiffableDataSourceSnapshot<Section, ChatItemIdentifier> = dataSource.snapshot()
+        let section: Section = .date(Calendar.current.startOfDay(for: message.timestamp)) // 추가될 섹션
+        let itemIdentifier: ChatItemIdentifier = .message(message.id) // 추가될 메시지 식별자
+        
+        // 섹션이 없으면 섹션 추가
+        if !snapshot.sectionIdentifiers.contains(section) {
+            snapshot.appendSections([section])
+        }
+        
+        // 아직 추가되지 않은 메시지일때
+        if !snapshot.itemIdentifiers.contains(itemIdentifier) {
+            snapshot.appendItems([itemIdentifier], toSection: section) // 섹션에 메시지 추가
+        }
+        
+        // dataSource에 적용
+        dataSource.apply(snapshot, animatingDifferences: true) { [weak self] in
+            self?.scrollToLatestMessage() // 마지막 메시지로 스크롤
+        }
+    }
+    
+    // 이전 메시지 배열 추가
+    private func prepend(for messages: [AIChatMessage]) {
+        var snapshot: NSDiffableDataSourceSnapshot<Section, ChatItemIdentifier> = dataSource.snapshot()
+        
+        guard let firstSection = snapshot.sectionIdentifiers.first else { return }
+        
+        // 날짜별로 그룹핑, 오름차 순으로 정렬
+        let groupedMessages = Dictionary(grouping: messages) { message -> Date in
+            return Calendar.current.startOfDay(for: message.timestamp)
+        }
+        let sortedDates = groupedMessages.keys.sorted { $0 < $1 }
+        
+        for date in sortedDates {
+            let section: Section = .date(date) // 추가할 섹션
+            
+            // 섹션이 없으면 섹션 추가
+            if !snapshot.sectionIdentifiers.contains(section) {
+                snapshot.insertSections([section], beforeSection: firstSection)
+            }
+            
+            let itemsInSection: [ChatItemIdentifier]? = groupedMessages[date]?
+                .sorted { $0.timestamp < $1.timestamp } // 시간을 기준으로 오름차순 정렬
+                .map { .message($0.id) } // 메시지 식별자로 타입 변경
+            
+            guard let items = itemsInSection else { return }
+            
+            // 추가할 섹션이 비어있지 않으면
+            if let existingFirstItem = snapshot.itemIdentifiers(inSection: section).first {
+                snapshot.insertItems(items, beforeItem: existingFirstItem) // 섹션의 첫 메시지 이전에 추가
+            } else { // 섹션이 비어있으면
+                snapshot.appendItems(items, toSection: section) // 섹션에 메시지 배열 추가
+            }
+        }
+        
+        // dataSource에 적용
+        dataSource.apply(snapshot, animatingDifferences: false) { [weak self] in
+            self?.scrollToCurrentMessage() // 현재 위치로 스크롤 고정
+        }
+    }
+    
+    // 요약 메시지 셀 재생성
+    private func summarize(with id: UUID) {
+        var snapshot: NSDiffableDataSourceSnapshot<Section, ChatItemIdentifier> = dataSource.snapshot()
+        let itemIdentifier: ChatItemIdentifier = .message(id) // 변경될 메시지 식별자
+        
+        // 아이템이 snapshot에 존재하는 경우
+        if snapshot.itemIdentifiers.contains(itemIdentifier) {
+            snapshot.reloadItems([itemIdentifier]) // 메시지 셀 재생성
+        }
+        
+        // dataSource에 적용
+        dataSource.apply(snapshot, animatingDifferences: true)
     }
     
     // 컬렉션뷰 로딩셀 추가, 삭제
     private func applyLoadingSnapshot(_ isLoading: Bool) {
-        var snapshot: NSDiffableDataSourceSnapshot<Section, ChatItemIdentifier> = NSDiffableDataSourceSnapshot()
-        
-        guard let lastItem = snapshot.itemIdentifiers.last,
-              case .message(let id) = lastItem,
-              let message = viewModel.message(with: id) else { return }
-        
-        let section: Section = .date(Calendar.current.startOfDay(for: message.timestamp))
+        var snapshot: NSDiffableDataSourceSnapshot<Section, ChatItemIdentifier> = dataSource.snapshot()
+        guard let section = snapshot.sectionIdentifiers.last else { return }
         
         // isLoading = true 면
         if isLoading {
@@ -515,8 +622,25 @@ extension ChatViewController {
         }
         
         dataSource.apply(snapshot, animatingDifferences: true) { [weak self] in
-            self?.collectionView.layoutIfNeeded()
-            self?.scrollToLatestMessage()
+            self?.scrollToLatestMessage() // 마지막 메시지로 이동
         }
+    }
+}
+
+// MARK: - TextViewDelegate
+extension ChatViewController: UITextViewDelegate {
+    func textViewDidChange(_ textView: UITextView) {
+        inputTextView.layoutManager.ensureLayout(for: inputTextView.textContainer) // 정확한 contentSize를 얻기 위해
+        inputContainerView.layoutIfNeeded() // 즉시 레이아웃 업데이트
+        
+        let newHeight: CGFloat = textView.contentSize.height // 현재 TextView 높이
+        let heightDifference = newHeight - previousTextViewHeight // 변동된 수치
+        if heightDifference == 0 { return } // 변하지 않았으면 종료
+        
+        let currentOffsetY = collectionView.contentOffset.y // 현재 컬렉션뷰의 위치
+        let newOffsetY = currentOffsetY + heightDifference // 계산된 다음 위치
+        
+        collectionView.contentOffset.y = newOffsetY // offset 조정
+        previousTextViewHeight = newHeight // 다음 동작을 위해 현재 값 저장
     }
 }

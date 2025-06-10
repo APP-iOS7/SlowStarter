@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 /*
  역할
  1. 강의의 모든 영상 리스트업 해줘야함
@@ -30,16 +31,13 @@ class RepeatLearnDetailViewController: UIViewController {
     // MARK: LectureData
     private var currentRepeatLearn: RepeatLearnData = RepeatLearnData(lectureTitle: "감자 썰기",
                                                                       lectureDescription: "기타 정보/기타 정보/기타 정보/ 영상길이",
-                                                                      lectureURL: bigbunny,
+                                                                      lectureURL: bigbunny, weeklyProgress: 0,
                                                                       assignments: Assignment.sampleAssignments) // 현재 재생되는 강의데이터
     private var repeatLearnListCellDataset: [RepeatLearnData] // 강의리스트 생성용,
-    
-    private func updateData(with cellData: RepeatLearnData) {
-        self.currentRepeatLearn = cellData
-    }
-    
     // MARK: - 비디오 컨트롤러
     private var videoPlayerViewController: VideoPlayerViewController = VideoPlayerViewController()
+   
+    
     
     // MARK: - UI Properties
     private let lectureTitleLabel: UILabel = {
@@ -57,7 +55,8 @@ class RepeatLearnDetailViewController: UIViewController {
         return label
     }()
     
-    private let submitAssignmentButton: UIButton = {
+    // submitAssignmentButton을 lazy var로 변경
+    private lazy var submitAssignmentButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setTitle("과제 제출하기", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
@@ -65,9 +64,18 @@ class RepeatLearnDetailViewController: UIViewController {
         button.backgroundColor = UIColor(red: 76/255, green: 175/255, blue: 80/255, alpha: 1.0) // 녹색
         button.layer.cornerRadius = 8
         button.clipsToBounds = true
-        // button.addTarget(self, action: #selector(submitButtonTapped), for: .touchUpInside)
+        // 'self' (현재 인스턴스)를 target으로 설정
+        button.addTarget(self, action: #selector(submitButtonTapped), for: .touchUpInside)
         return button
     }()
+
+    @objc private func submitButtonTapped() {
+        let submittedVC = SubmittedAssignmentViewController()
+        submittedVC.updateData(with: self.currentRepeatLearn.assignments)
+        // SubmittedAssignmentViewController에 데이터를 전달해야 한다면 여기서 전달합니다.
+        // 예: submittedVC.assignments = self.currentRepeatLearn.assignments
+        present(submittedVC, animated: true)
+    }
     
     private let weeklyUpdateAnnouncingLabel: UILabel = {
         let label = UILabel()
@@ -77,12 +85,12 @@ class RepeatLearnDetailViewController: UIViewController {
         return label
     }()
     
-    private let repeatLearnTableView: UITableView = { // 변수명 일관성 있게 변경
+    private let repeatLearnTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
         tableView.register(RepeatitiveTableViewCell.self, forCellReuseIdentifier: RepeatitiveTableViewCell.identifier)
         tableView.separatorStyle = .singleLine
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 60 // 셀의 예상 높이
+        tableView.estimatedRowHeight = 70 // 셀의 예상 높이
         return tableView
     }()
     
@@ -95,7 +103,7 @@ class RepeatLearnDetailViewController: UIViewController {
     init(currentPlayingData: RepeatLearnData) {
             // 1단계: 현재 클래스의 저장 프로퍼티 초기화
             self.currentRepeatLearn = currentPlayingData // 외부에서 주입받은 데이터로 초기화
-            self.repeatLearnListCellDataset = []       // 빈 배열로 초기화 (또는 다른 기본값)
+        self.repeatLearnListCellDataset = RepeatLearnData.sampleDataset       // 빈 배열로 초기화 (또는 다른 기본값)
             // self.videoPlayerViewController 등 다른 let 프로퍼티는 선언 시점에 초기화됨
             
             // 2단계: 부모 클래스의 지정 초기화자 호출
@@ -111,8 +119,13 @@ class RepeatLearnDetailViewController: UIViewController {
         repeatLearnTableView.delegate = self
         repeatLearnTableView.dataSource = self
         
+        // 초기 화면 세팅
+    
         setupVideoPlayer()
         setupUI()
+        setupLayOut()
+        
+        self.updateData(with: self.currentRepeatLearn)
         
     }
     
@@ -129,12 +142,15 @@ class RepeatLearnDetailViewController: UIViewController {
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             make.height.equalTo(view.snp.width).multipliedBy(9.0/16.0) // 16:9 비율
         }
-        
     }
     
-    private func updateVideoURL(url: URL) {
-        videoPlayerViewController.updateVideo(with: url)
+    private func updateData(with cellData: RepeatLearnData) {
+        self.currentRepeatLearn = cellData
+        self.lectureTitleLabel.text = cellData.lectureTitle
+        self.lectureDescriptionLabel.text = cellData.lectureDescription
+        self.videoPlayerViewController.updateVideo(with: cellData.lectureURL)
     }
+    
     private func setupUI() {
         view.addSubview(lectureTitleLabel)
         view.addSubview(lectureDescriptionLabel)
@@ -174,7 +190,7 @@ class RepeatLearnDetailViewController: UIViewController {
     }
 }
 
-extension RepeatLearnDetailViewController: UITableViewDataSource, UITableViewDelegate {
+extension RepeatLearnDetailViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return repeatLearnListCellDataset.count
     }
@@ -183,8 +199,51 @@ extension RepeatLearnDetailViewController: UITableViewDataSource, UITableViewDel
         guard let cell = tableView.dequeueReusableCell(withIdentifier: RepeatitiveTableViewCell.identifier, for: indexPath) as? RepeatitiveTableViewCell else {
             fatalError("Could not dequeue cell")
         }
+        let data = repeatLearnListCellDataset[indexPath.row]
+        cell.configure(with: data)
         return cell
     }
+}
+extension RepeatLearnDetailViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let nextData = repeatLearnListCellDataset[indexPath.row]
+        
+        if nextData != self.currentRepeatLearn {
+            self.currentRepeatLearn = nextData
+            self.updateData(with: currentRepeatLearn)
+        }
+        
+        
+    }
+}
+//
+//
+#Preview {
+    // 실제 샘플 데이터를 사용하여 ViewController 인스턴스화
+    // RepeatLearnData.sample은 이미 정의되어 있음 (제공해주신 코드 기준)
+    // 전체 강의 목록도 샘플 데이터로 구성
+    let allLecturesForPreview = [
+        RepeatLearnData.sample, // "예시 강의명"
+        RepeatLearnData(lectureTitle: "코끼리의 꿈 (Elephants Dream)",
+                        lectureDescription: "단편 애니메이션 영화",
+                        lectureURL: elephantsDream, weeklyProgress: 2, // VideoURLSamples.swift 에서 정의
+                        assignments: []), // 이 강의에 대한 과제가 없다면 빈 배열
+        RepeatLearnData(lectureTitle: "더 큰 불꽃을 위해 (For Bigger Blazes)",
+                        lectureDescription: "단편 영화",
+                        lectureURL: forBiggerBlazzes, weeklyProgress: 0, // VideoURLSamples.swift 에서 정의
+                        assignments: Assignment.sampleAssignments.suffix(10).map { $0 }) // 마지막 2개 과제만 할당 (예시)
+    ]
+
+    // currentPlayingData는 목록의 첫 번째 항목 또는 특정 항목으로 설정
+    let currentPlayingForPreview = RepeatLearnData.sample
+
+    // 수정된 초기화 메서드에 맞게 호출
+    let viewController = RepeatLearnDetailViewController(
+        currentPlayingData: currentPlayingForPreview
+    )
     
+    // 네비게이션 컨트롤러에 임베드하여 타이틀 바 등을 보고 싶다면:
+    // return UINavigationController(rootViewController: viewController)
     
+    viewController
 }

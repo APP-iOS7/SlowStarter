@@ -14,6 +14,7 @@ final class ChatRepositoryImplementation: ChatRepository {
         대화의 맥락을 유지하기 위해서 이전 대화들을 함께 가져왔어요 (없을수도 있어요)
         이전 대화 내용을 바탕으로 사용자의 마지막 대화에 적절하게 응답해 주세요
         최대한 간결하고 이해하기 쉬운 내용으로 구성해주세요.
+        토큰 제한에 걸리지 않도록 적당한 길이로 답변해주세요.
     """
     
     private let summaryCommand: String = "네가 보내준 이 답변을 아주 쉽고 간단하게 핵심만 요약해줘"
@@ -50,6 +51,6 @@ final class ChatRepositoryImplementation: ChatRepository {
             return "질문을 이해하지 못했어요. 다시 질문해 주세요."
         }
         
-        return text
+        return text.last == "\n" ? String(text.dropLast()) : text
     }
 }

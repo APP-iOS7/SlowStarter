@@ -51,6 +51,8 @@ let project = Project(
                     "GEMINI_API_KEY": "$(GEMINI_API_KEY)",
                     "SUPABASE_API_KEY": "$(SUPABASE_API_KEY)",
                     "SUPABASE_URL": "$(SUPABASE_URL)",
+                    "NSCameraUsageDescription": "사진을 등록하기 위해 카메라 접근 권한이 필요합니다.",
+                    "NSPhotoLibraryUsageDescription": "사진을 등록하기 위해 사진 앨범 접근 권한이 필요합니다.",
                 ]
             ),
             sources: [

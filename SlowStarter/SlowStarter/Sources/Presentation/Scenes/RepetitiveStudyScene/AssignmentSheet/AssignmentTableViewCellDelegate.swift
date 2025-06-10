@@ -8,5 +8,10 @@
 import Foundation
 
 protocol AssignmentTableViewCellDelegate: AnyObject {
-    func didTapAssignmentButton(in cell: AssignmentTableViewCell)
+    
+    func didTapCellDeleteButton(in cell: AssignmentTableViewCell)
+    
+    func didTapCellEditButton(in cell: AssignmentTableViewCell)
+    
+    func cell(_ cell: AssignmentTableViewCell, didFinishEditingMemo newMemo: String) // 새로 추가된 메서드
 }
