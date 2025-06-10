@@ -137,22 +137,19 @@ final class ChatViewController: UIViewController {
         return view
     }()
     
-    private let inputTextFieldView: UIView = {
-        let view: UIView = UIView()
-        view.backgroundColor = .systemGray6
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    private let inputTextField: UITextField = {
-        let tf: UITextField = UITextField()
-        tf.autocapitalizationType = .none
-        tf.autocorrectionType = .no
-        tf.spellCheckingType = .no
-        tf.tintColor = .lightGray
-        tf.placeholder = "메시지 보내기"
-        tf.translatesAutoresizingMaskIntoConstraints = false
-        return tf
+    private lazy var inputTextView: UITextView = {
+        let tv: UITextView = UITextView()
+        tv.autocapitalizationType = .none
+        tv.autocorrectionType = .no
+        tv.spellCheckingType = .no
+        tv.tintColor = .lightGray
+        tv.font = .systemFont(ofSize: 16)
+        tv.backgroundColor = .systemGray6
+        tv.textContainerInset = .init(top: 8, left: 8, bottom: 8, right: 8)
+        tv.delegate = self
+        tv.isScrollEnabled = false
+        tv.translatesAutoresizingMaskIntoConstraints = false
+        return tv
     }()
     
     private lazy var sendButton: UIButton = {
@@ -174,6 +171,7 @@ final class ChatViewController: UIViewController {
     private var isLoadingSummaryMessage: Bool = false // 메시지가 요약중인 상태
     private var anchorMessageID: UUID? // 이전 대화를 추가하는 기준이 되는 메시지 id
     private var cellHeightCache: [UUID: CGFloat] = .init() // 셀 높이를 저장 배열
+    private var previousTextViewHeight: CGFloat = 0.0
     
     // MARK: - Initializer
     init(viewModel: ChatViewModel) {
@@ -201,13 +199,17 @@ final class ChatViewController: UIViewController {
         fetchMessages()
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        previousTextViewHeight = previousTextViewHeight == 0 ? inputTextView.frame.height : previousTextViewHeight
+    }
+    
     // MARK: Functions
     private func setConstraints() {
         view.addSubview(collectionView)
         view.addSubview(inputContainerView)
-        inputContainerView.addSubview(inputTextFieldView)
+        inputContainerView.addSubview(inputTextView)
         inputContainerView.addSubview(sendButton)
-        inputTextFieldView.addSubview(inputTextField)
         
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -218,26 +220,21 @@ final class ChatViewController: UIViewController {
             inputContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             inputContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             inputContainerView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
-            inputContainerView.heightAnchor.constraint(equalToConstant: 60),
+            inputContainerView.heightAnchor.constraint(greaterThanOrEqualToConstant: 50),
             
-            inputTextFieldView.topAnchor.constraint(equalTo: inputContainerView.topAnchor, constant: 5),
-            inputTextFieldView.leadingAnchor.constraint(equalTo: inputContainerView.leadingAnchor, constant: 10),
-            inputTextFieldView.trailingAnchor.constraint(equalTo: sendButton.leadingAnchor, constant: -10),
-            inputTextFieldView.bottomAnchor.constraint(equalTo: inputContainerView.bottomAnchor, constant: -5),
-            
-            inputTextField.topAnchor.constraint(equalTo: inputTextFieldView.topAnchor),
-            inputTextField.leadingAnchor.constraint(equalTo: inputTextFieldView.leadingAnchor, constant: 10),
-            inputTextField.trailingAnchor.constraint(equalTo: inputTextFieldView.trailingAnchor, constant: -10),
-            inputTextField.bottomAnchor.constraint(equalTo: inputTextFieldView.bottomAnchor),
+            inputTextView.topAnchor.constraint(equalTo: inputContainerView.topAnchor, constant: 10),
+            inputTextView.leadingAnchor.constraint(equalTo: inputContainerView.leadingAnchor, constant: 10),
+            inputTextView.trailingAnchor.constraint(equalTo: sendButton.leadingAnchor, constant: -10),
+            inputTextView.bottomAnchor.constraint(equalTo: inputContainerView.bottomAnchor, constant: -10),
             
             sendButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            sendButton.centerYAnchor.constraint(equalTo: inputContainerView.centerYAnchor),
-            sendButton.widthAnchor.constraint(equalToConstant: 40),
+            sendButton.bottomAnchor.constraint(equalTo: inputContainerView.bottomAnchor, constant: -10),
+            sendButton.widthAnchor.constraint(equalToConstant: 35),
             sendButton.heightAnchor.constraint(equalTo: sendButton.widthAnchor)
         ])
         
-        sendButton.layer.cornerRadius = 20
-        inputTextFieldView.layer.cornerRadius = 20
+        sendButton.layer.cornerRadius = 35 / 2
+        inputTextView.layer.cornerRadius = 15
     }
     
     private func setCollectionView() {
@@ -303,9 +300,10 @@ final class ChatViewController: UIViewController {
     }
     
     private func tappedSendButton() {
-        guard let text: String = inputTextField.text else { return }
-        inputTextField.text = ""
-        inputTextField.resignFirstResponder()
+        guard let text: String = inputTextView.text, !text.isEmpty else { return }
+        
+        inputTextView.text = ""
+        inputTextView.resignFirstResponder()
         viewModel.didTapSendButton(text: text)
     }
     
@@ -460,6 +458,7 @@ extension ChatViewController: UICollectionViewDelegateFlowLayout {
         if message.isSended {
             let dummyCell: SendedMessageCell = SendedMessageCell()
             dummyCell.message = message
+            dummyCell.setPreferredMaxLayoutWidth(forCellWidth: collectionView.frame.width)
             
             let autoLayoutSize = dummyCell.contentView.systemLayoutSizeFitting(
                 CGSize(width: cellWidth, height: UIView.layoutFittingCompressedSize.height),
@@ -625,5 +624,23 @@ extension ChatViewController {
         dataSource.apply(snapshot, animatingDifferences: true) { [weak self] in
             self?.scrollToLatestMessage() // 마지막 메시지로 이동
         }
+    }
+}
+
+// MARK: - TextViewDelegate
+extension ChatViewController: UITextViewDelegate {
+    func textViewDidChange(_ textView: UITextView) {
+        inputTextView.layoutManager.ensureLayout(for: inputTextView.textContainer) // 정확한 contentSize를 얻기 위해
+        inputContainerView.layoutIfNeeded() // 즉시 레이아웃 업데이트
+        
+        let newHeight: CGFloat = textView.contentSize.height // 현재 TextView 높이
+        let heightDifference = newHeight - previousTextViewHeight // 변동된 수치
+        if heightDifference == 0 { return } // 변하지 않았으면 종료
+        
+        let currentOffsetY = collectionView.contentOffset.y // 현재 컬렉션뷰의 위치
+        let newOffsetY = currentOffsetY + heightDifference // 계산된 다음 위치
+        
+        collectionView.contentOffset.y = newOffsetY // offset 조정
+        previousTextViewHeight = newHeight // 다음 동작을 위해 현재 값 저장
     }
 }
