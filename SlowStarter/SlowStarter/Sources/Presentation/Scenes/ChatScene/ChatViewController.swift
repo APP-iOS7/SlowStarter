@@ -154,13 +154,36 @@ final class ChatViewController: UIViewController {
     
     private lazy var sendButton: UIButton = {
         let button: UIButton = UIButton(type: .system)
-        button.setImage(UIImage(systemName: "arrow.up"), for: .normal)
-        button.tintColor = .black
+        var config = UIButton.Configuration.filled()
+        config.image = UIImage(systemName: "paperplane.fill")
+        config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: 12)
+        config.baseForegroundColor = UIColor(named: "SubColor1")
+        config.baseBackgroundColor = UIColor(named: "MainColor")
+        config.cornerStyle = .capsule
+        button.configuration = config
         button.contentMode = .scaleAspectFit
-        button.backgroundColor = .green
         button.addAction(UIAction { [weak self] _ in
             self?.tappedSendButton()
         }, for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    private lazy var bottomButton: UIButton = {
+        let button: UIButton = UIButton(type: .system)
+        var config = UIButton.Configuration.filled()
+        config.image = UIImage(systemName: "arrow.down")
+        config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: 15)
+        config.baseForegroundColor = UIColor(named: "SubColor1")
+        config.baseBackgroundColor = UIColor(named: "SubColor2")
+        config.cornerStyle = .capsule
+        button.configuration = config
+        button.alpha = 0.0
+        button.contentMode = .scaleAspectFit
+        button.addAction(UIAction { [weak self] _ in
+            self?.scrollToLatestMessage()
+        }, for: .touchUpInside)
+        button.isHidden = true
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -201,6 +224,7 @@ final class ChatViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        
         previousTextViewHeight = previousTextViewHeight == 0 ? inputTextView.frame.height : previousTextViewHeight
     }
     
@@ -208,6 +232,7 @@ final class ChatViewController: UIViewController {
     private func setConstraints() {
         view.addSubview(collectionView)
         view.addSubview(inputContainerView)
+        view.addSubview(bottomButton)
         inputContainerView.addSubview(inputTextView)
         inputContainerView.addSubview(sendButton)
         
@@ -230,10 +255,14 @@ final class ChatViewController: UIViewController {
             sendButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
             sendButton.bottomAnchor.constraint(equalTo: inputContainerView.bottomAnchor, constant: -10),
             sendButton.widthAnchor.constraint(equalToConstant: 35),
-            sendButton.heightAnchor.constraint(equalTo: sendButton.widthAnchor)
+            sendButton.heightAnchor.constraint(equalTo: sendButton.widthAnchor),
+            
+            bottomButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            bottomButton.bottomAnchor.constraint(equalTo: inputContainerView.topAnchor, constant: -10),
+            bottomButton.widthAnchor.constraint(equalToConstant: 35),
+            bottomButton.heightAnchor.constraint(equalTo: bottomButton.widthAnchor)
         ])
         
-        sendButton.layer.cornerRadius = 35 / 2
         inputTextView.layer.cornerRadius = 15
     }
     
@@ -417,17 +446,33 @@ final class ChatViewController: UIViewController {
 // MARK: - CollectionView Delegate
 extension ChatViewController: UICollectionViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // 스크롤이 맨 위에 도달했을 때
         if scrollView.contentOffset.y <= 0 {
             if scrollView.isDragging && !isLoadingPreviousMessages { // 스크롤 중이거나, 관성으로 움직일 때
                 isLoadingPreviousMessages = true // 중복 동작 방지
                 
                 guard let firstIndexPath = collectionView.indexPathsForVisibleItems.sorted().first,
                       let firstIdentifier = dataSource.itemIdentifier(for: firstIndexPath),
-                      case .message(let id) = firstIdentifier else { return }
+                      case .message(let id) = firstIdentifier else { return } // 최상위 cell id
                 
-                anchorMessageID = id
-                viewModel.fetchPreviousMessages()
+                anchorMessageID = id // 스크롤이 고정될 cell id
+                viewModel.fetchPreviousMessages() // 이전 대화 불러옴
             }
+        }
+        
+        // 스크롤이 맨 밑에 위치하지 않을 때
+        let maxOffsetY: CGFloat = scrollView.contentSize.height - scrollView.frame.height
+        let threshHold: CGFloat = 500.0
+        
+        // 스크롤이 밑에서 500 이상 위에 있을 때
+        if scrollView.contentOffset.y < maxOffsetY - threshHold {
+            bottomButton.isHidden = false
+            UIView.animate(withDuration: 0.5, delay: 0.0, options: [.curveEaseInOut]) { [weak self] in
+                self?.bottomButton.alpha = 1.0 // 버튼 표시
+            }
+        } else if scrollView.contentOffset.y >= maxOffsetY - 10 { // 스크롤이 맨 밑에 위치할 때
+            bottomButton.isHidden = true
+            bottomButton.alpha = 0.0 // 버튼 숨김
         }
     }
 }
