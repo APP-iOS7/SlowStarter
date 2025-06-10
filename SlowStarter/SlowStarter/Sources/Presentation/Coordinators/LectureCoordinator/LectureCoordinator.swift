@@ -10,7 +10,7 @@ class LectureCoordinator: Coordinator, LectureFlowCoordinator {
     func start() {
         let viewController = LectureListViewController()
         viewController.coordinator = self
-        viewController.tabBarItem = UITabBarItem(title: "test name Lecture", image: UIImage(systemName: "questionmark"), tag: 0)
+        viewController.tabBarItem = UITabBarItem(title: "강의목록", image: UIImage(named: "tabLectureList"), tag: 0)
         navigationController.viewControllers = [viewController]
     }
     

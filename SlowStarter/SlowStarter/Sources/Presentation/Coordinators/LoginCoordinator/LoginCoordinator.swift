@@ -10,7 +10,6 @@ class LoginCoordinator: Coordinator {
     func start() {
         let viewController = LoginViewController()
         viewController.coordinator = self
-        print("sss")
         navigationController.pushViewController(viewController, animated: true)
         
     }

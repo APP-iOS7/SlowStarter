@@ -11,7 +11,7 @@ class RepeatitiveStudyMainCoordinator: Coordinator {
     func start() {
         let viewController = RepetitiveLearningViewController()
         viewController.coordinator = self
-        viewController.tabBarItem = UITabBarItem(title: "test name Repeat", image: UIImage(systemName: "questionmark"), tag: 1)
+        viewController.tabBarItem = UITabBarItem(title: "반복학습", image: UIImage(named: "tabLaptopChromebook"), tag: 1)
         navigationController.viewControllers = [viewController]
     }
     

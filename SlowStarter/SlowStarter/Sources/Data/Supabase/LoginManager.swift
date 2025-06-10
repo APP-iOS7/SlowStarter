@@ -83,7 +83,16 @@ public class LoginManager: LoginManagerProtocol {
     }
     
     // MARK: - 사용자 삭제
-    //차후 delete 기능 추가
+    func deleteUser() async throws {
+        do {
+            let _: Void = try await client.functions.invoke(
+                "delete_user_account",
+                options: FunctionInvokeOptions(body: Data())
+            )
+        } catch {
+            throw mapAuthError(error)
+        }
+    }
     
     // MARK: - 현재 사용자 정보 조회
     
@@ -92,6 +101,14 @@ public class LoginManager: LoginManagerProtocol {
     func getCurrentUserInSession() async throws -> User? {
         do {
             return try await auth.user()
+        } catch {
+            throw mapAuthError(error)
+        }
+    }
+    
+    func getCurrentSession() async throws {
+        do {
+            _ = try await auth.session
         } catch {
             throw mapAuthError(error)
         }

@@ -72,7 +72,7 @@ public final class StorageManager {
     ///   - filepath: 파일 경로
     ///   - file: 업로드할 데이터
     ///   - cacheControl: 캐시 제어 헤더 (기본값: "3600")
-    func uploadFile(bucket: String, filepath: String, file: Data, cacheControl: String = "3600") async throws {
+    func uploadFile(bucket: String, filepath: String, file: Data, upsert: Bool = false, cacheControl: String = "3600") async throws {
         let fileExtension = URL(fileURLWithPath: filepath).pathExtension.lowercased()
         
         guard let storageType = StorageType(rawValue: fileExtension) else {
@@ -87,7 +87,7 @@ public final class StorageManager {
                 .upload(filepath, data: file, options: FileOptions(
                     cacheControl: cacheControl,
                     contentType: contentType,
-                    upsert: false
+                    upsert: upsert
                 ))
         } catch {
             throw StorageManagerError.uploadFileFailed(error.localizedDescription)
