@@ -52,16 +52,12 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
         return label
     }()
     
-    private let searchBar: UISearchBar = {
-        let searchBar = UISearchBar()
-        searchBar.placeholder = ""
-        searchBar.translatesAutoresizingMaskIntoConstraints = false
-        searchBar.searchBarStyle = .default
-        let searchTextField = searchBar.searchTextField
-        searchTextField.backgroundColor = .clear // 배경 투명하게 설정
-        searchTextField.rightViewMode = .always
-        searchTextField.tintColor = .black
-        return searchBar
+    private lazy var searchButton: UIButton = {
+        let button: UIButton = UIButton(type: .system)
+        button.setImage(UIImage(systemName: "magnifyingglass"), for: .normal)
+        button.tintColor = .black
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
     }()
     
     private let tableView: UITableView = {
@@ -69,8 +65,6 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(LectureCardCell.self, forCellReuseIdentifier: LectureCardCell.identifier)
         tableView.separatorStyle = .none
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 580
         return tableView
     }()
     
@@ -91,7 +85,7 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
     
     private func setupUI() {
         view.addSubview(topStackView)
-        view.addSubview(searchBar)
+        view.addSubview(searchButton)
         view.addSubview(locationLabel)
         view.addSubview(tableView)
     }
@@ -99,20 +93,19 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             topStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
-            topStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
-            topStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            topStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             
-            searchBar.topAnchor.constraint(equalTo: topStackView.topAnchor),
-            searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 350),
-            searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
-            searchBar.heightAnchor.constraint(equalToConstant: 26),
+            searchButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
+            searchButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            searchButton.widthAnchor.constraint(equalToConstant: 30),
+            searchButton.heightAnchor.constraint(equalTo: searchButton.widthAnchor),
             
-            locationLabel.bottomAnchor.constraint(equalTo: topStackView.bottomAnchor),
-            locationLabel.trailingAnchor.constraint(equalTo: topStackView.trailingAnchor),
+            locationLabel.centerYAnchor.constraint(equalTo: subtitleLabel.centerYAnchor),
+            locationLabel.trailingAnchor.constraint(equalTo: searchButton.trailingAnchor),
             
             tableView.topAnchor.constraint(equalTo: topStackView.bottomAnchor, constant: 30),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
@@ -156,25 +149,9 @@ extension LectureListViewController {
             }
         }
     }
-
-    func didTapReadMoreButton(in cell: LectureCardCell) {
-        if let indexPath = tableView.indexPath(for: cell) {
-            lectureExpansionStates[indexPath.row].toggle()
-            
-            UIView.animate(withDuration: 0.1) {
-                self.tableView.performBatchUpdates({
-                    self.tableView.reloadRows(at: [indexPath], with: .none)
-                })
-            }
-        }
-    }
     
     func didTapShowDetail(in cell: LectureCardCell) {
         coordinator?.showLectureDetail()
-    }
-    
-    func didTapSelectDate(in cell: LectureCardCell) {
-        coordinator?.showLectureDateSelection()
     }
 }
 
