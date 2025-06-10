@@ -26,7 +26,7 @@ import SnapKit
  
  */
 
-class RepeatLearnDetailViewController: UIViewController {
+final class RepeatLearnDetailViewController: UIViewController {
     
     // MARK: LectureData
     private var currentRepeatLearn: RepeatLearnData = RepeatLearnData(lectureTitle: "감자 썰기",
@@ -36,7 +36,11 @@ class RepeatLearnDetailViewController: UIViewController {
     private var repeatLearnListCellDataset: [RepeatLearnData] // 강의리스트 생성용,
     // MARK: - 비디오 컨트롤러
     private var videoPlayerViewController: VideoPlayerViewController = VideoPlayerViewController()
-   
+    
+    
+    
+    // MARK: test 용
+    //    var currentPlayingData: RepeatLearnData?
     
     
     // MARK: - UI Properties
@@ -68,7 +72,7 @@ class RepeatLearnDetailViewController: UIViewController {
         button.addTarget(self, action: #selector(submitButtonTapped), for: .touchUpInside)
         return button
     }()
-
+    
     @objc private func submitButtonTapped() {
         let submittedVC = SubmittedAssignmentViewController()
         submittedVC.updateData(with: self.currentRepeatLearn.assignments)
@@ -94,21 +98,21 @@ class RepeatLearnDetailViewController: UIViewController {
         return tableView
     }()
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     // MARK: - Initializer
     
     init(currentPlayingData: RepeatLearnData) {
-            // 1단계: 현재 클래스의 저장 프로퍼티 초기화
-            self.currentRepeatLearn = currentPlayingData // 외부에서 주입받은 데이터로 초기화
+        // 1단계: 현재 클래스의 저장 프로퍼티 초기화
+        self.currentRepeatLearn = currentPlayingData // 외부에서 주입받은 데이터로 초기화
         self.repeatLearnListCellDataset = RepeatLearnData.sampleDataset       // 빈 배열로 초기화 (또는 다른 기본값)
-            // self.videoPlayerViewController 등 다른 let 프로퍼티는 선언 시점에 초기화됨
-            
-            // 2단계: 부모 클래스의 지정 초기화자 호출
-            super.init(nibName: nil, bundle: nil)
-        }
+        // self.videoPlayerViewController 등 다른 let 프로퍼티는 선언 시점에 초기화됨
+        
+        // 2단계: 부모 클래스의 지정 초기화자 호출
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder? = nil) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     
     // MARK: - LifeCycles
@@ -120,7 +124,7 @@ class RepeatLearnDetailViewController: UIViewController {
         repeatLearnTableView.dataSource = self
         
         // 초기 화면 세팅
-    
+        
         setupVideoPlayer()
         setupUI()
         setupLayOut()
@@ -233,10 +237,10 @@ extension RepeatLearnDetailViewController: UITableViewDelegate {
                         lectureURL: forBiggerBlazzes, weeklyProgress: 0, // VideoURLSamples.swift 에서 정의
                         assignments: Assignment.sampleAssignments.suffix(10).map { $0 }) // 마지막 2개 과제만 할당 (예시)
     ]
-
+    
     // currentPlayingData는 목록의 첫 번째 항목 또는 특정 항목으로 설정
     let currentPlayingForPreview = RepeatLearnData.sample
-
+    
     // 수정된 초기화 메서드에 맞게 호출
     let viewController = RepeatLearnDetailViewController(
         currentPlayingData: currentPlayingForPreview

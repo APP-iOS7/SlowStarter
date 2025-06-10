@@ -15,9 +15,9 @@ class RepeatitiveStudyMainCoordinator: Coordinator {
         navigationController.viewControllers = [viewController]
     }
     
-    func showDetail() {
-//        let viewController = RepeatLearnDetailViewController()
-        
+    func showDetail(currentPlayingData: RepeatLearnData) {
+        let viewController = RepeatLearnDetailViewController(currentPlayingData: currentPlayingData)
+        navigationController.pushViewController(viewController, animated: true)
     }
     
 }
