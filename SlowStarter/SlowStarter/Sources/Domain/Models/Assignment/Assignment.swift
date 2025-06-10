@@ -1,22 +1,52 @@
-//
-//  Assignment.swift
-//  SlowStarter
-//
-//  Created by jdios on 5/21/25.
-//
-
 import Foundation
 import UIKit
-struct Assignment: Identifiable {
+
+struct Assignment: Identifiable, Equatable, Comparable {
     let id = UUID()
     var memo: String
     var image: UIImage
+    let date: Date // 생성 시점에 날짜를 받도록 변경
+
+    // MARK: - Comparable Protocol Conformance
+
+    // 1. Equatable 준수 (id가 같으면 같은 객체로 판단)
+    static func == (lhs: Assignment, rhs: Assignment) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    // 2. Comparable 준수 (date를 기준으로 정렬)
+    // 날짜가 오래된 것이 더 "작다" (오름차순 정렬 기준)
+    static func < (lhs: Assignment, rhs: Assignment) -> Bool {
+        return lhs.date < rhs.date
+    }
+
+    // MARK: - Sample Data
     
     static let sampleAssignments: [Assignment] = [
-        Assignment(memo: "첫 번째 과제: 아이디어 스케치", image: UIImage(systemName: "pencil.and.outline") ?? UIImage()),
-        Assignment(memo: "두 번째 과제: 프로토타입 제작", image: UIImage(systemName: "hammer.fill") ?? UIImage()),
-        Assignment(memo: "세 번째 과제: 사용자 테스트", image: UIImage(systemName: "person.3.fill") ?? UIImage()),
-        Assignment(memo: "네 번째 과제: 디자인 수정", image: UIImage(systemName: "paintbrush.pointed.fill") ?? UIImage()),
-        Assignment(memo: "다섯 번째 과제: 최종 발표 준비", image: UIImage(systemName: "speaker.wave.2.fill") ?? UIImage())
+        Assignment(
+            memo: "첫 번째 과제: 아이디어 스케치",
+            image: UIImage(systemName: "pencil.and.outline") ?? UIImage(),
+            date: Date().addingTimeInterval(-86400 * Double.random(in: 1...10)) // 1~10일 전의 랜덤 날짜
+        ),
+        Assignment(
+            memo: "두 번째 과제: 프로토타입 제작",
+            image: UIImage(systemName: "hammer.fill") ?? UIImage(),
+            date: Date().addingTimeInterval(-86400 * Double.random(in: 1...10))
+        ),
+        Assignment(
+            memo: "세 번째 과제: 사용자 테스트",
+            image: UIImage(systemName: "person.3.fill") ?? UIImage(),
+            date: Date().addingTimeInterval(-86400 * Double.random(in: 1...10))
+        ),
+        Assignment(
+            memo: "네 번째 과제: 디자인 수정",
+            image: UIImage(systemName: "paintbrush.pointed.fill") ?? UIImage(),
+            date: Date().addingTimeInterval(-86400 * Double.random(in: 1...10))
+        ),
+        Assignment(
+            memo: "다섯 번째 과제: 최종 발표 준비",
+            image: UIImage(systemName: "speaker.wave.2.fill") ?? UIImage(),
+            date: Date().addingTimeInterval(-86400 * Double.random(in: 1...10))
+        )
     ]
 }

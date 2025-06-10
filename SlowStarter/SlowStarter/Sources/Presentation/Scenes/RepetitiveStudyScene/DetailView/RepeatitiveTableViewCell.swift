@@ -34,6 +34,8 @@ class RepeatitiveTableViewCell: UITableViewCell {
         return stack
     }()
     
+    
+    
     // 버튼들을 저장할 배열 (configure에서 접근하기 위함)
         private var pointButtons: [UIButton] = []
 

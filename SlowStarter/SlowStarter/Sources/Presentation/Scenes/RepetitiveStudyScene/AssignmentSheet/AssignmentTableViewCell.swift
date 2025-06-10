@@ -88,6 +88,14 @@ class AssignmentTableViewCell: UITableViewCell {
         return button
     }()
     
+    private let dateLabel: UILabel = {
+        let label = UILabel()
+        label.text = "2025년 5월 23일"
+        label.textColor = .systemGray
+        label.font = .systemFont(ofSize: 14)
+        return label
+    }()
+    
     // MARK: - Initializers
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -110,6 +118,7 @@ class AssignmentTableViewCell: UITableViewCell {
         editTextField.isHidden = true
         editButton.setTitle("수정", for: .normal)
         deleteButton.isEnabled = true
+        
         
         // Clear content
         memoLabel.text = nil
@@ -161,6 +170,12 @@ class AssignmentTableViewCell: UITableViewCell {
             make.leading.equalTo(memoLabel)
             make.trailing.equalTo(memoLabel)
         }
+        
+        contentView.addSubview(dateLabel)
+        dateLabel.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().inset(10)
+            make.bottom.equalToSuperview().inset(10)
+        }
     }
     
     // MARK: - Public Methods
@@ -169,6 +184,7 @@ class AssignmentTableViewCell: UITableViewCell {
         memoLabel.text = assignment.memo
         assignmentImageView.image = assignment.image
         celltitleLabel.text = numbering
+        dateLabel.text = assignment.date.formattedDateString
     }
     
     // MARK: - Private Methods

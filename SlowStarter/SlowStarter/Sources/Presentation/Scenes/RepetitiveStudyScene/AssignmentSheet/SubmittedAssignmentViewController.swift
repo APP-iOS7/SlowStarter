@@ -13,7 +13,7 @@ class SubmittedAssignmentViewController: UIViewController {
     
     // MARK: - Properties
     
-    private var assignments: [Assignment] = Assignment.sampleAssignments
+    private var assignments: [Assignment] = Assignment.sampleAssignments.sorted(by: {$0 > $1})
     
     private let uploadButton: UIButton = {
         let button = UIButton(type: .system)
