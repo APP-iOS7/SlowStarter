@@ -228,6 +228,16 @@ final class ChatViewController: UIViewController {
         previousTextViewHeight = previousTextViewHeight == 0 ? inputTextView.frame.height : previousTextViewHeight
     }
     
+    // 화면이 회전될 때 컬렉션뷰를 다시 그림
+    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        coordinator.animate { [weak self] _ in
+            self?.cellHeightCache.removeAll() // 셀 높이를 다시 계산하도록 캐시 삭제
+            self?.collectionView.reloadData() // (비효율적) 셀 재구성
+        }
+    }
+    
     // MARK: Functions
     private func setConstraints() {
         view.addSubview(collectionView)
@@ -484,8 +494,7 @@ extension ChatViewController: UICollectionViewDelegateFlowLayout {
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         guard let item = dataSource.itemIdentifier(for: indexPath) else { return .zero }
         
-        let cellWidth: CGFloat =
-            collectionView.bounds.width - (collectionView.contentInset.left + collectionView.contentInset.right)
+        let cellWidth: CGFloat = collectionView.bounds.width
         
         // 로딩셀인 경우 정해진 고정 size를 반환
         guard case .message(let id) = item else {
@@ -503,7 +512,7 @@ extension ChatViewController: UICollectionViewDelegateFlowLayout {
         if message.isSended {
             let dummyCell: SendedMessageCell = SendedMessageCell()
             dummyCell.message = message
-            dummyCell.setPreferredMaxLayoutWidth(forCellWidth: collectionView.frame.width)
+            dummyCell.setPreferredMaxLayoutWidth(forCellWidth: collectionView.bounds.width)
             
             let autoLayoutSize = dummyCell.contentView.systemLayoutSizeFitting(
                 CGSize(width: cellWidth, height: UIView.layoutFittingCompressedSize.height),
@@ -518,7 +527,7 @@ extension ChatViewController: UICollectionViewDelegateFlowLayout {
         } else {
             let dummyCell: ReceivedMessageCell = ReceivedMessageCell()
             dummyCell.message = message
-            dummyCell.setPreferredMaxLayoutWidth(forCellWidth: collectionView.frame.width)
+            dummyCell.setPreferredMaxLayoutWidth(forCellWidth: collectionView.bounds.width)
             
             let autoLayoutSize = dummyCell.contentView.systemLayoutSizeFitting(
                 CGSize(width: cellWidth, height: UIView.layoutFittingCompressedSize.height),

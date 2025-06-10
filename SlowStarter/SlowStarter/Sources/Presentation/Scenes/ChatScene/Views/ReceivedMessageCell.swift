@@ -60,8 +60,6 @@ final class ReceivedMessageCell: UICollectionViewCell {
         return indicator
     }()
     
-    private let minimumRightMargin: CGFloat = 100.0
-    
     // MARK: - Initializer
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -115,8 +113,8 @@ final class ReceivedMessageCell: UICollectionViewCell {
     }
     
     func setPreferredMaxLayoutWidth(forCellWidth cellWidth: CGFloat) {
-        // 전체크기 - messageView 좌측여백 - messageLabel 좌측여백 - messageLabel 우측여백 - 우측최소여백(100)
-        messageLabel.preferredMaxLayoutWidth = cellWidth - 12 - 12 - 12 - minimumRightMargin
+        // 화면 width로부터 60% 이상 차지하지 않도록
+        messageLabel.preferredMaxLayoutWidth = cellWidth * 0.6
     }
     
     func showSummaryLoading(_ isLoading: Bool) {

@@ -43,8 +43,6 @@ final class SendedMessageCell: UICollectionViewCell {
         return label
     }()
     
-    private let minimumLeftMargin: CGFloat = 100.0
-    
     // MARK: - initializer
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -86,8 +84,8 @@ final class SendedMessageCell: UICollectionViewCell {
     }
     
     func setPreferredMaxLayoutWidth(forCellWidth cellWidth: CGFloat) {
-        // 전체크기 - messageView 우측여백 - messageLabel 우측여백 - messageLabel 좌측여백 - 좌측최소여백
-        messageLabel.preferredMaxLayoutWidth = cellWidth - 12 - 12 - 12 - minimumLeftMargin
+        // 화면 width로부터 60% 이상 차지하지 않도록
+        messageLabel.preferredMaxLayoutWidth = cellWidth * 0.6
     }
     
     // 재사용을 위해 내용물 초기화
