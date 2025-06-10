@@ -163,24 +163,20 @@ class LectureDetailViewController: UIViewController {
     }
     
     private func setupVideoPlayer() {
-        let videoVC = VideoPlayerViewController()
-        videoPlayerVC = videoVC
-        addChild(videoVC)
-        videoContainerView.addSubview(videoVC.view)
-        videoVC.didMove(toParent: self)
-        videoVC.view.translatesAutoresizingMaskIntoConstraints = false
+        let videoViewController = VideoPlayerViewController()
+        videoPlayerVC = videoViewController
+        addChild(videoViewController)
+        videoContainerView.addSubview(videoViewController.view)
+        videoViewController.didMove(toParent: self)
+        videoViewController.view.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            videoVC.view.topAnchor.constraint(equalTo: videoContainerView.topAnchor),
-            videoVC.view.leadingAnchor.constraint(equalTo: videoContainerView.leadingAnchor),
-            videoVC.view.trailingAnchor.constraint(equalTo: videoContainerView.trailingAnchor),
-            videoVC.view.bottomAnchor.constraint(equalTo: videoContainerView.bottomAnchor)
+            videoViewController.view.topAnchor.constraint(equalTo: videoContainerView.topAnchor),
+            videoViewController.view.leadingAnchor.constraint(equalTo: videoContainerView.leadingAnchor),
+            videoViewController.view.trailingAnchor.constraint(equalTo: videoContainerView.trailingAnchor),
+            videoViewController.view.bottomAnchor.constraint(equalTo: videoContainerView.bottomAnchor)
         ])
         
-        if let firstVideoURLString = viewModel.videoThumbnails.first,
-           let videoURL = URL(string: firstVideoURLString) {
-            videoVC.updateVideo(with: videoURL)
-        }
     }
     
     private func setupSlideImages() {
