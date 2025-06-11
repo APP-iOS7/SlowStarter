@@ -141,13 +141,6 @@ extension LectureListViewController {
         
         let lectureId = viewModel.lectures[indexPath.row].lectureId
         
-        // 엄지척 카운트 증가 및 업데이트
-        if viewModel.incrementThumbCount(for: lectureId) != nil {
-            // 해당 셀만 업데이트
-            if let updatedLecture = viewModel.lectures.first(where: { $0.lectureId == lectureId }) {
-                cell.configure(with: updatedLecture, isExpanded: lectureExpansionStates[indexPath.row])
-            }
-        }
     }
     
     func didTapShowDetail(in cell: LectureCardCell) {
