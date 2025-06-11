@@ -15,6 +15,8 @@ class SubmittedAssignmentViewController: UIViewController {
     
     private var assignments: [Assignment] = Assignment.sampleAssignments.sorted(by: {$0 > $1})
     
+    private var indexPathForImageChange: IndexPath?
+    
     private let uploadButton: UIButton = {
         let button = UIButton(type: .system)
         var config = UIButton.Configuration.borderedTinted()
@@ -40,17 +42,94 @@ class SubmittedAssignmentViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-      //  view.backgroundColor = .secondarySystemBackground
+        //  view.backgroundColor = .secondarySystemBackground
         title = "과제 제출"
         setupUI()
         setupTableView()
+        
+        // ✅ 버튼에 액션 연결
+        uploadButton.addAction(UIAction { [weak self] _ in
+            self?.addNewAssignment()
+        }, for: .touchUpInside)
+    }
+    // 과제 인증 버튼 터치시 작동
+    @objc private func addNewAssignment() {
+        // 1. 새로운 과제 데이터 생성
+        // 기본 이미지를 설정하고 메모는 비워둡니다.
+        let newAssignment = Assignment(
+            memo: "", // 사용자가 입력할 수 있도록 비워둠
+            image: UIImage(systemName: "photo.on.rectangle.angled") ?? UIImage(),
+            date: Date()
+        )
+        
+        // 2. 데이터 소스 업데이트 (배열의 맨 앞에 추가)
+        assignments.insert(newAssignment, at: 0)
+        
+        // 3. 테이블 뷰에 새로운 행 삽입
+        let indexPath = IndexPath(row: 0, section: 0)
+        tableView.insertRows(at: [indexPath], with: .automatic)
+        
+        // 4. 새로 삽입된 셀을 편집 모드로 전환
+        // insertRows가 완료된 후에 셀에 접근하기 위해 약간의 지연을 줍니다.
+        DispatchQueue.main.async {
+            if let cell = self.tableView.cellForRow(at: indexPath) as? AssignmentTableViewCell {
+                cell.enterEditMode()
+            }
+        }
+    }
+    private func openPhotoLibrary() {
+        var config = PHPickerConfiguration()
+        config.selectionLimit = 1
+        config.filter = .images
+        
+        let picker = PHPickerViewController(configuration: config)
+        picker.delegate = self
+        present(picker, animated: true)
+    }
+    private func openCamera() {
+        guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
+            let alert = UIAlertController(title: "오류", message: "카메라를 사용할 수 없습니다", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "확인", style: .default))
+            present(alert, animated: true)
+            return
+        }
+        
+        let picker = UIImagePickerController()
+        picker.sourceType = .camera
+        picker.allowsEditing = true
+        picker.delegate = self
+        present(picker, animated: true)
     }
     
+//    private func updateImage(_ image: UIImage) {
+//        guard let indexPath = indexPathForImageChange else {return}
+//        
+//        assignments[indexPath.row].image = image
+//        tableView.reloadRows(at: [indexPath], with: .fade)
+//        self.indexPathForImageChange = nil
+//    }
+    private func updateImage(_ image: UIImage) {
+        guard let indexPath = indexPathForImageChange else { return }
+        
+        // 1. 데이터 모델은 여전히 업데이트합니다.
+        //    (스크롤 등으로 셀이 화면 밖으로 나갔다 다시 돌아올 때 올바른 이미지를 표시하기 위함)
+        assignments[indexPath.row].image = image
+        
+        // 2. 셀을 리로드하는 대신, 해당 셀에 직접 접근하여 UI를 업데이트합니다.
+        if let cell = tableView.cellForRow(at: indexPath) as? AssignmentTableViewCell {
+            // 셀의 configure 메서드를 재활용하거나, 이미지 뷰만 직접 업데이트하는 메서드를 만들어도 좋습니다.
+            // 여기서는 직접 이미지 뷰에 접근하겠습니다.
+            cell.updateImageView(with: image)
+        }
+        
+        // 3. 임시 저장 indexPath 초기화
+        self.indexPathForImageChange = nil
+    }
     // MARK: - UI Setup
     
     private func setupUI() {
         view.backgroundColor = .systemGroupedBackground
-       
+        
         view.addSubview(uploadButton)
         uploadButton.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
@@ -62,9 +141,6 @@ class SubmittedAssignmentViewController: UIViewController {
             make.top.equalTo(uploadButton.snp.bottom).offset(10)
             make.leading.trailing.bottom.equalToSuperview()
         }
-    }
-    private func uploadBtnTapped() {
-        
     }
     private func setupTableView() {
         tableView.dataSource = self
@@ -78,7 +154,6 @@ class SubmittedAssignmentViewController: UIViewController {
         self.tableView.reloadData()
     }
 }
-
 // MARK: - UITableViewDataSource
 extension SubmittedAssignmentViewController: UITableViewDataSource {
     
@@ -92,7 +167,7 @@ extension SubmittedAssignmentViewController: UITableViewDataSource {
         }
         
         let assignment = assignments[indexPath.row]
-        let numbering = "\(indexPath.row + 1) 번째 반복 인증"
+        let numbering = "\(assignments.count - indexPath.row ) 번째 반복 인증"
         
         cell.configure(with: assignment, numbering: numbering)
         cell.delegate = self
@@ -110,8 +185,73 @@ extension SubmittedAssignmentViewController: UITableViewDelegate {
     }
 }
 
+// MARK: - PHPickerViewControllerDelegate
+extension SubmittedAssignmentViewController: PHPickerViewControllerDelegate {
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true)
+        
+        guard let provider = results.first?.itemProvider else { return }
+        
+        if provider.canLoadObject(ofClass: UIImage.self) {
+            provider.loadObject(ofClass: UIImage.self) { [weak self] image, error in
+                guard let self = self, let selectedImage = image as? UIImage else {
+                    print(error?.localizedDescription)
+                    return
+                }
+                
+                DispatchQueue.main.async {
+                    self.updateImage(selectedImage)
+                }
+            }
+        }
+    }
+}
+// MARK: - UIImagePickerControllerDelegate, UINavigationControllerDelegate
+extension SubmittedAssignmentViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+        // 편집된 이미지가 있으면 사용하고, 없으면 원본 이미지를 사용합니다.
+        guard let selectedImage = info[.editedImage] as? UIImage ?? info[.originalImage] as? UIImage else {
+            picker.dismiss(animated: true)
+            return
+        }
+        
+        // 피커를 닫고 이미지 업데이트
+        picker.dismiss(animated: true) { [weak self] in
+            self?.updateImage(selectedImage)
+        }
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        // 사용자가 취소하면 피커만 닫습니다.
+        picker.dismiss(animated: true)
+    }
+}
+
 // MARK: - AssignmentTableViewCellDelegate
 extension SubmittedAssignmentViewController: AssignmentTableViewCellDelegate {
+    
+    func didTapImageView(in cell: AssignmentTableViewCell) {
+        
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        self.indexPathForImageChange = indexPath
+        
+        let alert = UIAlertController(title: "사진 변경", message: nil, preferredStyle: .actionSheet)
+        
+        let libraryAction = UIAlertAction(title: "앨범에서 선택", style: .default) { [weak self] _ in
+            self?.openPhotoLibrary()
+        }
+        let cameraAction = UIAlertAction(title: "카메라로 촬영", style: .default) { [weak self] _ in
+            self?.openCamera()
+        }
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel)
+        
+        alert.addAction(libraryAction)
+        alert.addAction(cameraAction)
+        alert.addAction(cancelAction)
+        
+        present(alert, animated: true)
+    }
+    
     func didTapCellEditButton(in cell: AssignmentTableViewCell) {
         // 여기서 데이터 전달
         print("Delegate ON")
@@ -133,17 +273,17 @@ extension SubmittedAssignmentViewController: AssignmentTableViewCellDelegate {
         assignments[indexPath.row].memo = newMemo
         print("Updated memo at row \(indexPath.row) to: '\(newMemo)'")
     }
-
+    
     func didTapCellDeleteButton(in cell: AssignmentTableViewCell) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
         let assignmentToDelete = assignments[indexPath.row]
-
+        
         let alert = UIAlertController(
             title: "과제 삭제",
             message: "'\(assignmentToDelete.memo)' 과제를 정말 삭제하시겠습니까?",
             preferredStyle: .alert
         )
-
+        
         let deleteAction = UIAlertAction(title: "삭제", style: .destructive) { [weak self] _ in
             guard let self = self else { return }
             
@@ -157,7 +297,7 @@ extension SubmittedAssignmentViewController: AssignmentTableViewCellDelegate {
             // For simplicity, we'll just delete the row here.
             self.tableView.deleteRows(at: [indexPath], with: .automatic)
         }
-
+        
         let cancelAction = UIAlertAction(title: "취소", style: .cancel)
         
         alert.addAction(deleteAction)
@@ -167,7 +307,8 @@ extension SubmittedAssignmentViewController: AssignmentTableViewCellDelegate {
     }
 }
 
-
+//
+//
 #Preview {
- SubmittedAssignmentViewController()
+    SubmittedAssignmentViewController()
 }

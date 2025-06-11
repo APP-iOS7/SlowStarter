@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import PhotosUI
 
 class AssignmentTableViewCell: UITableViewCell {
     
@@ -28,9 +29,10 @@ class AssignmentTableViewCell: UITableViewCell {
     
     private let assignmentImageView: UIImageView = {
         let imgView = UIImageView()
-        imgView.image = UIImage(systemName: "person.crop.square.on.square.angled.fill")
+        imgView.image = UIImage(systemName: "plus.square.fill")
         imgView.contentMode = .scaleAspectFill
         imgView.clipsToBounds = true
+        imgView.isUserInteractionEnabled = true
         return imgView
     }()
     
@@ -101,6 +103,7 @@ class AssignmentTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
+        setupGestureRecognizer()
         editTextField.delegate = self
     }
     
@@ -160,22 +163,34 @@ class AssignmentTableViewCell: UITableViewCell {
         memoLabel.snp.makeConstraints { make in
             make.top.equalTo(imageBaseView.snp.bottom).offset(12)
             make.leading.trailing.equalToSuperview().inset(10)
-            make.bottom.equalToSuperview().inset(10)
+            // make.bottom.equalToSuperview().inset(10)
         }
         
         contentView.addSubview(editTextField)
         editTextField.snp.makeConstraints { make in
             // Match the memoLabel's constraints
-            make.top.equalTo(memoLabel)
+            make.centerY.equalTo(memoLabel)
             make.leading.equalTo(memoLabel)
-            make.trailing.equalTo(memoLabel)
+            make.trailing.lessThanOrEqualToSuperview()
+            
         }
         
         contentView.addSubview(dateLabel)
         dateLabel.snp.makeConstraints { make in
+            
+            make.top.equalTo(memoLabel.snp.bottom).offset(8)
             make.trailing.equalToSuperview().inset(10)
             make.bottom.equalToSuperview().inset(10)
         }
+    }
+    private func setupGestureRecognizer() {
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageViewTapped))
+        assignmentImageView.addGestureRecognizer(tapGestureRecognizer)
+    }
+    
+    @objc private func imageViewTapped() {
+        guard isEditingCell else { return }
+        delegate?.didTapImageView(in: self)
     }
     
     // MARK: - Public Methods
@@ -186,9 +201,22 @@ class AssignmentTableViewCell: UITableViewCell {
         celltitleLabel.text = numbering
         dateLabel.text = assignment.date.formattedDateString
     }
+   // 이미지 업데이트
+        public func updateImageView(with image: UIImage) {
+            self.assignmentImageView.image = image
+        }
+    
+    /// 셀을 편집 모드로 전환합니다.
+    public func enterEditMode() {
+        // 이미 편집 모드라면 아무것도 하지 않음
+        guard !isEditingCell else { return }
+        
+        // 편집 상태로 전환하고 UI를 업데이트합니다.
+        toggleEditingState()
+    }
     
     // MARK: - Private Methods
-
+    
     private func toggleEditingState() {
         isEditingCell.toggle()
         
@@ -215,7 +243,7 @@ class AssignmentTableViewCell: UITableViewCell {
         }
         
         // Inform the delegate that the edit mode has toggled, so it can update the table view layout
-        // delegate?.assignmentCellDidToggleEditMode(in: self)
+         delegate?.assignmentCellDidToggleEditMode(in: self)
     }
 }
 
@@ -224,7 +252,7 @@ extension AssignmentTableViewCell: UITextFieldDelegate {
     // Allows finishing the edit by pressing the "Done" key on the keyboard
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder() // Hide keyboard
-        toggleEditingState() // Trigger the "Finish Editing" logic
+       // toggleEditingState() // Trigger the "Finish Editing" logic
         return true
     }
 }
