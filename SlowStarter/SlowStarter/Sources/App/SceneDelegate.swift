@@ -19,6 +19,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         self.mainCoordinator = mainCoordinator
         mainCoordinator.start()
         
+        
+        UNUserNotificationCenter.current().delegate = NotificationHandler.shared
+        
+        Task {
+            let granted = try? await NotificationManager.shared.requestAuthorization()
+            NotificationManager.shared.registerCategories()
+        }
     }
     
 }

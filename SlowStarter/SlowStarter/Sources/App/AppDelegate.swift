@@ -5,7 +5,7 @@ import CoreData
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     lazy var persistentConfigContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "Config")
-        container.loadPersistentStores { storeDescription, error in
+        container.loadPersistentStores { _, error in
             if let error = error as NSError? {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
@@ -15,7 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     lazy var persistentMessageContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "CoreDataModel")
-        container.loadPersistentStores { storeDescription, error in
+        container.loadPersistentStores { _, error in
             if let error = error as NSError? {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
@@ -34,29 +34,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }()
     
     
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
-        UNUserNotificationCenter.current().delegate = self
-        
-        NotificationManager.shared.requestAuthorization { granted in
-            if granted {
-                NotificationManager.shared.registerNotificationCategories()
-//                NotificationManager.shared.scheduleTestNotification()
-                NotificationManager.shared.scheduleDailyMissionNotification(
-                    title: "[SlowStarter] 복습과제를 해보세요.",
-                    body: "오늘은 반숙란 만들기를 해볼까요?"
-                )
-            }
-        }
-        return true
-    }
-    
-    // 알림이 포그라운드에서도 표시되도록 설정
-    func userNotificationCenter(_ center: UNUserNotificationCenter,
-                                willPresent notification: UNNotification,
-                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        completionHandler([.banner, .sound, .badge, .list])
-    }
+//    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+//        
+//        UNUserNotificationCenter.current().delegate = self
+//        
+//        NotificationManager.shared.requestAuthorization { granted in
+//            if granted {
+//                NotificationManager.shared.registerNotificationCategories()
+////                NotificationManager.shared.scheduleTestNotification()
+//                NotificationManager.shared.scheduleDailyMissionNotification(
+//                    title: "[SlowStarter] 복습과제를 해보세요.",
+//                    body: "오늘은 반숙란 만들기를 해볼까요?"
+//                )
+//            }
+//        }
+//        return true
+//    }
+//    
+//    // 알림이 포그라운드에서도 표시되도록 설정
+//    func userNotificationCenter(_ center: UNUserNotificationCenter,
+//                                willPresent notification: UNNotification,
+//                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+//        completionHandler([.banner, .sound, .badge, .list])
+//    }
     
     // MARK: UISceneSession Lifecycle
     
