@@ -32,6 +32,7 @@ final class ChatViewController: UIViewController {
     
     private let flowLayout: UICollectionViewFlowLayout = {
         let flowLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        flowLayout.minimumLineSpacing = 5 // 셀 간격
         return flowLayout
     }()
     
@@ -51,8 +52,8 @@ final class ChatViewController: UIViewController {
             UICollectionView.CellRegistration { [weak self] cell, _, message in
                 guard let self = self else { return }
                 
-                cell.message = message
-                cell.setPreferredMaxLayoutWidth(forCellWidth: self.collectionView.frame.width)
+                cell.message = message // 메시지 주입
+                cell.setPreferredMaxLayoutWidth(forCellWidth: self.collectionView.frame.width) // 최대 width 설정
             }
         }()
         
@@ -60,13 +61,13 @@ final class ChatViewController: UIViewController {
             UICollectionView.CellRegistration { [weak self] cell, _, message in
                 guard let self = self else { return }
                 
-                cell.message = message
+                cell.message = message // 메시지 주입
                 cell.summaryButtom.addAction(UIAction { _ in
                     self.isLoadingSummaryMessage = true // 요약중인 상태 표시
                     self.viewModel.didTapSummaryButton(message: message) // 텍스트 요약 요청 전송
                     cell.showSummaryLoading(self.isLoadingSummaryMessage) // indicator start, stop
                 }, for: .touchUpInside)
-                cell.setPreferredMaxLayoutWidth(forCellWidth: self.collectionView.frame.width)
+                cell.setPreferredMaxLayoutWidth(forCellWidth: self.collectionView.frame.width) // 최대 width 설정
             }
         }()
         

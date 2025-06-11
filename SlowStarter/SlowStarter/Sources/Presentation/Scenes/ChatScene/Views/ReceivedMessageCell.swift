@@ -17,7 +17,7 @@ final class ReceivedMessageCell: UICollectionViewCell {
     
     private let messageView: UIView = {
         let view: UIView = UIView()
-        view.backgroundColor = UIColor(named: "SubColor2")
+        view.backgroundColor = .systemGray6
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -47,8 +47,7 @@ final class ReceivedMessageCell: UICollectionViewCell {
         let button: UIButton = UIButton(type: .system)
         button.setTitle("요약", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 12)
-        button.setTitleColor(UIColor(named: "SubColor1"), for: .normal)
-        button.backgroundColor = UIColor(red: 0.89, green: 0.86, blue: 0.83, alpha: 1.00)
+        button.setTitleColor(.black, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -87,16 +86,16 @@ final class ReceivedMessageCell: UICollectionViewCell {
             messageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
             messageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
             messageView.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -12),
-            messageView.bottomAnchor.constraint(equalTo: summaryButtom.topAnchor, constant: -4),
+            messageView.bottomAnchor.constraint(equalTo: summaryButtom.topAnchor),
             
             messageLabel.topAnchor.constraint(equalTo: messageView.topAnchor, constant: 8),
             messageLabel.leadingAnchor.constraint(equalTo: messageView.leadingAnchor, constant: 12),
             messageLabel.trailingAnchor.constraint(equalTo: messageView.trailingAnchor, constant: -12),
             messageLabel.bottomAnchor.constraint(equalTo: messageView.bottomAnchor, constant: -8),
             
-            summaryButtom.trailingAnchor.constraint(equalTo: messageView.trailingAnchor, constant: -4),
-            summaryButtom.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4),
-            summaryButtom.widthAnchor.constraint(equalToConstant: 30),
+            summaryButtom.trailingAnchor.constraint(equalTo: messageView.trailingAnchor, constant: -5),
+            summaryButtom.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            summaryButtom.widthAnchor.constraint(equalToConstant: 25),
             summaryButtom.heightAnchor.constraint(equalTo: summaryButtom.widthAnchor),
             
             timeLabel.leadingAnchor.constraint(equalTo: messageView.trailingAnchor, constant: 5),
