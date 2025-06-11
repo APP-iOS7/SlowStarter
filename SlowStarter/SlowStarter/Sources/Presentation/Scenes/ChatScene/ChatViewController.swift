@@ -132,8 +132,10 @@ final class ChatViewController: UIViewController {
         return dataSource
     }()
     
-    private let inputContainerView: UIView = {
+    private lazy var inputContainerView: UIView = {
         let view: UIView = UIView()
+        view.addSubview(inputTextView)
+        view.addSubview(sendButton)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -187,6 +189,34 @@ final class ChatViewController: UIViewController {
         button.isHidden = true
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
+    }()
+    
+    private lazy var emptyView: UIView = {
+        let view: UIView = UIView()
+        view.addSubview(emptyImageView)
+        view.addSubview(emptyLabel)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private let emptyImageView: UIImageView = {
+        let iv: UIImageView = UIImageView()
+        iv.image = UIImage(systemName: "message")
+        iv.tintColor = UIColor(named: "MainColor")
+        iv.contentMode = .scaleAspectFit
+        iv.translatesAutoresizingMaskIntoConstraints = false
+        return iv
+    }()
+    
+    private let emptyLabel: UILabel = {
+        let label: UILabel = UILabel()
+        label.text = "아직 어떤 대화도 나누지 않았어요\n슬러에게 모르는 것을 물어보세요."
+        label.textColor = .lightGray
+        label.textAlignment = .center
+        label.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        label.numberOfLines = 0
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
     }()
     
     private var lastKeyboardVisibleHeight: CGFloat = 0 // 키보드 높이
@@ -245,8 +275,7 @@ final class ChatViewController: UIViewController {
         view.addSubview(collectionView)
         view.addSubview(inputContainerView)
         view.addSubview(bottomButton)
-        inputContainerView.addSubview(inputTextView)
-        inputContainerView.addSubview(sendButton)
+        view.addSubview(emptyView)
         
         // 텍스트뷰 최소 높이 (비활성화)
         inputTextViewHeightConstraint = inputTextView.heightAnchor.constraint(equalToConstant: 35)
@@ -277,7 +306,20 @@ final class ChatViewController: UIViewController {
             bottomButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
             bottomButton.bottomAnchor.constraint(equalTo: inputContainerView.topAnchor, constant: -10),
             bottomButton.widthAnchor.constraint(equalToConstant: 35),
-            bottomButton.heightAnchor.constraint(equalTo: bottomButton.widthAnchor)
+            bottomButton.heightAnchor.constraint(equalTo: bottomButton.widthAnchor),
+            
+            emptyView.centerXAnchor.constraint(equalTo: collectionView.centerXAnchor),
+            emptyView.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor),
+            
+            emptyImageView.topAnchor.constraint(equalTo: emptyView.topAnchor),
+            emptyImageView.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor),
+            emptyImageView.widthAnchor.constraint(equalToConstant: 100),
+            emptyImageView.heightAnchor.constraint(equalTo: emptyImageView.widthAnchor),
+            
+            emptyLabel.topAnchor.constraint(equalTo: emptyImageView.bottomAnchor, constant: 10),
+            emptyLabel.leadingAnchor.constraint(equalTo: emptyView.leadingAnchor),
+            emptyLabel.trailingAnchor.constraint(equalTo: emptyView.trailingAnchor),
+            emptyLabel.bottomAnchor.constraint(equalTo: emptyView.bottomAnchor)
         ])
         
         inputTextView.layer.cornerRadius = 15
@@ -311,8 +353,10 @@ final class ChatViewController: UIViewController {
                 
                 switch update {
                 case .initialLoad(let messages):
+                    if !messages.isEmpty { self?.emptyView.isHidden = true } // 메시지가 있으면 emptyview 숨김
                     self?.initialLoad(for: messages)
                 case .append(let message):
+                    self?.emptyView.isHidden = true // 메시지가 추가되면 emptyview 숨김
                     self?.append(for: message)
                 case .prepend(let messages):
                     self?.prepend(for: messages)
