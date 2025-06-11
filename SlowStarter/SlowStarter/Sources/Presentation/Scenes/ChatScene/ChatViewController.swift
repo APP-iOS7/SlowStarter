@@ -174,8 +174,8 @@ final class ChatViewController: UIViewController {
         var config = UIButton.Configuration.filled()
         config.image = UIImage(systemName: "arrow.down")
         config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: 15)
-        config.baseForegroundColor = UIColor(named: "SubColor1")
-        config.baseBackgroundColor = UIColor(named: "SubColor2")
+        config.baseForegroundColor = .white
+        config.baseBackgroundColor = UIColor(named: "SubColor1")
         config.cornerStyle = .capsule
         button.configuration = config
         button.alpha = 0.0
@@ -194,7 +194,7 @@ final class ChatViewController: UIViewController {
     private var isLoadingSummaryMessage: Bool = false // 메시지가 요약중인 상태
     private var anchorMessageID: UUID? // 이전 대화를 추가하는 기준이 되는 메시지 id
     private var cellHeightCache: [UUID: CGFloat] = .init() // 셀 높이를 저장 배열
-    private var previousTextViewHeight: CGFloat = 0.0
+    private var previousTextViewHeight: CGFloat = 0.0 // 텍스트뷰의 이전 높이
     private var inputTextViewHeightConstraint: NSLayoutConstraint! // 텍스트뷰 높이 동적 할당 변수
     
     // MARK: - Initializer
@@ -350,27 +350,28 @@ final class ChatViewController: UIViewController {
         viewModel.didTapSendButton(text: text)
     }
     
+    // anchor를 걸어둔 셀 아이템으로 이동
     private func scrollToCurrentMessage() {
         guard let anchorID = anchorMessageID,
               let indexPath = dataSource.indexPath(for: .message(anchorID)) else { return }
         
-        collectionView.layoutIfNeeded()
-        collectionView.scrollToItem(at: indexPath, at: .top, animated: false)
-        collectionView.contentOffset.y -= 50
+        collectionView.layoutIfNeeded() // UI 변동사항을 갱신하고 작업 시작
+        collectionView.scrollToItem(at: indexPath, at: .top, animated: false) // 스크롤
+        collectionView.contentOffset.y -= 50 // 하단이 가리지 않도록
         
-        anchorMessageID = nil
-        isLoadingPreviousMessages = false
+        anchorMessageID = nil // anchor 삭제
+        isLoadingPreviousMessages = false // 로딩 종료
     }
     
+    // 최하단 셀 아이템으로 이동
     private func scrollToLatestMessage() {
         let snapshot = dataSource.snapshot()
         
-        guard let section = snapshot.sectionIdentifiers.last,
-              let sectionIndex = snapshot.sectionIdentifiers.firstIndex(of: section) else { return }
+        guard let lastSectionID = snapshot.sectionIdentifiers.last else { return }
         
         let indexPath: IndexPath = IndexPath(
-            item: snapshot.numberOfItems(inSection: section) - 1,
-            section: sectionIndex
+            item: snapshot.numberOfItems(inSection: lastSectionID) - 1,
+            section: snapshot.sectionIdentifiers.count - 1
         )
         
         var position: UICollectionView.ScrollPosition = .bottom // 셀은 일반적으로 컬렉션뷰 바닥에 위치
@@ -384,10 +385,10 @@ final class ChatViewController: UIViewController {
             if cellHeight > visibleHeight && !self.isInitialLoad { position = .top }
         }
         
-        collectionView.layoutIfNeeded() // UI 갱신
-        collectionView.scrollToItem(at: indexPath, at: position, animated: !self.isInitialLoad)
+        collectionView.layoutIfNeeded() // UI 변동사항을 갱신하고 작업 시작
+        collectionView.scrollToItem(at: indexPath, at: position, animated: !self.isInitialLoad) // 스크롤
         
-        if self.isInitialLoad { self.isInitialLoad = false } // 최초 진입 시
+        isInitialLoad = false
     }
     
     // MARK: - Selectors
@@ -478,6 +479,9 @@ extension ChatViewController: UICollectionViewDelegate {
         let maxOffsetY: CGFloat = scrollView.contentSize.height - scrollView.frame.height // 최하단 오프셋
         let threshHold: CGFloat = 500.0 // 임계값
         
+        // contentSize가 충분히 크지 않으면 종료
+        if scrollView.contentSize.height < scrollView.frame.height + threshHold { return }
+        
         if scrollView.contentOffset.y < maxOffsetY - threshHold { // 스크롤이 밑에서 500 이상 위에 있을 때
             bottomButton.isHidden = false
             UIView.animate(withDuration: 0.5, delay: 0.0, options: [.curveEaseInOut]) { [weak self] in
@@ -548,7 +552,7 @@ extension ChatViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: collectionView.bounds.width, height: 50)
+        return CGSize(width: collectionView.bounds.width, height: 70)
     }
 }
 
@@ -687,6 +691,8 @@ extension ChatViewController {
 // MARK: - TextViewDelegate
 extension ChatViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
+        print("didChange!")
+        
         let maxHeight: CGFloat = 200.0 // 텍스트뷰의 최대 높이
         var newHeight: CGFloat = // 변경될 텍스트뷰의 높이
             textView.sizeThatFits(CGSize(width: textView.frame.width, height: .greatestFiniteMagnitude)).height

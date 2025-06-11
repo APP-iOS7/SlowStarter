@@ -17,7 +17,7 @@ final class ReceivedMessageCell: UICollectionViewCell {
     
     private let messageView: UIView = {
         let view: UIView = UIView()
-        view.backgroundColor = .black
+        view.backgroundColor = UIColor(named: "SubColor2")
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -25,7 +25,7 @@ final class ReceivedMessageCell: UICollectionViewCell {
     private let messageLabel: UILabel = {
         let label: UILabel = UILabel()
         label.font = UIFont.systemFont(ofSize: 16)
-        label.textColor = .white
+        label.textColor = UIColor(named: "SubColor1")
         label.textAlignment = .left
         label.numberOfLines = 0
         label.clipsToBounds = true
@@ -47,8 +47,8 @@ final class ReceivedMessageCell: UICollectionViewCell {
         let button: UIButton = UIButton(type: .system)
         button.setTitle("요약", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 12)
-        button.setTitleColor(.black, for: .normal)
-        button.backgroundColor = .systemGray6
+        button.setTitleColor(UIColor(named: "SubColor1"), for: .normal)
+        button.backgroundColor = UIColor(red: 0.89, green: 0.86, blue: 0.83, alpha: 1.00)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()

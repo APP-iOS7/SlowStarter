@@ -17,7 +17,7 @@ final class SendedMessageCell: UICollectionViewCell {
     
     private let messageView: UIView = {
         let view: UIView = UIView()
-        view.backgroundColor = .yellow
+        view.backgroundColor = UIColor(named: "MainColor")
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -25,6 +25,7 @@ final class SendedMessageCell: UICollectionViewCell {
     private lazy var messageLabel: UILabel = {
         let label: UILabel = UILabel()
         label.font = UIFont.systemFont(ofSize: 16)
+        label.textColor = UIColor(named: "SubColor1")
         label.textAlignment = .left
         label.numberOfLines = 0
         label.clipsToBounds = true

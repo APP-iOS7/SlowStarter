@@ -18,7 +18,7 @@ final class DateHeaderView: UICollectionReusableView {
     
     private let containerView: UIView = {
         let view: UIView = UIView()
-        view.backgroundColor = .black
+        view.backgroundColor = UIColor(named: "SubColor1")
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -37,8 +37,9 @@ final class DateHeaderView: UICollectionReusableView {
         containerView.addSubview(dateLabel)
         
         NSLayoutConstraint.activate([
+            containerView.topAnchor.constraint(equalTo: topAnchor, constant: 20),
+            containerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20),
             containerView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            containerView.centerYAnchor.constraint(equalTo: centerYAnchor),
             
             dateLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 5),
             dateLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
