@@ -372,10 +372,10 @@ final class ChatViewController: UIViewController {
             .sink { [weak self] isLoading in
                 if isLoading {
                     self?.sendButton.isEnabled = false // 로딩중일 때 메시지 전송 x
-                    self?.sendButton.backgroundColor = .systemGray6
+                    self?.sendButton.configuration?.baseBackgroundColor = .systemGray6
                 } else {
                     self?.sendButton.isEnabled = true
-                    self?.sendButton.backgroundColor = .green
+                    self?.sendButton.configuration?.baseBackgroundColor = UIColor(named: "MainColor")
                 }
                 
                 self?.applyLoadingSnapshot(isLoading) // 로딩셀 추가, 삭제
