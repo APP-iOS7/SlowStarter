@@ -172,13 +172,13 @@ final class ChatViewController: UIViewController {
         return button
     }()
     
-    private lazy var bottomButton: UIButton = {
+    private lazy var floatingButton: UIButton = {
         let button: UIButton = UIButton(type: .system)
         var config = UIButton.Configuration.filled()
         config.image = UIImage(systemName: "arrow.down")
         config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: 15)
-        config.baseForegroundColor = .white
-        config.baseBackgroundColor = UIColor(named: "SubColor1")
+        config.baseForegroundColor = .black
+        config.baseBackgroundColor = .systemGray6
         config.cornerStyle = .capsule
         button.configuration = config
         button.alpha = 0.0
@@ -275,7 +275,7 @@ final class ChatViewController: UIViewController {
     private func setConstraints() {
         view.addSubview(collectionView)
         view.addSubview(inputContainerView)
-        view.addSubview(bottomButton)
+        view.addSubview(floatingButton)
         view.addSubview(emptyView)
         
         // 텍스트뷰 최소 높이 (비활성화)
@@ -304,10 +304,10 @@ final class ChatViewController: UIViewController {
             sendButton.widthAnchor.constraint(equalToConstant: 35),
             sendButton.heightAnchor.constraint(equalTo: sendButton.widthAnchor),
             
-            bottomButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            bottomButton.bottomAnchor.constraint(equalTo: inputContainerView.topAnchor, constant: -10),
-            bottomButton.widthAnchor.constraint(equalToConstant: 35),
-            bottomButton.heightAnchor.constraint(equalTo: bottomButton.widthAnchor),
+            floatingButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            floatingButton.bottomAnchor.constraint(equalTo: inputContainerView.topAnchor, constant: -10),
+            floatingButton.widthAnchor.constraint(equalToConstant: 35),
+            floatingButton.heightAnchor.constraint(equalTo: floatingButton.widthAnchor),
             
             emptyView.centerXAnchor.constraint(equalTo: collectionView.centerXAnchor),
             emptyView.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor),
@@ -532,13 +532,13 @@ extension ChatViewController: UICollectionViewDelegate {
         if scrollView.contentSize.height < scrollView.frame.height + threshHold { return }
         
         if scrollView.contentOffset.y < maxOffsetY - threshHold { // 스크롤이 밑에서 500 이상 위에 있을 때
-            bottomButton.isHidden = false
+            floatingButton.isHidden = false
             UIView.animate(withDuration: 0.5, delay: 0.0, options: [.curveEaseInOut]) { [weak self] in
-                self?.bottomButton.alpha = 1.0 // 버튼 표시
+                self?.floatingButton.alpha = 1.0 // 버튼 표시
             }
         } else if scrollView.contentOffset.y >= maxOffsetY - 10 { // 스크롤이 맨 밑에 위치할 때
-            bottomButton.isHidden = true
-            bottomButton.alpha = 0.0 // 버튼 숨김
+            floatingButton.isHidden = true
+            floatingButton.alpha = 0.0 // 버튼 숨김
         }
     }
 }
