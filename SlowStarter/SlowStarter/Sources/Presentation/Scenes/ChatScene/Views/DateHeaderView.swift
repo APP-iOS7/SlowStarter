@@ -10,15 +10,14 @@ import UIKit
 final class DateHeaderView: UICollectionReusableView {
     private let dateLabel: UILabel = {
         let label: UILabel = UILabel()
-        label.textColor = .white
-        label.font = UIFont.systemFont(ofSize: 14)
+        label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
+        label.textColor = .gray
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private let containerView: UIView = {
         let view: UIView = UIView()
-        view.backgroundColor = .black
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -34,11 +33,12 @@ final class DateHeaderView: UICollectionReusableView {
     
     private func setupUI() {
         addSubview(containerView)
-        containerView.addSubview(dateLabel)
+        addSubview(dateLabel)
         
         NSLayoutConstraint.activate([
+            containerView.topAnchor.constraint(equalTo: topAnchor, constant: 20),
+            containerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20),
             containerView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            containerView.centerYAnchor.constraint(equalTo: centerYAnchor),
             
             dateLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 5),
             dateLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
@@ -51,7 +51,7 @@ final class DateHeaderView: UICollectionReusableView {
     
     func configure(_ date: Date) {
         let formatter: DateFormatter = DateFormatter()
-        formatter.dateFormat = "yy년 MM월 dd일"
+        formatter.dateFormat = "yyyy년 MM월 dd일"
         dateLabel.text = formatter.string(from: date)
     }
 }

@@ -10,10 +10,8 @@ let project = Project(
             "DEVELOPMENT_TEAM": "59FP2PXRXK"
         ],
         configurations: [
-//            .debug(name: "Debug"),
-            .debug(name: "Debug", xcconfig: "Config/Config.xcconfig")
-            // .debug(name: "Debug", xcconfig: "SlowStarter/Sources/Config/Environment/APIConfig.xcconfig"),
-            // .release(name: "Release", xcconfig: "SlowStarter/Sources/Config/Environment/APIConfig.xcconfig")
+            .debug(name: "Debug", xcconfig: "Config/Config.xcconfig"),
+            .release(name: "Release", xcconfig: "Config/Config.xcconfig")
         ]
     ),
     targets: [
@@ -64,6 +62,7 @@ let project = Project(
                 "SlowStarter/Resources/Util/**",
                 "SlowStarter/Sources/Domain/Models/CoreData/CoreDataModel.xcdatamodeld",
                 "SlowStarter/Sources/Domain/Models/CoreData/Config.xcdatamodeld",
+                "SlowStarter/Sources/Domain/Models/CoreData/PaymentEntity.xcdatamodeld",
                 "SlowStarter/Resources/Util/Font/**",
                 "SlowStarter/Resources/Assets.xcassets"
             ],

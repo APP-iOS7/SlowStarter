@@ -17,7 +17,7 @@ final class ReceivedMessageCell: UICollectionViewCell {
     
     private let messageView: UIView = {
         let view: UIView = UIView()
-        view.backgroundColor = .black
+        view.backgroundColor = .systemGray6
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -25,7 +25,7 @@ final class ReceivedMessageCell: UICollectionViewCell {
     private let messageLabel: UILabel = {
         let label: UILabel = UILabel()
         label.font = UIFont.systemFont(ofSize: 16)
-        label.textColor = .white
+        label.textColor = UIColor(named: "SubColor1")
         label.textAlignment = .left
         label.numberOfLines = 0
         label.clipsToBounds = true
@@ -48,7 +48,6 @@ final class ReceivedMessageCell: UICollectionViewCell {
         button.setTitle("요약", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 12)
         button.setTitleColor(.black, for: .normal)
-        button.backgroundColor = .systemGray6
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -59,8 +58,6 @@ final class ReceivedMessageCell: UICollectionViewCell {
         indicator.translatesAutoresizingMaskIntoConstraints = false 
         return indicator
     }()
-    
-    private let minimumRightMargin: CGFloat = 100.0
     
     // MARK: - Initializer
     override init(frame: CGRect) {
@@ -89,16 +86,16 @@ final class ReceivedMessageCell: UICollectionViewCell {
             messageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
             messageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
             messageView.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -12),
-            messageView.bottomAnchor.constraint(equalTo: summaryButtom.topAnchor, constant: -4),
+            messageView.bottomAnchor.constraint(equalTo: summaryButtom.topAnchor),
             
             messageLabel.topAnchor.constraint(equalTo: messageView.topAnchor, constant: 8),
             messageLabel.leadingAnchor.constraint(equalTo: messageView.leadingAnchor, constant: 12),
             messageLabel.trailingAnchor.constraint(equalTo: messageView.trailingAnchor, constant: -12),
             messageLabel.bottomAnchor.constraint(equalTo: messageView.bottomAnchor, constant: -8),
             
-            summaryButtom.trailingAnchor.constraint(equalTo: messageView.trailingAnchor, constant: -4),
-            summaryButtom.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4),
-            summaryButtom.widthAnchor.constraint(equalToConstant: 30),
+            summaryButtom.trailingAnchor.constraint(equalTo: messageView.trailingAnchor, constant: -5),
+            summaryButtom.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            summaryButtom.widthAnchor.constraint(equalToConstant: 25),
             summaryButtom.heightAnchor.constraint(equalTo: summaryButtom.widthAnchor),
             
             timeLabel.leadingAnchor.constraint(equalTo: messageView.trailingAnchor, constant: 5),
@@ -115,8 +112,8 @@ final class ReceivedMessageCell: UICollectionViewCell {
     }
     
     func setPreferredMaxLayoutWidth(forCellWidth cellWidth: CGFloat) {
-        // 전체크기 - messageView 좌측여백 - messageLabel 좌측여백 - messageLabel 우측여백 - 우측최소여백(100)
-        messageLabel.preferredMaxLayoutWidth = cellWidth - 12 - 12 - 12 - minimumRightMargin
+        // 화면 width로부터 60% 이상 차지하지 않도록
+        messageLabel.preferredMaxLayoutWidth = cellWidth * 0.6
     }
     
     func showSummaryLoading(_ isLoading: Bool) {

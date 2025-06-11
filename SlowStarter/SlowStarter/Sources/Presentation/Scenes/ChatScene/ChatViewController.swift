@@ -32,6 +32,7 @@ final class ChatViewController: UIViewController {
     
     private let flowLayout: UICollectionViewFlowLayout = {
         let flowLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        flowLayout.minimumLineSpacing = 5 // 셀 간격
         return flowLayout
     }()
     
@@ -51,8 +52,8 @@ final class ChatViewController: UIViewController {
             UICollectionView.CellRegistration { [weak self] cell, _, message in
                 guard let self = self else { return }
                 
-                cell.message = message
-                cell.setPreferredMaxLayoutWidth(forCellWidth: self.collectionView.frame.width)
+                cell.message = message // 메시지 주입
+                cell.setPreferredMaxLayoutWidth(forCellWidth: self.collectionView.frame.width) // 최대 width 설정
             }
         }()
         
@@ -60,13 +61,13 @@ final class ChatViewController: UIViewController {
             UICollectionView.CellRegistration { [weak self] cell, _, message in
                 guard let self = self else { return }
                 
-                cell.message = message
+                cell.message = message // 메시지 주입
                 cell.summaryButtom.addAction(UIAction { _ in
                     self.isLoadingSummaryMessage = true // 요약중인 상태 표시
                     self.viewModel.didTapSummaryButton(message: message) // 텍스트 요약 요청 전송
                     cell.showSummaryLoading(self.isLoadingSummaryMessage) // indicator start, stop
                 }, for: .touchUpInside)
-                cell.setPreferredMaxLayoutWidth(forCellWidth: self.collectionView.frame.width)
+                cell.setPreferredMaxLayoutWidth(forCellWidth: self.collectionView.frame.width) // 최대 width 설정
             }
         }()
         
@@ -131,8 +132,10 @@ final class ChatViewController: UIViewController {
         return dataSource
     }()
     
-    private let inputContainerView: UIView = {
+    private lazy var inputContainerView: UIView = {
         let view: UIView = UIView()
+        view.addSubview(inputTextView)
+        view.addSubview(sendButton)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -154,15 +157,66 @@ final class ChatViewController: UIViewController {
     
     private lazy var sendButton: UIButton = {
         let button: UIButton = UIButton(type: .system)
-        button.setImage(UIImage(systemName: "arrow.up"), for: .normal)
-        button.tintColor = .black
+        var config = UIButton.Configuration.filled()
+        config.image = UIImage(systemName: "paperplane.fill")
+        config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: 12)
+        config.baseForegroundColor = UIColor(named: "SubColor1")
+        config.baseBackgroundColor = UIColor(named: "MainColor")
+        config.cornerStyle = .capsule
+        button.configuration = config
         button.contentMode = .scaleAspectFit
-        button.backgroundColor = .green
         button.addAction(UIAction { [weak self] _ in
             self?.tappedSendButton()
         }, for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
+    }()
+    
+    private lazy var floatingButton: UIButton = {
+        let button: UIButton = UIButton(type: .system)
+        var config = UIButton.Configuration.filled()
+        config.image = UIImage(systemName: "arrow.down")
+        config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: 15)
+        config.baseForegroundColor = .black
+        config.baseBackgroundColor = .systemGray6
+        config.cornerStyle = .capsule
+        button.configuration = config
+        button.alpha = 0.0
+        button.contentMode = .scaleAspectFit
+        button.addAction(UIAction { [weak self] _ in
+            self?.scrollToLatestMessage()
+        }, for: .touchUpInside)
+        button.isHidden = true
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    private lazy var emptyView: UIView = {
+        let view: UIView = UIView()
+        view.addSubview(emptyImageView)
+        view.addSubview(emptyLabel)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private let emptyImageView: UIImageView = {
+        let iv: UIImageView = UIImageView()
+        iv.image = UIImage(systemName: "message")
+        iv.tintColor = UIColor(named: "MainColor")
+        iv.contentMode = .scaleAspectFit
+        iv.translatesAutoresizingMaskIntoConstraints = false
+        return iv
+    }()
+    
+    private let emptyLabel: UILabel = {
+        let label: UILabel = UILabel()
+        label.text = "아직 어떤 대화도 나누지 않았어요\n슬러에게 모르는 것을 물어보세요."
+        label.textColor = .lightGray
+        label.textAlignment = .center
+        label.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        label.numberOfLines = 0
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
     }()
     
     private var lastKeyboardVisibleHeight: CGFloat = 0 // 키보드 높이
@@ -171,7 +225,8 @@ final class ChatViewController: UIViewController {
     private var isLoadingSummaryMessage: Bool = false // 메시지가 요약중인 상태
     private var anchorMessageID: UUID? // 이전 대화를 추가하는 기준이 되는 메시지 id
     private var cellHeightCache: [UUID: CGFloat] = .init() // 셀 높이를 저장 배열
-    private var previousTextViewHeight: CGFloat = 0.0
+    private var previousTextViewHeight: CGFloat = 0.0 // 텍스트뷰의 이전 높이
+    private var inputTextViewHeightConstraint: NSLayoutConstraint! // 텍스트뷰 높이를 최소로 강제하는 제약
     
     // MARK: - Initializer
     init(viewModel: ChatViewModel) {
@@ -191,6 +246,7 @@ final class ChatViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        navigationController?.navigationBar.isHidden = true
         
         setConstraints()
         setCollectionView()
@@ -201,15 +257,29 @@ final class ChatViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        
         previousTextViewHeight = previousTextViewHeight == 0 ? inputTextView.frame.height : previousTextViewHeight
+    }
+    
+    // 화면이 회전될 때 컬렉션뷰를 다시 그림
+    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        coordinator.animate { [weak self] _ in
+            self?.cellHeightCache.removeAll() // 셀 높이를 다시 계산하도록 캐시 삭제
+            self?.collectionView.reloadData() // (비효율적) 셀 재구성
+        }
     }
     
     // MARK: Functions
     private func setConstraints() {
         view.addSubview(collectionView)
         view.addSubview(inputContainerView)
-        inputContainerView.addSubview(inputTextView)
-        inputContainerView.addSubview(sendButton)
+        view.addSubview(floatingButton)
+        view.addSubview(emptyView)
+        
+        // 텍스트뷰 최소 높이 (비활성화)
+        inputTextViewHeightConstraint = inputTextView.heightAnchor.constraint(equalToConstant: 35)
         
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -220,20 +290,39 @@ final class ChatViewController: UIViewController {
             inputContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             inputContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             inputContainerView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
-            inputContainerView.heightAnchor.constraint(greaterThanOrEqualToConstant: 50),
+            inputContainerView.heightAnchor.constraint(greaterThanOrEqualToConstant: 55),
             
             inputTextView.topAnchor.constraint(equalTo: inputContainerView.topAnchor, constant: 10),
             inputTextView.leadingAnchor.constraint(equalTo: inputContainerView.leadingAnchor, constant: 10),
             inputTextView.trailingAnchor.constraint(equalTo: sendButton.leadingAnchor, constant: -10),
             inputTextView.bottomAnchor.constraint(equalTo: inputContainerView.bottomAnchor, constant: -10),
+            inputTextView.heightAnchor.constraint(greaterThanOrEqualToConstant: 35),
+            inputTextView.heightAnchor.constraint(lessThanOrEqualToConstant: 200),
             
             sendButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
             sendButton.bottomAnchor.constraint(equalTo: inputContainerView.bottomAnchor, constant: -10),
             sendButton.widthAnchor.constraint(equalToConstant: 35),
-            sendButton.heightAnchor.constraint(equalTo: sendButton.widthAnchor)
+            sendButton.heightAnchor.constraint(equalTo: sendButton.widthAnchor),
+            
+            floatingButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            floatingButton.bottomAnchor.constraint(equalTo: inputContainerView.topAnchor, constant: -10),
+            floatingButton.widthAnchor.constraint(equalToConstant: 35),
+            floatingButton.heightAnchor.constraint(equalTo: floatingButton.widthAnchor),
+            
+            emptyView.centerXAnchor.constraint(equalTo: collectionView.centerXAnchor),
+            emptyView.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor),
+            
+            emptyImageView.topAnchor.constraint(equalTo: emptyView.topAnchor),
+            emptyImageView.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor),
+            emptyImageView.widthAnchor.constraint(equalToConstant: 100),
+            emptyImageView.heightAnchor.constraint(equalTo: emptyImageView.widthAnchor),
+            
+            emptyLabel.topAnchor.constraint(equalTo: emptyImageView.bottomAnchor, constant: 10),
+            emptyLabel.leadingAnchor.constraint(equalTo: emptyView.leadingAnchor),
+            emptyLabel.trailingAnchor.constraint(equalTo: emptyView.trailingAnchor),
+            emptyLabel.bottomAnchor.constraint(equalTo: emptyView.bottomAnchor)
         ])
         
-        sendButton.layer.cornerRadius = 35 / 2
         inputTextView.layer.cornerRadius = 15
     }
     
@@ -260,15 +349,15 @@ final class ChatViewController: UIViewController {
     private func bindViewModel() {
         viewModel.messageUpdatePublisher
             .receive(on: DispatchQueue.main)
-            .sink { completion in
-                print(completion)
-            } receiveValue: { [weak self] update in
+            .sink { [weak self] update in
                 self?.cellHeightCache.removeAll() // 이미 계산된 셀 크기를 다시 계산
                 
                 switch update {
                 case .initialLoad(let messages):
+                    if !messages.isEmpty { self?.emptyView.isHidden = true } // 메시지가 있으면 emptyview 숨김
                     self?.initialLoad(for: messages)
                 case .append(let message):
+                    self?.emptyView.isHidden = true // 메시지가 추가되면 emptyview 숨김
                     self?.append(for: message)
                 case .prepend(let messages):
                     self?.prepend(for: messages)
@@ -284,10 +373,10 @@ final class ChatViewController: UIViewController {
             .sink { [weak self] isLoading in
                 if isLoading {
                     self?.sendButton.isEnabled = false // 로딩중일 때 메시지 전송 x
-                    self?.sendButton.backgroundColor = .systemGray6
+                    self?.sendButton.configuration?.baseBackgroundColor = .systemGray6
                 } else {
                     self?.sendButton.isEnabled = true
-                    self?.sendButton.backgroundColor = .green
+                    self?.sendButton.configuration?.baseBackgroundColor = UIColor(named: "MainColor")
                 }
                 
                 self?.applyLoadingSnapshot(isLoading) // 로딩셀 추가, 삭제
@@ -307,27 +396,28 @@ final class ChatViewController: UIViewController {
         viewModel.didTapSendButton(text: text)
     }
     
+    // anchor를 걸어둔 셀 아이템으로 이동
     private func scrollToCurrentMessage() {
         guard let anchorID = anchorMessageID,
               let indexPath = dataSource.indexPath(for: .message(anchorID)) else { return }
         
-        collectionView.layoutIfNeeded()
-        collectionView.scrollToItem(at: indexPath, at: .top, animated: false)
-        collectionView.contentOffset.y -= 50
+        collectionView.layoutIfNeeded() // UI 변동사항을 갱신하고 작업 시작
+        collectionView.scrollToItem(at: indexPath, at: .top, animated: false) // 스크롤
+        collectionView.contentOffset.y -= 50 // 하단이 가리지 않도록
         
-        anchorMessageID = nil
-        isLoadingPreviousMessages = false
+        anchorMessageID = nil // anchor 삭제
+        isLoadingPreviousMessages = false // 로딩 종료
     }
     
+    // 최하단 셀 아이템으로 이동
     private func scrollToLatestMessage() {
         let snapshot = dataSource.snapshot()
         
-        guard let section = snapshot.sectionIdentifiers.last,
-              let sectionIndex = snapshot.sectionIdentifiers.firstIndex(of: section) else { return }
+        guard let lastSectionID = snapshot.sectionIdentifiers.last else { return }
         
         let indexPath: IndexPath = IndexPath(
-            item: snapshot.numberOfItems(inSection: section) - 1,
-            section: sectionIndex
+            item: snapshot.numberOfItems(inSection: lastSectionID) - 1,
+            section: snapshot.sectionIdentifiers.count - 1
         )
         
         var position: UICollectionView.ScrollPosition = .bottom // 셀은 일반적으로 컬렉션뷰 바닥에 위치
@@ -341,19 +431,22 @@ final class ChatViewController: UIViewController {
             if cellHeight > visibleHeight && !self.isInitialLoad { position = .top }
         }
         
-        collectionView.layoutIfNeeded() // UI 갱신
-        collectionView.scrollToItem(at: indexPath, at: position, animated: !self.isInitialLoad)
+        collectionView.layoutIfNeeded() // UI 변동사항을 갱신하고 작업 시작
+        collectionView.scrollToItem(at: indexPath, at: position, animated: !self.isInitialLoad) // 스크롤
         
-        if self.isInitialLoad { self.isInitialLoad = false } // 최초 진입 시
+        isInitialLoad = false
     }
     
     // MARK: - Selectors
     @objc private func tappedCollectionView() {
-        view.endEditing(true) // 키보드 down
+        view.endEditing(true) // 키보드 숨김
+        inputTextViewHeightConstraint.isActive = true // 텍스트뷰 높이를 최소 크기로 축소
     }
     
     @objc private func keyboardWillShow(_ notification: Notification) {
         guard lastKeyboardVisibleHeight == 0 else { return } // 키보드가 이미 올라온 경우: 처리 x, (이중 동작 방지)
+        
+        inputTextViewHeightConstraint.isActive = false // 텍스트뷰의 높이를 줄이지 않음
         
         guard let userInfo = notification.userInfo,
               let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
@@ -417,17 +510,35 @@ final class ChatViewController: UIViewController {
 // MARK: - CollectionView Delegate
 extension ChatViewController: UICollectionViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // 1. 이전 대화 불러오기 (스크롤이 맨 위에 도달했을 때)
         if scrollView.contentOffset.y <= 0 {
             if scrollView.isDragging && !isLoadingPreviousMessages { // 스크롤 중이거나, 관성으로 움직일 때
                 isLoadingPreviousMessages = true // 중복 동작 방지
                 
                 guard let firstIndexPath = collectionView.indexPathsForVisibleItems.sorted().first,
                       let firstIdentifier = dataSource.itemIdentifier(for: firstIndexPath),
-                      case .message(let id) = firstIdentifier else { return }
+                      case .message(let id) = firstIdentifier else { return } // 최상위 cell id
                 
-                anchorMessageID = id
-                viewModel.fetchPreviousMessages()
+                anchorMessageID = id // 스크롤이 고정될 cell id
+                viewModel.fetchPreviousMessages() // 이전 대화 불러옴
             }
+        }
+        
+        // 2. 바텀 버튼 노출, 숨김 (스크롤이 맨 밑에 있지 않을 때)
+        let maxOffsetY: CGFloat = scrollView.contentSize.height - scrollView.frame.height // 최하단 오프셋
+        let threshHold: CGFloat = 500.0 // 임계값
+        
+        // contentSize가 충분히 크지 않으면 종료
+        if scrollView.contentSize.height < scrollView.frame.height + threshHold { return }
+        
+        if scrollView.contentOffset.y < maxOffsetY - threshHold { // 스크롤이 밑에서 500 이상 위에 있을 때
+            floatingButton.isHidden = false
+            UIView.animate(withDuration: 0.5, delay: 0.0, options: [.curveEaseInOut]) { [weak self] in
+                self?.floatingButton.alpha = 1.0 // 버튼 표시
+            }
+        } else if scrollView.contentOffset.y >= maxOffsetY - 10 { // 스크롤이 맨 밑에 위치할 때
+            floatingButton.isHidden = true
+            floatingButton.alpha = 0.0 // 버튼 숨김
         }
     }
 }
@@ -439,8 +550,7 @@ extension ChatViewController: UICollectionViewDelegateFlowLayout {
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         guard let item = dataSource.itemIdentifier(for: indexPath) else { return .zero }
         
-        let cellWidth: CGFloat =
-            collectionView.bounds.width - (collectionView.contentInset.left + collectionView.contentInset.right)
+        let cellWidth: CGFloat = collectionView.bounds.width
         
         // 로딩셀인 경우 정해진 고정 size를 반환
         guard case .message(let id) = item else {
@@ -458,7 +568,7 @@ extension ChatViewController: UICollectionViewDelegateFlowLayout {
         if message.isSended {
             let dummyCell: SendedMessageCell = SendedMessageCell()
             dummyCell.message = message
-            dummyCell.setPreferredMaxLayoutWidth(forCellWidth: collectionView.frame.width)
+            dummyCell.setPreferredMaxLayoutWidth(forCellWidth: collectionView.bounds.width)
             
             let autoLayoutSize = dummyCell.contentView.systemLayoutSizeFitting(
                 CGSize(width: cellWidth, height: UIView.layoutFittingCompressedSize.height),
@@ -473,7 +583,7 @@ extension ChatViewController: UICollectionViewDelegateFlowLayout {
         } else {
             let dummyCell: ReceivedMessageCell = ReceivedMessageCell()
             dummyCell.message = message
-            dummyCell.setPreferredMaxLayoutWidth(forCellWidth: collectionView.frame.width)
+            dummyCell.setPreferredMaxLayoutWidth(forCellWidth: collectionView.bounds.width)
             
             let autoLayoutSize = dummyCell.contentView.systemLayoutSizeFitting(
                 CGSize(width: cellWidth, height: UIView.layoutFittingCompressedSize.height),
@@ -491,7 +601,7 @@ extension ChatViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: collectionView.bounds.width, height: 50)
+        return CGSize(width: collectionView.bounds.width, height: 70)
     }
 }
 
@@ -630,17 +740,24 @@ extension ChatViewController {
 // MARK: - TextViewDelegate
 extension ChatViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
-        inputTextView.layoutManager.ensureLayout(for: inputTextView.textContainer) // 정확한 contentSize를 얻기 위해
-        inputContainerView.layoutIfNeeded() // 즉시 레이아웃 업데이트
+        let maxHeight: CGFloat = 200.0 // 텍스트뷰의 최대 높이
+        var newHeight: CGFloat = // 변경될 텍스트뷰의 높이
+            textView.sizeThatFits(CGSize(width: textView.frame.width, height: .greatestFiniteMagnitude)).height
         
-        let newHeight: CGFloat = textView.contentSize.height // 현재 TextView 높이
-        let heightDifference = newHeight - previousTextViewHeight // 변동된 수치
-        if heightDifference == 0 { return } // 변하지 않았으면 종료
+        if newHeight >= maxHeight { // 스크롤 사이즈가 최대 사이즈보다 커지면
+            textView.isScrollEnabled = true // 스크롤 허용
+            newHeight = maxHeight // 최대 크기로 고정
+        } else {
+            textView.isScrollEnabled = false // 작으면 스크롤 x
+        }
         
-        let currentOffsetY = collectionView.contentOffset.y // 현재 컬렉션뷰의 위치
-        let newOffsetY = currentOffsetY + heightDifference // 계산된 다음 위치
+        let heightDifference: CGFloat = newHeight - previousTextViewHeight // 높이 차이
+        if heightDifference == 0 { return } // 차이가 없으면 종료
         
-        collectionView.contentOffset.y = newOffsetY // offset 조정
+        let currentOffsetY: CGFloat = collectionView.contentOffset.y // 현재 오프셋
+        let newOffsetY: CGFloat = currentOffsetY + heightDifference // 새 오프셋
+        collectionView.contentOffset.y = newOffsetY // 오프셋 조정
+        
         previousTextViewHeight = newHeight // 다음 동작을 위해 현재 값 저장
     }
 }

@@ -17,7 +17,7 @@ final class SendedMessageCell: UICollectionViewCell {
     
     private let messageView: UIView = {
         let view: UIView = UIView()
-        view.backgroundColor = .yellow
+        view.backgroundColor = UIColor(named: "MainColor")
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -25,6 +25,7 @@ final class SendedMessageCell: UICollectionViewCell {
     private lazy var messageLabel: UILabel = {
         let label: UILabel = UILabel()
         label.font = UIFont.systemFont(ofSize: 16)
+        label.textColor = UIColor(named: "SubColor1")
         label.textAlignment = .left
         label.numberOfLines = 0
         label.clipsToBounds = true
@@ -42,8 +43,6 @@ final class SendedMessageCell: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
-    private let minimumLeftMargin: CGFloat = 100.0
     
     // MARK: - initializer
     override init(frame: CGRect) {
@@ -86,8 +85,8 @@ final class SendedMessageCell: UICollectionViewCell {
     }
     
     func setPreferredMaxLayoutWidth(forCellWidth cellWidth: CGFloat) {
-        // 전체크기 - messageView 우측여백 - messageLabel 우측여백 - messageLabel 좌측여백 - 좌측최소여백
-        messageLabel.preferredMaxLayoutWidth = cellWidth - 12 - 12 - 12 - minimumLeftMargin
+        // 화면 width로부터 60% 이상 차지하지 않도록
+        messageLabel.preferredMaxLayoutWidth = cellWidth * 0.6
     }
     
     // 재사용을 위해 내용물 초기화

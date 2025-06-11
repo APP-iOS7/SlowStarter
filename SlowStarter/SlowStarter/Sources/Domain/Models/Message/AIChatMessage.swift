@@ -16,7 +16,7 @@ struct AIChatMessage: Hashable, Identifiable {
     
     var timeText: String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm a"
+        formatter.dateFormat = "HH:mm"
         return formatter.string(from: timestamp)
     }
     
