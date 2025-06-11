@@ -195,6 +195,7 @@ final class ChatViewController: UIViewController {
     private var anchorMessageID: UUID? // 이전 대화를 추가하는 기준이 되는 메시지 id
     private var cellHeightCache: [UUID: CGFloat] = .init() // 셀 높이를 저장 배열
     private var previousTextViewHeight: CGFloat = 0.0
+    private var inputTextViewHeightConstraint: NSLayoutConstraint! // 텍스트뷰 높이 동적 할당 변수
     
     // MARK: - Initializer
     init(viewModel: ChatViewModel) {
@@ -246,6 +247,9 @@ final class ChatViewController: UIViewController {
         inputContainerView.addSubview(inputTextView)
         inputContainerView.addSubview(sendButton)
         
+        // 텍스트뷰 초기 높이가 콘텐트 사이즈에 맞도록 설정
+        inputTextViewHeightConstraint = inputTextView.heightAnchor.constraint(equalTo: sendButton.heightAnchor)
+        
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
@@ -255,12 +259,14 @@ final class ChatViewController: UIViewController {
             inputContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             inputContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             inputContainerView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
-            inputContainerView.heightAnchor.constraint(greaterThanOrEqualToConstant: 50),
+            inputContainerView.heightAnchor.constraint(greaterThanOrEqualToConstant: 55),
             
             inputTextView.topAnchor.constraint(equalTo: inputContainerView.topAnchor, constant: 10),
             inputTextView.leadingAnchor.constraint(equalTo: inputContainerView.leadingAnchor, constant: 10),
             inputTextView.trailingAnchor.constraint(equalTo: sendButton.leadingAnchor, constant: -10),
             inputTextView.bottomAnchor.constraint(equalTo: inputContainerView.bottomAnchor, constant: -10),
+            inputTextView.heightAnchor.constraint(greaterThanOrEqualToConstant: 35),
+            inputTextView.heightAnchor.constraint(lessThanOrEqualToConstant: 200),
             
             sendButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
             sendButton.bottomAnchor.constraint(equalTo: inputContainerView.bottomAnchor, constant: -10),
@@ -299,9 +305,7 @@ final class ChatViewController: UIViewController {
     private func bindViewModel() {
         viewModel.messageUpdatePublisher
             .receive(on: DispatchQueue.main)
-            .sink { completion in
-                print(completion)
-            } receiveValue: { [weak self] update in
+            .sink { [weak self] update in
                 self?.cellHeightCache.removeAll() // 이미 계산된 셀 크기를 다시 계산
                 
                 switch update {
@@ -456,7 +460,7 @@ final class ChatViewController: UIViewController {
 // MARK: - CollectionView Delegate
 extension ChatViewController: UICollectionViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        // 스크롤이 맨 위에 도달했을 때
+        // 1. 이전 대화 불러오기 (스크롤이 맨 위에 도달했을 때)
         if scrollView.contentOffset.y <= 0 {
             if scrollView.isDragging && !isLoadingPreviousMessages { // 스크롤 중이거나, 관성으로 움직일 때
                 isLoadingPreviousMessages = true // 중복 동작 방지
@@ -470,12 +474,11 @@ extension ChatViewController: UICollectionViewDelegate {
             }
         }
         
-        // 스크롤이 맨 밑에 위치하지 않을 때
-        let maxOffsetY: CGFloat = scrollView.contentSize.height - scrollView.frame.height
-        let threshHold: CGFloat = 500.0
+        // 2. 바텀 버튼 노출, 숨김 (스크롤이 맨 밑에 있지 않을 때)
+        let maxOffsetY: CGFloat = scrollView.contentSize.height - scrollView.frame.height // 최하단 오프셋
+        let threshHold: CGFloat = 500.0 // 임계값
         
-        // 스크롤이 밑에서 500 이상 위에 있을 때
-        if scrollView.contentOffset.y < maxOffsetY - threshHold {
+        if scrollView.contentOffset.y < maxOffsetY - threshHold { // 스크롤이 밑에서 500 이상 위에 있을 때
             bottomButton.isHidden = false
             UIView.animate(withDuration: 0.5, delay: 0.0, options: [.curveEaseInOut]) { [weak self] in
                 self?.bottomButton.alpha = 1.0 // 버튼 표시
@@ -684,17 +687,24 @@ extension ChatViewController {
 // MARK: - TextViewDelegate
 extension ChatViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
-        inputTextView.layoutManager.ensureLayout(for: inputTextView.textContainer) // 정확한 contentSize를 얻기 위해
-        inputContainerView.layoutIfNeeded() // 즉시 레이아웃 업데이트
+        let maxHeight: CGFloat = 200.0 // 텍스트뷰의 최대 높이
+        var newHeight: CGFloat = // 변경될 텍스트뷰의 높이
+            textView.sizeThatFits(CGSize(width: textView.frame.width, height: .greatestFiniteMagnitude)).height
         
-        let newHeight: CGFloat = textView.contentSize.height // 현재 TextView 높이
-        let heightDifference = newHeight - previousTextViewHeight // 변동된 수치
-        if heightDifference == 0 { return } // 변하지 않았으면 종료
+        if newHeight >= maxHeight { // 스크롤 사이즈가 최대 사이즈보다 커지면
+            textView.isScrollEnabled = true // 스크롤 허용
+            newHeight = maxHeight // 최대 크기로 고정
+        } else {
+            textView.isScrollEnabled = false // 작으면 스크롤 x
+        }
         
-        let currentOffsetY = collectionView.contentOffset.y // 현재 컬렉션뷰의 위치
-        let newOffsetY = currentOffsetY + heightDifference // 계산된 다음 위치
+        let heightDifference: CGFloat = newHeight - previousTextViewHeight // 높이 차이
+        if heightDifference == 0 { return } // 차이가 없으면 종료
         
-        collectionView.contentOffset.y = newOffsetY // offset 조정
+        let currentOffsetY: CGFloat = collectionView.contentOffset.y // 현재 오프셋
+        let newOffsetY: CGFloat = currentOffsetY + heightDifference // 새 오프셋
+        collectionView.contentOffset.y = newOffsetY // 오프셋 조정
+        
         previousTextViewHeight = newHeight // 다음 동작을 위해 현재 값 저장
     }
 }
