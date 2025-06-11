@@ -13,5 +13,9 @@ protocol AssignmentTableViewCellDelegate: AnyObject {
     
     func didTapCellEditButton(in cell: AssignmentTableViewCell)
     
-    func cell(_ cell: AssignmentTableViewCell, didFinishEditingMemo newMemo: String) // 새로 추가된 메서드
+    func cell(_ cell: AssignmentTableViewCell, didFinishEditingMemo newMemo: String)
+    
+    func didTapImageView(in cell: AssignmentTableViewCell)
+    
+    func assignmentCellDidToggleEditMode(in cell: AssignmentTableViewCell)
 }
