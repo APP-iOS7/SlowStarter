@@ -196,7 +196,7 @@ final class ChatViewController: UIViewController {
     private var anchorMessageID: UUID? // 이전 대화를 추가하는 기준이 되는 메시지 id
     private var cellHeightCache: [UUID: CGFloat] = .init() // 셀 높이를 저장 배열
     private var previousTextViewHeight: CGFloat = 0.0 // 텍스트뷰의 이전 높이
-    private var inputTextViewHeightConstraint: NSLayoutConstraint! // 텍스트뷰 높이 동적 할당 변수
+    private var inputTextViewHeightConstraint: NSLayoutConstraint! // 텍스트뷰 높이를 최소로 강제하는 제약
     
     // MARK: - Initializer
     init(viewModel: ChatViewModel) {
@@ -248,8 +248,8 @@ final class ChatViewController: UIViewController {
         inputContainerView.addSubview(inputTextView)
         inputContainerView.addSubview(sendButton)
         
-        // 텍스트뷰 초기 높이가 콘텐트 사이즈에 맞도록 설정
-        inputTextViewHeightConstraint = inputTextView.heightAnchor.constraint(equalTo: sendButton.heightAnchor)
+        // 텍스트뷰 최소 높이 (비활성화)
+        inputTextViewHeightConstraint = inputTextView.heightAnchor.constraint(equalToConstant: 35)
         
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -394,11 +394,14 @@ final class ChatViewController: UIViewController {
     
     // MARK: - Selectors
     @objc private func tappedCollectionView() {
-        view.endEditing(true) // 키보드 down
+        view.endEditing(true) // 키보드 숨김
+        inputTextViewHeightConstraint.isActive = true // 텍스트뷰 높이를 최소 크기로 축소
     }
     
     @objc private func keyboardWillShow(_ notification: Notification) {
         guard lastKeyboardVisibleHeight == 0 else { return } // 키보드가 이미 올라온 경우: 처리 x, (이중 동작 방지)
+        
+        inputTextViewHeightConstraint.isActive = false // 텍스트뷰의 높이를 줄이지 않음
         
         guard let userInfo = notification.userInfo,
               let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
@@ -692,8 +695,6 @@ extension ChatViewController {
 // MARK: - TextViewDelegate
 extension ChatViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
-        print("didChange!")
-        
         let maxHeight: CGFloat = 200.0 // 텍스트뷰의 최대 높이
         var newHeight: CGFloat = // 변경될 텍스트뷰의 높이
             textView.sizeThatFits(CGSize(width: textView.frame.width, height: .greatestFiniteMagnitude)).height
