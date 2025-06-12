@@ -10,5 +10,5 @@ import Foundation
 struct LectureDetail {
     let lecture: Lecture
     var lecture_intro_images: [LectureIntroImage]?
-    var lecture_intro_videos: [LectureIntroVideo]?
+    var lecture_intro_video: LectureIntroVideo?
 }

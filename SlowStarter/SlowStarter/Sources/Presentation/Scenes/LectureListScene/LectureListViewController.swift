@@ -149,7 +149,7 @@ extension LectureListViewController: UITableViewDataSource, UITableViewDelegate 
 }
 
 extension LectureListViewController {
-    func didTapShowDetail(in cell: LectureCardCell) {
-        coordinator?.showLectureDetail()
+    func didTapShowDetail(lectureDetail: LectureDetail) {
+        coordinator?.showLectureDetail(lectureDetail)
     }
 }

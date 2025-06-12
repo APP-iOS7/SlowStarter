@@ -6,7 +6,7 @@ protocol Coordinator: AnyObject {
 
 // 강의 관련 플로우 코디네이터가 가져야 할 기능
 protocol LectureFlowCoordinator: LectureCoordinator {
-    func showLectureDetail()
+    func showLectureDetail(_ lectureDetail: LectureDetail)
     func showLectureDateSelection()
     func showPayment()
     

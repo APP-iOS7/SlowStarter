@@ -153,7 +153,3 @@ extension LectureDateViewController: UITableViewDataSource, UITableViewDelegate 
 //        tableView.cellForRow(at: indexPath)?.backgroundColor = .black
     }
 }
-
-#Preview {
-    LectureDateViewController()
-}

@@ -9,7 +9,7 @@ import UIKit
 import Kingfisher
 
 protocol LectureCardCellDelegate: AnyObject {
-    func didTapShowDetail(in cell: LectureCardCell)
+    func didTapShowDetail(lectureDetail: LectureDetail)
 }
 
 class LectureCardCell: UITableViewCell {
@@ -124,6 +124,7 @@ class LectureCardCell: UITableViewCell {
     }
     
     @objc private func showDetailTapped() {
-        delegate?.didTapShowDetail(in: self)
+        guard let detail = detail else { return }
+        delegate?.didTapShowDetail(lectureDetail: detail)
     }
 }

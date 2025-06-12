@@ -33,7 +33,7 @@ final class LectureListViewModel {
                     let detail: LectureDetail = LectureDetail(
                         lecture: lecture,
                         lecture_intro_images: imagesByLectureID[lecture.lectureId],
-                        lecture_intro_videos: videosByLectureID[lecture.lectureId]
+                        lecture_intro_video: videosByLectureID[lecture.lectureId]?.first
                     )
                     
                     self.lectures.append(detail) // 배열에 추가
