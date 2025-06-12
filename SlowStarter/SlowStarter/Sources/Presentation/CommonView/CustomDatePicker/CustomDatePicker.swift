@@ -30,6 +30,7 @@ class CustomDatePicker: UIViewController, UIPickerViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .systemBackground
         setupPickerView()
         setupButtons()
     }

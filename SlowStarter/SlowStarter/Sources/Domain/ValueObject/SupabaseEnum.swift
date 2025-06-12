@@ -26,6 +26,8 @@ enum LoginManagerError: Error {
     case missingEmailOrPhone
     case invalidRefreshToken
     case invalidClaim
+    case verificationError(error: String)
+    case passwordValidationError(error: String)
     case unknownError(message: String)
 }
 
@@ -52,6 +54,7 @@ enum StorageManagerError: Error {
     case downloadFileFailed(String)
     case deleteFileFailed(String)
     case createFileURLFailed(String)
+    case unknown(String)
 }
 
 enum StorageType: String {

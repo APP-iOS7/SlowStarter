@@ -15,7 +15,7 @@ class MyPageCoordinator: NSObject, Coordinator {
     func start() {
         let viewController = MyPageViewController()
         viewController.coordinator = self
-        viewController.tabBarItem = UITabBarItem(title: "test name MyPage", image: UIImage(systemName: "questionmark"), tag: 3)
+        viewController.tabBarItem = UITabBarItem(title: "마이페이지", image: UIImage(named: "tabMypage"), tag: 3)
         navigationController.viewControllers = [viewController]
     }
     
@@ -45,6 +45,11 @@ class MyPageCoordinator: NSObject, Coordinator {
         let coordinator = LoginCoordinator(navigationController: navigationController)
         childCoordinator = coordinator
         coordinator.start()
+    }
+    
+    func showEditProfile() {
+        let editProfileViewController = EditProfileViewController()
+        navigationController.pushViewController(editProfileViewController, animated: true)
     }
 }
 

@@ -198,6 +198,41 @@ public class DataBaseManager: DataBaseManagerProtocol {
         }
     }
     
+    /// 지정된 날짜 범위 내의 데이터를 조회하는 함수입니다.
+    /// - Parameters:
+    ///   - type: 조회할 모델 타입
+    ///   - select: 조회할 컬럼
+    ///   - filterColumn: 날짜 필터를 적용할 컬럼
+    ///   - from: 시작 날짜 (e.g., "2025-06-01")
+    ///   - to: 종료 날짜 (e.g., "2025-06-30")
+    /// - Returns: 조회된 데이터 리스트
+    func fetchDateRangeData<T: Decodable>(as type: T.Type, select: String, filterColumn: String, from: String, to: String, userId: String) async throws -> [T] {
+        let tableName: String
+        do {
+            tableName = try self.tableName(for: type)
+        } catch {
+            throw error
+        }
+        
+        do {
+            let data: [T] = try await client
+                .from(tableName)
+                .select(select)
+                .eq("user_id", value: userId)
+                .gte(filterColumn, value: from)
+                .lte(filterColumn, value: to)
+                .execute()
+                .value
+            
+            return data
+        } catch {
+            print("FETCH DATE RANGE ERROR: \(error.localizedDescription)")
+            throw DatabaseError.unknown
+        }
+    }
+    
+    
+    
     
     // MARK: - Create
     
@@ -387,6 +422,7 @@ public class DataBaseManager: DataBaseManagerProtocol {
         case is UserPointLog.Type: return "user_point_log"
         case is UserItem.Type: return "user_items"
         case is UserPayment.Type: return "user_payments"
+        case is UserCourseHistory.Type: return "user_course_history"
             
         case is Instructor.Type: return "instructors"
         case is InstructorDetail.Type: return "instructor_detail"

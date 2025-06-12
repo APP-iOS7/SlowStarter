@@ -24,4 +24,8 @@ extension UserSetting {
         notifyPush: false,
         updatedAt: Date()
     )
+    
+    static func zero(userId: String, notifyChat: Bool, notifyPush: Bool) -> UserSetting {
+        return UserSetting(userId: userId, notifyChat: notifyChat, notifyPush: notifyPush, updatedAt: Date())
+    }
 }

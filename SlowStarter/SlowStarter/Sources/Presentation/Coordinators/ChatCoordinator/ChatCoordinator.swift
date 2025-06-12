@@ -24,7 +24,7 @@ class ChatCoordinator: Coordinator {
         
         let viewController = ChatViewController(viewModel: chatViewModel)
         viewController.coordinator = self
-        viewController.tabBarItem = UITabBarItem(title: "test name Chat", image: UIImage(systemName: "questionmark"), tag: 2)
+        viewController.tabBarItem = UITabBarItem(title: "채팅", image: UIImage(named: "tabChatBubble"), tag: 2)
         navigationController.viewControllers = [viewController]
     }
 }

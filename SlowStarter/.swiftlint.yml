@@ -48,6 +48,10 @@ nesting:
 function_parameter_count:
     warning: 6
 
+type_body_length:
+    warning: 380
+    error: 500
+
 custom_rules:
     # 클래스의 이름에는 UpperCamelCase를 사용하고, 클래스 이름에 접두사를 붙이지 않습니다.
     no_class_prefix:

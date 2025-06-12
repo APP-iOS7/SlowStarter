@@ -17,7 +17,7 @@ final class SendedMessageCell: UICollectionViewCell {
     
     private let messageView: UIView = {
         let view: UIView = UIView()
-        view.backgroundColor = .yellow
+        view.backgroundColor = UIColor(named: "MainColor")
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -25,6 +25,7 @@ final class SendedMessageCell: UICollectionViewCell {
     private lazy var messageLabel: UILabel = {
         let label: UILabel = UILabel()
         label.font = UIFont.systemFont(ofSize: 16)
+        label.textColor = UIColor(named: "SubColor1")
         label.textAlignment = .left
         label.numberOfLines = 0
         label.clipsToBounds = true
@@ -43,9 +44,6 @@ final class SendedMessageCell: UICollectionViewCell {
         return label
     }()
     
-    private let cellMargin: CGFloat = 8.0
-    private let minimumLeftMargin: CGFloat = 100.0
-    
     // MARK: - initializer
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -54,13 +52,6 @@ final class SendedMessageCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    // MARK: - LifyCycle
-    // 모든 frame이 결정된 이후에 필요한 동작 정의
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        messageLabel.preferredMaxLayoutWidth = bounds.width - cellMargin - minimumLeftMargin // label 최대 너비
     }
     
     // MARK: - Functions
@@ -93,8 +84,9 @@ final class SendedMessageCell: UICollectionViewCell {
         messageView.layer.cornerRadius = 8
     }
     
-    func getMessageLableHeight() -> CGFloat {
-        return messageLabel.frame.height
+    func setPreferredMaxLayoutWidth(forCellWidth cellWidth: CGFloat) {
+        // 화면 width로부터 60% 이상 차지하지 않도록
+        messageLabel.preferredMaxLayoutWidth = cellWidth * 0.6
     }
     
     // 재사용을 위해 내용물 초기화

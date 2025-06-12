@@ -442,20 +442,36 @@ extension RegisterViewController {
         keyWindow.layoutIfNeeded()
         
         toastView.transform = CGAffineTransform(translationX: 0, y: 50)
-        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.5, options: .curveEaseOut, animations: {
-            toastView.alpha = 1.0
-            toastView.transform = .identity
-            bottomConstraint.constant = finalBottomConstant
-            keyWindow.layoutIfNeeded()
-        }) { _ in
-            UIView.animate(withDuration: 0.5, delay: duration - 0.5, options: .curveEaseIn, animations: {
-                toastView.alpha = 0.0
-                toastView.transform = CGAffineTransform(translationX: 0, y: 50)
-            }) { _ in
-                toastView.removeFromSuperview()
-                completion?()
+        
+        UIView.animate(
+            withDuration: 0.5,
+            delay: 0,
+            usingSpringWithDamping: 0.7,
+            initialSpringVelocity: 0.5,
+            options: .curveEaseOut,
+            animations: {
+                toastView.alpha = 1.0
+                toastView.transform = .identity
+                bottomConstraint.constant = finalBottomConstant
+                keyWindow.layoutIfNeeded()
+            },
+            completion: { _ in
+                UIView.animate(
+                    withDuration: 0.5,
+                    delay: duration - 0.5,
+                    options: .curveEaseIn,
+                    animations: {
+                        toastView.alpha = 0.0
+                        toastView.transform = CGAffineTransform(translationX: 0, y: 50)
+                    },
+                    completion: { _ in
+                        toastView.removeFromSuperview()
+                        completion?()
+                    }
+                )
             }
-        }
+        )
+
     }
 }
 

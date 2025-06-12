@@ -17,6 +17,6 @@ struct LectureIntroVideo: Identifiable, Codable {
 extension LectureIntroVideo {
     static let mock: LectureIntroVideo = LectureIntroVideo(
         lectureId: "45832D0B-5DFC-4A23-BFE9-CF3D7422F0C1",
-        videoURL: "https://example.com/intro.mp4"
+        videoURL: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
     )
 }

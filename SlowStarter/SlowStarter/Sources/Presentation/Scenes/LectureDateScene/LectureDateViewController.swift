@@ -69,15 +69,6 @@ class LectureDateViewController: UIViewController {
         return button
     }()
     
-    private let tabBar: UITabBar = {
-        let tabBar = UITabBar()
-        tabBar.translatesAutoresizingMaskIntoConstraints = false
-        tabBar.tintColor = .systemGreen // 활성 탭 색상
-        tabBar.unselectedItemTintColor = .systemGray // 비활성 탭 색상
-        tabBar.backgroundColor = .white // 탭 바 배경색
-        return tabBar
-    }()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -85,10 +76,7 @@ class LectureDateViewController: UIViewController {
         
         tableView.delegate = self
         tableView.dataSource = self
-        tabBar.delegate = self
-        
-        setupTabBarItems()
-        
+
         // 버튼 액션 추가
         nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
         
@@ -103,7 +91,6 @@ class LectureDateViewController: UIViewController {
         view.addSubview(selectedDateView)
         selectedDateView.addSubview(selectedDateLabel)
         view.addSubview(nextButton)
-        view.addSubview(tabBar)
     }
     
     private func setupConstraints() {
@@ -131,26 +118,11 @@ class LectureDateViewController: UIViewController {
             
             nextButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
             nextButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            nextButton.bottomAnchor.constraint(equalTo: tabBar.topAnchor, constant: -5),
+            nextButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -5),
             nextButton.heightAnchor.constraint(equalToConstant: 60),
-            
-            tabBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tabBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tabBar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            tabBar.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
-    
-    func setupTabBarItems() {
-        var items: [UITabBarItem] = []
-        for (index, tabData) in viewModel.tabTitles.enumerated() {
-            let image = UIImage(named: tabData.tabIcon)?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 10, weight: .regular))
-            let item = UITabBarItem(title: tabData.title, image: image, tag: index)
-            items.append(item)
-        }
-        tabBar.setItems(items, animated: false)
-    }
-    
+        
     // 코디네이터에게 화면 전환 요청
     @objc private func nextButtonTapped() {
         coordinator?.showPayment()
@@ -179,16 +151,6 @@ extension LectureDateViewController: UITableViewDataSource, UITableViewDelegate 
         
         // 선택된 셀의 배경색을 변경
 //        tableView.cellForRow(at: indexPath)?.backgroundColor = .black
-    }
-}
-
-// MARK: - UITabBarDelegate
-extension LectureDateViewController: UITabBarDelegate {
-    func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
-        guard let title = item.title else {
-            return print("Selected tab: No title")
-        }
-        print("Selected tab: \(title)")
     }
 }
 

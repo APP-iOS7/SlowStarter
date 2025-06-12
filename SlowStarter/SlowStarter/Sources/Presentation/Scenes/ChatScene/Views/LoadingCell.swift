@@ -14,7 +14,7 @@ final class LoadingCell: UICollectionViewCell {
         let view: LottieAnimationView = LottieAnimationView(name: "typing")
         view.contentMode = .scaleAspectFit
         view.loopMode = .loop
-        view.backgroundColor = .black
+        view.backgroundColor = .systemGray6
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -38,7 +38,7 @@ final class LoadingCell: UICollectionViewCell {
             animationView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             animationView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
             animationView.widthAnchor.constraint(equalToConstant: 70),
-            animationView.heightAnchor.constraint(equalToConstant: 50)
+            animationView.heightAnchor.constraint(equalToConstant: 40)
         ])
         
         animationView.clipsToBounds = true

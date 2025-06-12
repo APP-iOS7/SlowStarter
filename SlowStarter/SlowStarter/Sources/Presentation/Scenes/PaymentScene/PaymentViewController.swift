@@ -16,8 +16,8 @@ class PaymentViewController: UIViewController {
         let button = UIButton(type: .system)
         button.setTitle("상담일자에 만나요~!", for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = UIFont(name: "Pretendard-Black", size: 24)
-        button.backgroundColor = .systemGreen
+        button.titleLabel?.font = UIFont(name: "Pretendard-Black", size: 20)
+        button.backgroundColor = .black
         button.layer.cornerRadius = 10
         button.layer.borderWidth = 1
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -27,7 +27,7 @@ class PaymentViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .systemGray5
+        view.backgroundColor = .white
         setupUI()
         setupConstraints()
         

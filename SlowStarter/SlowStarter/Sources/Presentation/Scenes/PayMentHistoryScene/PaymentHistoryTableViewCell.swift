@@ -1,63 +1,67 @@
 import UIKit
 
 class PaymentHistoryTableViewCell: UITableViewCell {
-    
-    private let lectureTitle = UILabel()
+
+    private let containerView = UIView()
+    private let titleLabel = UILabel()
     private let dateLabel = UILabel()
     private let amountLabel = UILabel()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
-        
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    func setupUI() {
-        lectureTitle.text = "Lorem Ipsum"
-        lectureTitle.textColor = .black
-        lectureTitle.textAlignment = .left
-        lectureTitle.font = UIFont(name: "Pretendard-SemiBold", size: 16)
-        
-        dateLabel.text = "12/12/2020"
+
+    private func setupUI() {
+        backgroundColor = .clear
+        selectionStyle = .none
+
+        containerView.backgroundColor = UIColor(hex: "#FEEAE6")
+        containerView.layer.cornerRadius = 16
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(containerView)
+
+        titleLabel.font = UIFont(name: "Pretendard-Bold", size: 16)
+        titleLabel.textColor = UIColor(hex: "#442C2E")
+
         dateLabel.font = UIFont(name: "Pretendard-Regular", size: 14)
-        dateLabel.textColor = .systemGray3
-        dateLabel.textAlignment = .left
-    
-        amountLabel.text = "$100원 결제"
-        amountLabel.textColor = .systemGray3
-        amountLabel.textAlignment = .left
-        amountLabel.font = UIFont(name: "Pretendard-SemiBold", size: 14)
-        
-        let horizontalStackView = UIStackView(arrangedSubviews: [dateLabel, amountLabel])
-        horizontalStackView.axis = .horizontal
-        
-        let verticalStackView = UIStackView(arrangedSubviews: [lectureTitle, horizontalStackView])
-        verticalStackView.axis = .vertical
-        verticalStackView.distribution = .equalSpacing
-        verticalStackView.translatesAutoresizingMaskIntoConstraints = false
-        
-        contentView.addSubview(verticalStackView)
-        
+        dateLabel.textColor = .systemGray
+
+        amountLabel.font = UIFont(name: "Pretendard-Bold", size: 14)
+        amountLabel.textColor = UIColor(hex: "#442C2E")
+        amountLabel.setContentHuggingPriority(.required, for: .horizontal)
+
+        let topRow = UIStackView(arrangedSubviews: [titleLabel, amountLabel])
+        topRow.axis = .horizontal
+        topRow.distribution = .equalSpacing
+
+        let verticalStack = UIStackView(arrangedSubviews: [topRow, dateLabel])
+        verticalStack.axis = .vertical
+        verticalStack.spacing = 8
+        verticalStack.translatesAutoresizingMaskIntoConstraints = false
+
+        containerView.addSubview(verticalStack)
+
         NSLayoutConstraint.activate([
-            verticalStackView.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 10),
-            verticalStackView.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: -10),
-            verticalStackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            verticalStackView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            
-            dateLabel.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.2)
+            containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
+            containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -24),
+            containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
+            containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4),
+
+            verticalStack.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 16),
+            verticalStack.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -16),
+            verticalStack.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
+            verticalStack.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16)
         ])
-        
     }
-    
-    
-    func configur(title: String, date: String, amount: String) {
-        lectureTitle.text = title
+
+    func configure(title: String, date: String, amount: String) {
+        titleLabel.text = title
         dateLabel.text = date
         amountLabel.text = amount
     }
-    
 }

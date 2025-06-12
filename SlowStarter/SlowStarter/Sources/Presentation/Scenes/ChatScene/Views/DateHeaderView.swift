@@ -10,24 +10,10 @@ import UIKit
 final class DateHeaderView: UICollectionReusableView {
     private let dateLabel: UILabel = {
         let label: UILabel = UILabel()
-        label.textColor = .black
-        label.font = UIFont.systemFont(ofSize: 16)
+        label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
+        label.textColor = .gray
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
-    }()
-    
-    private let leftLineView: UIView = {
-        let view: UIView = UIView()
-        view.backgroundColor = .darkGray
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    private let rightLineView: UIView = {
-        let view: UIView = UIView()
-        view.backgroundColor = .darkGray
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
     }()
     
     private let containerView: UIView = {
@@ -47,29 +33,20 @@ final class DateHeaderView: UICollectionReusableView {
     
     private func setupUI() {
         addSubview(containerView)
-        containerView.addSubview(dateLabel)
-        containerView.addSubview(leftLineView)
-        containerView.addSubview(rightLineView)
+        addSubview(dateLabel)
         
         NSLayoutConstraint.activate([
-            containerView.topAnchor.constraint(equalTo: topAnchor),
-            containerView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            containerView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            containerView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            containerView.topAnchor.constraint(equalTo: topAnchor, constant: 20),
+            containerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20),
+            containerView.centerXAnchor.constraint(equalTo: centerXAnchor),
             
-            dateLabel.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            dateLabel.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-            
-            leftLineView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-            leftLineView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 10),
-            leftLineView.trailingAnchor.constraint(equalTo: dateLabel.leadingAnchor, constant: -10),
-            leftLineView.heightAnchor.constraint(equalToConstant: 1),
-            
-            rightLineView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-            rightLineView.leadingAnchor.constraint(equalTo: dateLabel.trailingAnchor, constant: 10),
-            rightLineView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -10),
-            rightLineView.heightAnchor.constraint(equalToConstant: 1)
+            dateLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 5),
+            dateLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
+            dateLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20),
+            dateLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -5)
         ])
+        
+        containerView.layer.cornerRadius = 10
     }
     
     func configure(_ date: Date) {
