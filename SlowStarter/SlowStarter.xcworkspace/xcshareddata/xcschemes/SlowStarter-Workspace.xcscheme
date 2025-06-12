@@ -126,6 +126,34 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "B3B395FD6136F57D630138BD"
+               BuildableName = "Kingfisher.framework"
+               BlueprintName = "Kingfisher"
+               ReferencedContainer = "container:Tuist/.build/tuist-derived/Kingfisher/Kingfisher.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "F6E2F8C3B7D9EB13105F5694"
+               BuildableName = "Kingfisher_Kingfisher.bundle"
+               BlueprintName = "Kingfisher_Kingfisher"
+               ReferencedContainer = "container:Tuist/.build/tuist-derived/Kingfisher/Kingfisher.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "B23FD9A4173BFBC5D74E0207"
                BuildableName = "PostgREST.framework"
                BlueprintName = "PostgREST"

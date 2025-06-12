@@ -1,4 +1,5 @@
 import UIKit
+import Kingfisher
 
 class LectureDetailViewController: UIViewController {
     
@@ -7,16 +8,10 @@ class LectureDetailViewController: UIViewController {
     private var slideImages: [UIImageView] = []
     private var isExpanded = false
     
-    private var lecture: Lecture
-    private var introVideo: LectureIntroVideo?
-    private var introImages: [LectureIntroImage]
+    private var lectureDetail: LectureDetail
     
-    init(_ lecture: Lecture = Lecture.mock, _ introVideo: LectureIntroVideo? = LectureIntroVideo.mock, _ introImages: [LectureIntroImage] = [LectureIntroImage.mock]) {
-        
-        
-        self.lecture = lecture
-        self.introVideo = introVideo
-        self.introImages = introImages
+    init(_ lectureDetail: LectureDetail) {
+        self.lectureDetail = lectureDetail
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -180,7 +175,9 @@ class LectureDetailViewController: UIViewController {
     }
     
     private func setupSlideImages() {
-        for (index, imageData) in introImages.enumerated() {
+        guard let images = lectureDetail.lecture_intro_images else { return }
+        
+        for (index, imageData) in images.enumerated() {
             guard let urlString = imageData.imageURL, let url = URL(string: urlString) else { continue }
             
             let imageView = UIImageView()
@@ -194,8 +191,7 @@ class LectureDetailViewController: UIViewController {
             slideImages.append(imageView)
             slideImageStackView.addArrangedSubview(imageView)
             
-        
-            loadImage(from: url, into: imageView)
+            imageView.kf.setImage(with: url)
             
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(imageTapped(_:)))
             imageView.addGestureRecognizer(tapGesture)
@@ -217,7 +213,7 @@ class LectureDetailViewController: UIViewController {
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            descriptionScrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            descriptionScrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             descriptionScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             descriptionScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             descriptionScrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -275,31 +271,13 @@ class LectureDetailViewController: UIViewController {
     }
     
     private func bindData() {
-        classTitleLabel.text = lecture.title
-        classSubtitleLabel.text = lecture.subtitle
-        descriptionLabel.text = lecture.description
+        classTitleLabel.text = lectureDetail.lecture.title
+        classSubtitleLabel.text = lectureDetail.lecture.subtitle
+        descriptionLabel.text = lectureDetail.lecture.description
         
-        if let videoURLString = introVideo?.videoURL, let url = URL(string: videoURLString) {
+        if let videoURLString = lectureDetail.lecture_intro_video?.videoURL,
+           let url = URL(string: videoURLString) {
             videoPlayerVC?.updateVideo(with: url)
-        }
-    }
-    
-    private func loadImage(from url: URL, into imageView: UIImageView) {
-        Task {
-            do {
-                let (data, _) = try await URLSession.shared.data(from: url)
-                guard let image = UIImage(data: data) else {
-                    print("Could not create image from data.")
-                    return
-                }
-                
-                await MainActor.run {
-                    imageView.image = image
-                }
-                
-            } catch {
-                print("Failed to load image from \(url): \(error.localizedDescription)")
-            }
         }
     }
     

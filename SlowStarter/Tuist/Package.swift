@@ -20,6 +20,7 @@ let package = Package(
             url: "https://github.com/supabase/supabase-swift.git",
             from: "2.0.0"
         ),
-        .package(url: "https://github.com/airbnb/lottie-spm.git", from: "4.5.0")
+        .package(url: "https://github.com/airbnb/lottie-spm.git", from: "4.5.0"),
+        .package(url: "https://github.com/onevcat/Kingfisher.git", from: "8.3.2")
     ]
 )

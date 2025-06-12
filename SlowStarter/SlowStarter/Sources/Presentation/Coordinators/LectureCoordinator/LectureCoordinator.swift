@@ -16,8 +16,8 @@ class LectureCoordinator: Coordinator {
         navigationController.viewControllers = [viewController]
     }
     
-    func showLectureDetail() {
-        let lectureDetailViewController = LectureDetailViewController()
+    func showLectureDetail(_ lectureDetail: LectureDetail) {
+        let lectureDetailViewController = LectureDetailViewController(lectureDetail)
         lectureDetailViewController.coordinator = self // 코디네이터 주입
         navigationController.pushViewController(lectureDetailViewController, animated: true)
     }
