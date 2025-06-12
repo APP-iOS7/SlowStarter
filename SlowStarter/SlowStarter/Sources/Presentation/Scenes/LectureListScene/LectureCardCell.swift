@@ -156,11 +156,13 @@ class LectureCardCell: UITableViewCell {
         detailShowButton.addTarget(self, action: #selector(showDetailTapped), for: .touchUpInside)
     }
     
-    func configure(with lecture: Lecture, isExpanded: Bool) {
+    func configure(with lecture: Lecture) {
         self.lecture = lecture
         titleLabel.text = lecture.title
-        priceLabel.text = "KRW 99,000"
-        thumbCountLabel.text = String(format: "\(lecture.thumbCount)")
+        
+        if let price = lecture.price {
+            priceLabel.text = price.description + "원"
+        }
     }
     
     @objc private func showDetailTapped() {

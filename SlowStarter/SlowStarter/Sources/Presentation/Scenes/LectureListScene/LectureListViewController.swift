@@ -14,9 +14,6 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
     
     private var viewModel = LectureListViewModel()
     
-    private var lectureExpansionStates: [Bool] = []
-    // 각 강의의 확장 상태를 저장할 배열 추가
-    
     // MARK: - UI Components
     lazy private var titleLabel: UILabel = {
         let label = UILabel()
@@ -71,16 +68,14 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        self.navigationController?.navigationBar.isHidden = false
         
-        // 강의 개수만큼 확장 상태 배열 초기화
-        lectureExpansionStates = Array(repeating: false, count: viewModel.lectures.count)
-        
-        setupUI()
-        setupConstraints()
         tableView.delegate = self
         tableView.dataSource = self
         
-        self.navigationController?.navigationBar.isHidden = false
+        setupUI()
+        setupConstraints()
+        fetchLectures()
     }
     
     private func setupUI() {
@@ -109,6 +104,14 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
+    
+    private func fetchLectures() {
+        viewModel.fetchLectures { [weak self] in
+            DispatchQueue.main.async {
+                self?.tableView.reloadData()
+            }
+        }
+    }
 }
 // MARK: - UITableViewDataSource, UITableViewDelegate
 extension LectureListViewController: UITableViewDataSource, UITableViewDelegate {
@@ -121,9 +124,8 @@ extension LectureListViewController: UITableViewDataSource, UITableViewDelegate 
             return UITableViewCell()
         }
         cell.delegate = self
-        let lecture = viewModel.lectures[indexPath.row]
-        let isExpanded = lectureExpansionStates[indexPath.row]
-        cell.configure(with: lecture, isExpanded: isExpanded)
+        let lecture = viewModel.lectures[indexPath.row].lecture
+        cell.configure(with: lecture)
         cell.selectionStyle = .none
         return cell
     }
@@ -135,19 +137,19 @@ extension LectureListViewController: UITableViewDataSource, UITableViewDelegate 
 
 extension LectureListViewController {
     func didTapThumb(in cell: LectureCardCell) {
-        guard let indexPath = tableView.indexPath(for: cell) else {
-            return
-        }
-        
-        let lectureId = viewModel.lectures[indexPath.row].lectureId
-        
-        // 엄지척 카운트 증가 및 업데이트
-        if viewModel.incrementThumbCount(for: lectureId) != nil {
-            // 해당 셀만 업데이트
-            if let updatedLecture = viewModel.lectures.first(where: { $0.lectureId == lectureId }) {
-                cell.configure(with: updatedLecture, isExpanded: lectureExpansionStates[indexPath.row])
-            }
-        }
+//        guard let indexPath = tableView.indexPath(for: cell) else {
+//            return
+//        }
+//        
+//        let lectureId = viewModel.lectures[indexPath.row].lecture.lectureId
+//        
+//        // 엄지척 카운트 증가 및 업데이트
+//        if viewModel.incrementThumbCount(for: lectureId) != nil {
+//            // 해당 셀만 업데이트
+//            if let updatedLecture = viewModel.lectures.first(where: { $0.lectureId == lectureId }) {
+//                cell.configure(with: updatedLecture, isExpanded: lectureExpansionStates[indexPath.row])
+//            }
+//        }
     }
     
     func didTapShowDetail(in cell: LectureCardCell) {
