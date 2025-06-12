@@ -125,6 +125,7 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
         }
     }
 }
+
 // MARK: - UITableViewDataSource, UITableViewDelegate
 extension LectureListViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -137,7 +138,7 @@ extension LectureListViewController: UITableViewDataSource, UITableViewDelegate 
         }
         
         cell.delegate = self
-        cell.lecture = viewModel.lectures[indexPath.row]
+        cell.detail = viewModel.lectures[indexPath.row]
         cell.selectionStyle = .none
         return cell
     }

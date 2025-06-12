@@ -13,11 +13,10 @@ protocol LectureCardCellDelegate: AnyObject {
 }
 
 class LectureCardCell: UITableViewCell {
-    
     static let identifier = "LectureCardCell"
     weak var delegate: LectureCardCellDelegate?
     
-    var lecture: LectureResponse? {
+    var detail: LectureDetail? {
         didSet {
             configure()
         }
@@ -29,7 +28,6 @@ class LectureCardCell: UITableViewCell {
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 10
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.image = UIImage(named: "cookingClassWomanChef")
         imageView.isUserInteractionEnabled = true  // 이미지뷰 터치 활성화
         return imageView
     }()
@@ -37,7 +35,6 @@ class LectureCardCell: UITableViewCell {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 18)
-        //        label.textColor = .label
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -45,7 +42,6 @@ class LectureCardCell: UITableViewCell {
     private let priceLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 22, weight: .medium)
-        //        label.textColor = .label
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -113,15 +109,15 @@ class LectureCardCell: UITableViewCell {
     }
     
     func configure() {
-        guard let response = lecture else { return }
+        guard let detail = detail else { return }
         
-        titleLabel.text = response.lecture.title
+        titleLabel.text = detail.lecture.title
         
-        if let price = response.lecture.price {
+        if let price = detail.lecture.price {
             priceLabel.text = price.description + "원"
         }
         
-        if let image = response.lecture_intro_images?.first,
+        if let image = detail.lecture_intro_images?.first,
            let imageURL = image.imageURL {
             lectureImageView.kf.setImage(with: URL(string: imageURL))
         }

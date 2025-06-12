@@ -9,16 +9,12 @@ import Foundation
 import UIKit
 
 final class LectureListViewModel {
-    
     let title: String = "강의 리스트"
     let subtitle: String = "다양한 강의를 직접 경험하세요!"
     let locationText: String = "강남구"
     let searchBarText: String = "사는곳 또는 직무를 입력해 강의를 검색하세요."
     
-    private(set) var lectures: [LectureResponse] = []
-        
-    // MARK: - UI Style
-    let lectureListBackgroundColor: UIColor = .systemGray6
+    private(set) var lectures: [LectureDetail] = []
     
     // MARK: - Methods
     func fetchLectures(completion: @escaping () -> Void) {
@@ -34,34 +30,18 @@ final class LectureListViewModel {
                 
                 for lecture in lectures {
                     // 강의와 일치하는 이미지, 비디오 추가
-                    let response: LectureResponse = LectureResponse(
+                    let detail: LectureDetail = LectureDetail(
                         lecture: lecture,
                         lecture_intro_images: imagesByLectureID[lecture.lectureId],
                         lecture_intro_videos: videosByLectureID[lecture.lectureId]
                     )
                     
-                    self.lectures.append(response) // 배열에 추가
+                    self.lectures.append(detail) // 배열에 추가
                     completion()
                 }
-                
             } catch {
                 
             }
         }
-    }
-    
-    func incrementThumbCount(for lectureId: String) -> Int? {
-//        guard let index = lectures.firstIndex(where: { $0.lectureId == lectureId }) else {
-//            return nil
-//        }
-        
-//        lectures[index].thumbCount += 1
-//        return lectures[index].thumbCount
-        
-        return 0
-    }
-    
-    func formatThumbCount(_ count: Int) -> String {
-        return String(format: "%,d", count)
     }
 }

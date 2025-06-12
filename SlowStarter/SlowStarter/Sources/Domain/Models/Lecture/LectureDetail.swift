@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct LectureResponse {
+struct LectureDetail {
     let lecture: Lecture
     var lecture_intro_images: [LectureIntroImage]?
     var lecture_intro_videos: [LectureIntroVideo]?
