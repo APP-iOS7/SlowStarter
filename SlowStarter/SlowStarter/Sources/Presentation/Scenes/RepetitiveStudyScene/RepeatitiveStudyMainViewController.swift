@@ -5,19 +5,19 @@ class RepetitiveLearningViewController: UIViewController {
     weak var coordinator: RepeatitiveStudyMainCoordinator?
     
     // MARK: - UI Elements
-
+    
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.showsVerticalScrollIndicator = false
         return scrollView
     }()
-
+    
     private let contentView: UIView = {
         let view = UIView()
         return view
     }()
-
-
+    
+    
     // --- Section 2: 매일매일 성장 스탬프 ---
     private let stampSectionContainerView: UIView = {
         let view = UIView()
@@ -25,7 +25,7 @@ class RepetitiveLearningViewController: UIViewController {
         view.clipsToBounds = true
         return view
     }()
-
+    
     private let dailyStampTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "매일매일 성장 스탬프"
@@ -33,7 +33,7 @@ class RepetitiveLearningViewController: UIViewController {
         label.textAlignment = .center
         return label
     }()
-
+    
     private let daysStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -41,7 +41,7 @@ class RepetitiveLearningViewController: UIViewController {
         stackView.alignment = .center
         return stackView
     }()
-
+    
     private let circlesStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -50,7 +50,7 @@ class RepetitiveLearningViewController: UIViewController {
         stackView.spacing = 8
         return stackView
     }()
-
+    
     private let attendanceCompleteButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setTitle("출석체크 완료", for: .normal)
@@ -61,7 +61,7 @@ class RepetitiveLearningViewController: UIViewController {
         button.clipsToBounds = true
         return button
     }()
-
+    
     // --- Section 3: 이미지 및 정보 ---
     private let mainImageViewBaseView: UIView = {
         let view = UIView()
@@ -75,10 +75,10 @@ class RepetitiveLearningViewController: UIViewController {
         // "ramen_image"라는 이름의 이미지를 Assets.xcassets에 추가해야 합니다.
         imageView.image = UIImage(named: "sample_img")
         imageView.contentMode = .scaleAspectFill
-    
+        
         return imageView
     }()
-
+    
     private let imageOverlayView: UIVisualEffectView = {
         let blurEffect = UIBlurEffect(style: .light)
         let view = UIVisualEffectView(effect: blurEffect)
@@ -93,7 +93,7 @@ class RepetitiveLearningViewController: UIViewController {
         view.clipsToBounds = true // 내부 컨텐츠가 넘치지 않도록
         return view
     }()
-
+    
     private let lessonTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "토미 선생님의 라멘 수업"
@@ -101,7 +101,7 @@ class RepetitiveLearningViewController: UIViewController {
         label.textColor = .black
         return label
     }()
-
+    
     private let lessonSubtitleLabel: UILabel = {
         let label = UILabel()
         label.text = "집에서 만들어 보는 소유라멘"
@@ -109,26 +109,26 @@ class RepetitiveLearningViewController: UIViewController {
         label.textColor = .black
         return label
     }()
-
+    
     private let likeButton: UIButton = {
         let button = UIButton(type: .custom)
         button.backgroundColor = .white
         button.layer.cornerRadius = 15
         button.clipsToBounds = true
-
+        
         let iconImageView = UIImageView(image: UIImage(systemName: "hand.thumbsup.fill"))
         iconImageView.tintColor = .black
         let countLabel = UILabel()
         countLabel.text = "32"
         countLabel.font = .systemFont(ofSize: 13, weight: .medium)
         countLabel.textColor = .black
-
+        
         let stackView = UIStackView(arrangedSubviews: [iconImageView, countLabel])
         stackView.axis = .horizontal
         stackView.spacing = 5
         stackView.alignment = .center
         stackView.isUserInteractionEnabled = false
-
+        
         button.addSubview(stackView)
         stackView.snp.makeConstraints { make in
             make.center.equalToSuperview()
@@ -137,21 +137,21 @@ class RepetitiveLearningViewController: UIViewController {
         }
         return button
     }()
-
-//    private let heartButton: UIButton = {
-//        let button = UIButton(type: .custom)
-//        button.setImage(UIImage(systemName: "heart.fill"), for: .normal)
-//        button.tintColor = .red
-//        button.backgroundColor = .white
-//        button.layer.cornerRadius = 18
-//        button.clipsToBounds = true
-//        button.layer.shadowColor = UIColor.black.cgColor
-//        button.layer.shadowOpacity = 0.2
-//        button.layer.shadowOffset = CGSize(width: 0, height: 2)
-//        button.layer.shadowRadius = 4
-//        return button
-//    }()
-
+    
+    //    private let heartButton: UIButton = {
+    //        let button = UIButton(type: .custom)
+    //        button.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+    //        button.tintColor = .red
+    //        button.backgroundColor = .white
+    //        button.layer.cornerRadius = 18
+    //        button.clipsToBounds = true
+    //        button.layer.shadowColor = UIColor.black.cgColor
+    //        button.layer.shadowOpacity = 0.2
+    //        button.layer.shadowOffset = CGSize(width: 0, height: 2)
+    //        button.layer.shadowRadius = 4
+    //        return button
+    //    }()
+    
     // --- Section 4: 오늘의 VOD 복습 과제 ---
     private let vodReviewTitleLabel: UILabel = {
         let label = UILabel()
@@ -168,8 +168,8 @@ class RepetitiveLearningViewController: UIViewController {
         stackView.distribution = .fillEqually // 버튼 높이가 동일해짐
         return stackView
     }()
-
-
+    
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -179,19 +179,19 @@ class RepetitiveLearningViewController: UIViewController {
         populateStampSection()
         populateAssignmentButtons()
     }
-
+    
     // MARK: - Setup UI
     private func setupUI() {
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
-
+        
         // Section 2
         contentView.addSubview(stampSectionContainerView)
         stampSectionContainerView.addSubview(dailyStampTitleLabel)
         stampSectionContainerView.addSubview(daysStackView)
         stampSectionContainerView.addSubview(circlesStackView)
         stampSectionContainerView.addSubview(attendanceCompleteButton)
-
+        
         // Section 3
         contentView.addSubview(mainImageViewBaseView)
         mainImageViewBaseView.addSubview(mainImageView)
@@ -203,7 +203,7 @@ class RepetitiveLearningViewController: UIViewController {
         imageOverlayView.contentView.addSubview(likeButton)
         
         // mainImageViewBaseView.addSubview(heartButton) // 하트 버튼은 BaseView에 추가
-
+        
         // Section 4
         contentView.addSubview(vodReviewTitleLabel)
         contentView.addSubview(assignmentButtonsStackView)
@@ -216,42 +216,42 @@ class RepetitiveLearningViewController: UIViewController {
         scrollView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
-
+        
         contentView.snp.makeConstraints { make in
             make.edges.equalTo(scrollView.contentLayoutGuide)
             make.width.equalTo(scrollView.frameLayoutGuide)
             // contentView의 높이는 내부 요소에 따라 결정
         }
-
+        
         // Section 2
         stampSectionContainerView.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.leading.trailing.equalToSuperview().inset(20)
         }
-
+        
         dailyStampTitleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(20)
             make.centerX.equalToSuperview()
         }
-
+        
         daysStackView.snp.makeConstraints { make in
             make.top.equalTo(dailyStampTitleLabel.snp.bottom).offset(25)
             make.leading.trailing.equalToSuperview().inset(20)
         }
-
+        
         circlesStackView.snp.makeConstraints { make in
             make.top.equalTo(daysStackView.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(40)
         }
-
+        
         attendanceCompleteButton.snp.makeConstraints { make in
             make.top.equalTo(circlesStackView.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(36)
             make.bottom.equalToSuperview().offset(-20) // stampSectionContainerView의 바닥
         }
-
+        
         // Section 3
         mainImageViewBaseView.snp.makeConstraints { make in
             make.top.equalTo(stampSectionContainerView.snp.bottom).offset(30)
@@ -262,25 +262,25 @@ class RepetitiveLearningViewController: UIViewController {
         mainImageView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-
+        
         imageOverlayView.snp.makeConstraints { make in
             make.leading.trailing.bottom.equalTo(mainImageViewBaseView).inset(10) // BaseView의 하단에 맞춤
             // 높이는 내부 컨텐츠(lessonSubtitleLabel의 bottom)에 의해 결정
         }
-
+        
         lessonTitleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(20)
             make.leading.equalToSuperview().offset(20)
             make.trailing.lessThanOrEqualTo(likeButton.snp.leading).offset(-10)
         }
-
+        
         lessonSubtitleLabel.snp.makeConstraints { make in
             make.top.equalTo(lessonTitleLabel.snp.bottom).offset(5)
             make.leading.equalTo(lessonTitleLabel)
             make.trailing.equalTo(lessonTitleLabel)
             make.bottom.equalToSuperview().offset(-20) // imageOverlayView.contentView의 바닥
         }
-
+        
         likeButton.snp.makeConstraints { make in
             make.trailing.equalToSuperview().offset(-20)
             make.centerY.equalTo(lessonSubtitleLabel.snp.top) // 타이틀과 서브타이틀 사이에 위치하도록 조정 (디자인 참고)
@@ -288,12 +288,12 @@ class RepetitiveLearningViewController: UIViewController {
             make.height.equalTo(30)
         }
         
-//        heartButton.snp.makeConstraints { make in
-//            make.top.equalToSuperview().offset(15)
-//            make.trailing.equalToSuperview().offset(-15)
-//            make.width.height.equalTo(36)
-//        }
-
+        //        heartButton.snp.makeConstraints { make in
+        //            make.top.equalToSuperview().offset(15)
+        //            make.trailing.equalToSuperview().offset(-15)
+        //            make.width.height.equalTo(36)
+        //        }
+        
         // Section 4
         vodReviewTitleLabel.snp.makeConstraints { make in
             make.top.equalTo(mainImageViewBaseView.snp.bottom).offset(30)
@@ -306,13 +306,13 @@ class RepetitiveLearningViewController: UIViewController {
             make.bottom.equalToSuperview().offset(-30) // contentView의 마지막 요소
         }
     }
-
+    
     // MARK: - Helper Methods
     private func populateStampSection() {
         let dayNames = ["월", "화", "수", "목", "금", "토", "일"]
         daysStackView.arrangedSubviews.forEach { $0.removeFromSuperview() } // 기존 뷰 제거 (재호출 대비)
         circlesStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-
+        
         for dayName in dayNames {
             let label = UILabel()
             label.text = dayName
@@ -321,18 +321,18 @@ class RepetitiveLearningViewController: UIViewController {
             label.textColor = .darkGray
             daysStackView.addArrangedSubview(label)
         }
-
+        
         for i in 0..<7 {
             let circleContainer = createDayCircleView(isCompleted: i == 0)
             circlesStackView.addArrangedSubview(circleContainer)
             // circleContainer의 높이는 circlesStackView의 정렬 및 내부 circleView 크기에 따름
             // 명시적으로 너비/높이 제약을 주고 싶다면 아래처럼
             circleContainer.snp.makeConstraints { make in
-                 make.height.equalTo(circleContainer.snp.width) // 정사각형 유지
+                make.height.equalTo(circleContainer.snp.width) // 정사각형 유지
             }
         }
     }
-
+    
     private func createDayCircleView(isCompleted: Bool) -> UIView {
         let circleView = UIView() // 컨테이너 대신 직접 원 뷰 사용
         circleView.layer.borderWidth = 1.5
@@ -350,11 +350,11 @@ class RepetitiveLearningViewController: UIViewController {
             circleView.layer.cornerRadius = circleView.bounds.width / 2
             circleView.clipsToBounds = true
         }
-
+        
         if isCompleted {
             circleView.backgroundColor = .black
             circleView.layer.borderColor = UIColor.black.cgColor
-
+            
             let completedLabel = UILabel()
             completedLabel.text = "완료"
             completedLabel.font = .systemFont(ofSize: 10, weight: .bold)
@@ -371,7 +371,7 @@ class RepetitiveLearningViewController: UIViewController {
     
     private func populateAssignmentButtons() {
         assignmentButtonsStackView.arrangedSubviews.forEach { $0.removeFromSuperview() } // 기존 뷰 제거
-
+        
         let assignments = [
             ("돈초크 라멘 육수 우려내기 - 첫 복습", true),
             ("반숙란 만들기 - 심화 과정", false),
@@ -388,7 +388,7 @@ class RepetitiveLearningViewController: UIViewController {
             // 다만, 전체 StackView의 높이가 충분해야 합니다.
         }
     }
-
+    
     private func createAssignmentButton(title: String, isPrimary: Bool) -> UIButton {
         let button = UIButton(type: .custom)
         button.setTitle(title, for: .normal)
@@ -397,8 +397,7 @@ class RepetitiveLearningViewController: UIViewController {
         button.clipsToBounds = true
         button.contentHorizontalAlignment = .center
         button.titleLabel?.lineBreakMode = .byTruncatingTail
-        button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10) // 텍스트 패딩
-
+        
         if isPrimary {
             button.backgroundColor = UIColor(named: "PrimaryPeach")
             button.setTitleColor(.black, for: .normal)
@@ -420,9 +419,10 @@ class RepetitiveLearningViewController: UIViewController {
     }
     
     private func gotoDetail() {
-        coordinator?.showDetail()
+        coordinator?.showDetail(currentPlayingData: RepeatLearnData.sample)
     }
 }
+
 
 #Preview {
     RepetitiveLearningViewController()

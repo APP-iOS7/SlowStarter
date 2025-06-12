@@ -12,6 +12,7 @@ import SnapKit
 class SubmittedAssignmentViewController: UIViewController {
     
     // MARK: - Properties
+    var onDataUpdated: (([Assignment]) -> Void)?
     
     private var assignments: [Assignment] = Assignment.sampleAssignments.sorted(by: {$0 > $1})
     
@@ -25,6 +26,9 @@ class SubmittedAssignmentViewController: UIViewController {
         config.titlePadding = 8
         config.imagePlacement = .leading
         button.configuration = config
+        
+        
+        
         return button
     }()
     
@@ -52,6 +56,15 @@ class SubmittedAssignmentViewController: UIViewController {
             self?.addNewAssignment()
         }, for: .touchUpInside)
     }
+    
+    // ✅ 2. 뷰가 사라지기 직전에 콜백을 호출하여 변경된 데이터를 전달
+        override func viewWillDisappear(_ animated: Bool) {
+            super.viewWillDisappear(animated)
+            
+            // 현재 assignments 배열의 상태를 콜백을 통해 전달
+            onDataUpdated?(self.assignments)
+        }
+    
     // 과제 인증 버튼 터치시 작동
     @objc private func addNewAssignment() {
         // 1. 새로운 과제 데이터 생성
@@ -125,6 +138,18 @@ class SubmittedAssignmentViewController: UIViewController {
         // 3. 임시 저장 indexPath 초기화
         self.indexPathForImageChange = nil
     }
+    
+    // MARK: - Data Management
+       public func updateData(with assignments: [Assignment]) {
+           // 외부에서 받은 데이터로 내부 데이터 소스를 초기화
+           self.assignments = assignments
+           // 테이블 뷰가 로드되기 전에 데이터가 설정될 수 있으므로,
+           // viewIsLoaded를 확인하여 안전하게 리로드
+           if self.isViewLoaded {
+               self.tableView.reloadData()
+           }
+       }
+    
     // MARK: - UI Setup
     
     private func setupUI() {
@@ -147,12 +172,6 @@ class SubmittedAssignmentViewController: UIViewController {
         tableView.delegate = self
     }
     
-    // MARK: - Data Management
-    
-    public func updateData(with assignments: [Assignment]) {
-        self.assignments = assignments
-        self.tableView.reloadData()
-    }
 }
 // MARK: - UITableViewDataSource
 extension SubmittedAssignmentViewController: UITableViewDataSource {
@@ -306,6 +325,7 @@ extension SubmittedAssignmentViewController: AssignmentTableViewCellDelegate {
         present(alert, animated: true)
     }
 }
+
 
 //
 //

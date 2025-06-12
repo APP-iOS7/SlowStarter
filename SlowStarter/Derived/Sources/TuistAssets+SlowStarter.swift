@@ -25,6 +25,8 @@ public enum SlowStarterAsset: Sendable {
     public static let tabLaptopChromebook = SlowStarterImages(name: "tabLaptopChromebook")
     public static let tabLectureList = SlowStarterImages(name: "tabLectureList")
     public static let tabMypage = SlowStarterImages(name: "tabMypage")
+    public static let primaryPeach = SlowStarterColors(name: "PrimaryPeach")
+    public static let primarySoftBeige = SlowStarterColors(name: "PrimarySoftBeige")
     public static let subColor1 = SlowStarterColors(name: "SubColor1")
     public static let subColor2 = SlowStarterColors(name: "SubColor2")
     public static let bread01 = SlowStarterImages(name: "bread01")
