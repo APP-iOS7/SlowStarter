@@ -65,6 +65,14 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
         return tableView
     }()
     
+    private lazy var activityIndicator: UIActivityIndicatorView = {
+        let indicator: UIActivityIndicatorView = UIActivityIndicatorView()
+        indicator.center = self.view.center
+        indicator.style = UIActivityIndicatorView.Style.medium
+        indicator.color = UIColor.black
+        return indicator
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -83,6 +91,7 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
         view.addSubview(searchButton)
         view.addSubview(locationLabel)
         view.addSubview(tableView)
+        view.addSubview(activityIndicator)
     }
     
     private func setupConstraints() {
@@ -106,8 +115,11 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
     }
     
     private func fetchLectures() {
+        activityIndicator.startAnimating()
+        
         viewModel.fetchLectures { [weak self] in
             DispatchQueue.main.async {
+                self?.activityIndicator.stopAnimating()
                 self?.tableView.reloadData()
             }
         }
@@ -123,9 +135,9 @@ extension LectureListViewController: UITableViewDataSource, UITableViewDelegate 
         guard let cell = tableView.dequeueReusableCell(withIdentifier: LectureCardCell.identifier, for: indexPath) as? LectureCardCell else {
             return UITableViewCell()
         }
+        
         cell.delegate = self
-        let lecture = viewModel.lectures[indexPath.row].lecture
-        cell.configure(with: lecture)
+        cell.lecture = viewModel.lectures[indexPath.row]
         cell.selectionStyle = .none
         return cell
     }

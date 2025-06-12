@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 protocol LectureCardCellDelegate: AnyObject {
     func didTapShowDetail(in cell: LectureCardCell)
@@ -14,10 +15,13 @@ protocol LectureCardCellDelegate: AnyObject {
 class LectureCardCell: UITableViewCell {
     
     static let identifier = "LectureCardCell"
-    
     weak var delegate: LectureCardCellDelegate?
     
-    private var lecture: Lecture?
+    var lecture: LectureResponse? {
+        didSet {
+            configure()
+        }
+    }
     
     private let lectureImageView: UIImageView = {
         let imageView = UIImageView()
@@ -108,12 +112,18 @@ class LectureCardCell: UITableViewCell {
         detailShowButton.addTarget(self, action: #selector(showDetailTapped), for: .touchUpInside)
     }
     
-    func configure(with lecture: Lecture) {
-        self.lecture = lecture
-        titleLabel.text = lecture.title
+    func configure() {
+        guard let response = lecture else { return }
         
-        if let price = lecture.price {
+        titleLabel.text = response.lecture.title
+        
+        if let price = response.lecture.price {
             priceLabel.text = price.description + "원"
+        }
+        
+        if let image = response.lecture_intro_images?.first,
+           let imageURL = image.imageURL {
+            lectureImageView.kf.setImage(with: URL(string: imageURL))
         }
     }
     
