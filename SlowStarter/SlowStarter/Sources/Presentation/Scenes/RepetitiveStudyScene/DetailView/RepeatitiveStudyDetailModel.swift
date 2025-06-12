@@ -19,11 +19,12 @@ struct RepeatLearnData: Equatable {
                                         weeklyProgress: 1,
                                         assignments: Assignment.sampleAssignments)
     
-    let lectureTitle: String
-    let lectureDescription: String
-    let lectureURL: URL
-    let weeklyProgress: Int
+    var lectureTitle: String
+    var lectureDescription: String
+    var lectureURL: URL
+    var weeklyProgress: Int
     var assignments: [Assignment]
+    var dailyAssignmentChecked: Bool = false // 
     
     static let sampleDataset: [RepeatLearnData] = [
             RepeatLearnData(

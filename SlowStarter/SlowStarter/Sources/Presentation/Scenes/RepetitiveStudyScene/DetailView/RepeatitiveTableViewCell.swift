@@ -1,40 +1,25 @@
-//
 //  RepeatitiveTableViewCell.swift
-//  SlowStarter
-//
-//  Created by jdios on 5/23/25.
-//
 
 import UIKit
 import SnapKit
 
-///
-/// 주요 역할
-/// 1. 수정
-/// 2. 수정 시 이미지뷰 탭을 통해서 이미지피커 및 이미지 촬영 선택지를 제공하고 그것에서 선택된 것을 기존 이미지와 대체
-/// 3. 삭제
-/// 4. 이러한 변동사항을 뷰컨트롤러에서 인식 후 데이터 적용
-
 class RepeatitiveTableViewCell: UITableViewCell {
     
-    // MARK: - Properties
-    
+    weak var delegate: RepeatitiveTableViewCellDelegate?
     static let identifier = "RepeatitiveTableViewCell"
     
-    // MARK: - UI Components
-    
+    // --- UI Components (변경 없음) ---
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 16)
-        label.numberOfLines = 2
-        // titleLabel이 hstack보다 먼저 줄어들도록 압축 저항 우선순위를 낮춤
+        label.numberOfLines = 0
         label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         return label
     }()
-
+    
     private let totalAssignmentLabel: UILabel = {
         let label = UILabel()
-        label.text = "+ 0"
+        label.text = "+0"
         label.textColor = .systemGray
         label.font = .systemFont(ofSize: 14, weight: .semibold)
         return label
@@ -43,17 +28,15 @@ class RepeatitiveTableViewCell: UITableViewCell {
     private let hstack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
-        stack.distribution = .fillProportionally // 버튼 크기에 따라 비례하여 채움
+        stack.distribution = .fillProportionally
         stack.spacing = 10
         return stack
     }()
     
-    // 버튼들을 저장할 배열 (configure에서 상태를 업데이트하기 위함)
     private var pointButtons: [UIButton] = []
     private let pointButtonTitles = ["10P", "20P", "30P"]
-
-    // MARK: - Initializers
-
+    
+    // --- Initializers (변경 없음) ---
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupPointButtons()
@@ -64,31 +47,10 @@ class RepeatitiveTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Lifecycle
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        
-        // 셀이 재사용되기 전에 이전 데이터를 초기화합니다.
-        titleLabel.text = nil
-        totalAssignmentLabel.text = "+ 0"
-        
-        // 모든 버튼을 기본 상태(활성화, 회색)로 되돌립니다.
-        for button in pointButtons {
-            button.isEnabled = true
-            button.configuration = .gray()
-        }
-    }
-    
-    // MARK: - Setup
-    
-    /// 스택뷰에 들어갈 버튼들을 미리 생성합니다. 이 메서드는 init에서 한 번만 호출됩니다.
+    // --- Setup (변경 없음) ---
     private func setupPointButtons() {
         for (index, title) in pointButtonTitles.enumerated() {
             let button = UIButton(type: .custom)
-            button.configuration = .gray()
-            button.setTitle(title, for: .normal)
-            button.tintColor = .black
             button.tag = index
             button.addAction(UIAction { [weak self] _ in
                 self?.pointButtonTapped(tag: button.tag)
@@ -106,7 +68,8 @@ class RepeatitiveTableViewCell: UITableViewCell {
         
         titleLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().inset(16)
-            make.centerY.equalToSuperview()
+            make.top.equalToSuperview().inset(12) // 적절한 상단 여백
+            make.bottom.equalToSuperview().inset(12) // 적절한 하단 여백
         }
         
         hstack.snp.makeConstraints { make in
@@ -116,56 +79,55 @@ class RepeatitiveTableViewCell: UITableViewCell {
         }
     }
     
-    // MARK: - Actions
-
+    // --- Actions ---
     private func pointButtonTapped(tag: Int) {
-        // TODO: 버튼 탭 시 필요한 로직 구현 (e.g., delegate 호출)
-        switch tag {
-        case 0:
-            print("10P 버튼 탭")
-        case 1:
-            print("20P 버튼 탭")
-        case 2:
-            print("30P 버튼 탭")
-        default:
-            break
-        }
+        // 셀은 더 이상 UI를 직접 바꾸지 않고, Delegate에게 보고만 합니다.
+        delegate?.repeatitiveCell(self, didTapPointButtonAtIndex: tag)
     }
     
-    // MARK: - Public Methods
-    
+    // --- Public Methods ---
     public func configure(with data: RepeatLearnData) {
         self.titleLabel.text = data.lectureTitle
         
-        // 추가 과제 개수 레이블 업데이트
-        let remainingAssignments = data.assignments.count - pointButtons.count
-        if remainingAssignments > 0 {
-            self.totalAssignmentLabel.text = "+\(remainingAssignments)"
+        let overFlowAssignmentCount = data.assignments.count - 3
+        if overFlowAssignmentCount >= 0 {
+            self.totalAssignmentLabel.text = "+\(overFlowAssignmentCount)"
         } else {
-            self.totalAssignmentLabel.text = "+0" // 0개일 때는 숨김
-            self.totalAssignmentLabel.isHidden = true
+            self.totalAssignmentLabel.text = "+0"
         }
         
-        // 주차별 진행 상태에 따라 버튼 UI 업데이트
-        for i in 0..<pointButtons.count {
-            if i < data.weeklyProgress {
-                // 완료된 주차의 버튼
-                pointButtons[i].isEnabled = false
-                var filledConfig = UIButton.Configuration.filled()
-                filledConfig.title = pointButtonTitles[i]
-                filledConfig.baseBackgroundColor = .systemGreen
-                pointButtons[i].configuration = filledConfig
+        
+        // [요청사항 1] 3단계 버튼 비주얼 로직 적용
+        for (index, button) in pointButtons.enumerated() {
+            var config = UIButton.Configuration.gray() // 기본은 회색
+            config.title = pointButtonTitles[index]
+            
+            if index < data.weeklyProgress {
+                // --- 상태 1: 인증 완료 ---
+                // 회색 버튼, 비활성화
+                config.title = pointButtonTitles[index]
+                config.baseBackgroundColor = .darkGray
+                config.baseForegroundColor = .white
+                button.configuration = config
+                
+                button.isEnabled = false
+                
+            } else if index == data.weeklyProgress {
+                // --- 상태 2: 인증 대기 (다음 차례) ---
+                // 파란색 테두리 버튼, 활성화
+                config = .borderedProminent()
+                config.title = pointButtonTitles[index]
+                button.configuration = config
+                button.isEnabled = true
+                
             } else {
-                // 아직 완료되지 않은 주차의 버튼
-                pointButtons[i].isEnabled = true
-                var grayConfig = UIButton.Configuration.gray()
-                grayConfig.title = pointButtonTitles[i]
-                pointButtons[i].configuration = grayConfig
+                // --- 상태 3: 아직 인증되지 않은 미래 단계 ---
+                // 회색 테두리 버튼, 비활성화
+                config = .borderedTinted()
+                config.title = pointButtonTitles[index]
+                button.configuration = config
+                button.isEnabled = false
             }
         }
     }
-}
-
-#Preview {
-    RepeatitiveTableViewCell()
 }
