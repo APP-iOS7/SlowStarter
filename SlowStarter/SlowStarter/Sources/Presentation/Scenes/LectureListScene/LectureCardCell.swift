@@ -160,7 +160,6 @@ class LectureCardCell: UITableViewCell {
         self.lecture = lecture
         titleLabel.text = lecture.title
         priceLabel.text = "KRW 99,000"
-        thumbCountLabel.text = String(format: "\(lecture.thumbCount)")
     }
     
     @objc private func showDetailTapped() {

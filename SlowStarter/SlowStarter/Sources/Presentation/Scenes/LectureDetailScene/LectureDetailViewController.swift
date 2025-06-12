@@ -2,7 +2,7 @@ import UIKit
 
 class LectureDetailViewController: UIViewController {
     
-    weak var coordinator: LectureFlowCoordinator?
+    weak var coordinator: LectureCoordinator?
     private var videoPlayerVC: VideoPlayerViewController?
     private var slideImages: [UIImageView] = []
     private var isExpanded = false
@@ -246,29 +246,29 @@ class LectureDetailViewController: UIViewController {
             classSubtitleLabel.leadingAnchor.constraint(equalTo: titleCardView.leadingAnchor, constant: 16),
             classSubtitleLabel.trailingAnchor.constraint(equalTo: titleCardView.trailingAnchor, constant: -16),
             
-            slideImageScrollView.topAnchor.constraint(equalTo: titleCardView.bottomAnchor, constant: 20),
+            slideImageScrollView.topAnchor.constraint(equalTo: titleCardView.bottomAnchor, constant: 16),
             slideImageScrollView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             slideImageScrollView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             slideImageScrollView.heightAnchor.constraint(equalToConstant: 160),
             
             slideImageStackView.topAnchor.constraint(equalTo: slideImageScrollView.topAnchor),
-            slideImageStackView.leadingAnchor.constraint(equalTo: slideImageScrollView.leadingAnchor, constant: 20),
-            slideImageStackView.trailingAnchor.constraint(equalTo: slideImageScrollView.trailingAnchor, constant: -20),
+            slideImageStackView.leadingAnchor.constraint(equalTo: slideImageScrollView.leadingAnchor, constant: 16),
+            slideImageStackView.trailingAnchor.constraint(equalTo: slideImageScrollView.trailingAnchor, constant: -16),
             slideImageStackView.heightAnchor.constraint(equalTo: slideImageScrollView.heightAnchor),
             
             descriptionTitleLabel.topAnchor.constraint(equalTo: slideImageScrollView.bottomAnchor, constant: 30),
             descriptionTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             
             descriptionLabel.topAnchor.constraint(equalTo: descriptionTitleLabel.bottomAnchor, constant: 10),
-            descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-            descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
             moreButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 5),
-            moreButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            moreButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
             selectDateButton.topAnchor.constraint(equalTo: moreButton.bottomAnchor, constant: 30),
-            selectDateButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            selectDateButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            selectDateButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            selectDateButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             selectDateButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -30),
             selectDateButton.heightAnchor.constraint(equalToConstant: 50)
         ])
