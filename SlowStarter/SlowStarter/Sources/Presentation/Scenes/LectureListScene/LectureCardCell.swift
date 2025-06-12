@@ -8,7 +8,6 @@
 import UIKit
 
 protocol LectureCardCellDelegate: AnyObject {
-    func didTapThumb(in cell: LectureCardCell)
     func didTapShowDetail(in cell: LectureCardCell)
 }
 
@@ -47,33 +46,6 @@ class LectureCardCell: UITableViewCell {
         return label
     }()
     
-    private let thumbContainer: UIView = {
-        let view = UIView()
-        view.backgroundColor = .systemBackground
-        view.layer.cornerRadius = 15
-        view.isUserInteractionEnabled = true
-        view.backgroundColor = UIColor(red: 1.0, green: 0.86, blue: 0.82, alpha: 1.0)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    private let thumbIcon: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "hand.thumbsup")
-        imageView.tintColor = .black
-        imageView.contentMode = .scaleAspectFit
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
-    }()
-    
-    private let thumbCountLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 13, weight: .medium)
-        label.textAlignment = .right
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
     private let detailShowButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("강의 상세보기", for: .normal)
@@ -101,14 +73,7 @@ class LectureCardCell: UITableViewCell {
         contentView.addSubview(lectureImageView)
         contentView.addSubview(titleLabel)
         contentView.addSubview(priceLabel)
-        contentView.addSubview(thumbContainer)
         contentView.addSubview(detailShowButton)
-        thumbContainer.addSubview(thumbIcon)
-        thumbContainer.addSubview(thumbCountLabel)
-        
-        // Add tap gesture to thumbContainer
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(thumbTapped))
-        thumbContainer.addGestureRecognizer(tapGesture)
     }
     
     private func setupConstraints() {
@@ -122,24 +87,11 @@ class LectureCardCell: UITableViewCell {
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             
-            priceLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
+            priceLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 5),
             priceLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-            priceLabel.trailingAnchor.constraint(equalTo: thumbContainer.leadingAnchor, constant: -20),
+            priceLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             
-            thumbContainer.centerYAnchor.constraint(equalTo: priceLabel.centerYAnchor),
-            thumbContainer.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
-            
-            thumbIcon.topAnchor.constraint(equalTo: thumbContainer.topAnchor, constant: 7),
-            thumbIcon.leadingAnchor.constraint(equalTo: thumbContainer.leadingAnchor, constant: 10),
-            thumbIcon.bottomAnchor.constraint(equalTo: thumbContainer.bottomAnchor, constant: -7),
-            thumbIcon.widthAnchor.constraint(equalToConstant: 20),
-            thumbIcon.heightAnchor.constraint(equalTo: thumbIcon.widthAnchor),
-            
-            thumbCountLabel.centerYAnchor.constraint(equalTo: thumbContainer.centerYAnchor),
-            thumbCountLabel.leadingAnchor.constraint(equalTo: thumbIcon.trailingAnchor, constant: 5),
-            thumbCountLabel.trailingAnchor.constraint(equalTo: thumbContainer.trailingAnchor, constant: -10),
-            
-            detailShowButton.topAnchor.constraint(equalTo: thumbContainer.bottomAnchor, constant: 10),
+            detailShowButton.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 10),
             detailShowButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             detailShowButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             detailShowButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -30),
@@ -167,9 +119,5 @@ class LectureCardCell: UITableViewCell {
     
     @objc private func showDetailTapped() {
         delegate?.didTapShowDetail(in: self)
-    }
-    
-    @objc private func thumbTapped() {
-        delegate?.didTapThumb(in: self)
     }
 }
