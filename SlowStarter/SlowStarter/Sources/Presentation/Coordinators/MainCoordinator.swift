@@ -17,7 +17,10 @@ class MainCoordinator: NSObject, Coordinator {
         self.tabBarController = UITabBarController()
         
         let lectureNavigationController = UINavigationController()
-        self.lectureCoordinator = LectureCoordinator(navigationController: lectureNavigationController)
+        self.lectureCoordinator = LectureCoordinator(navigationController: lectureNavigationController, tabBarController: self.tabBarController)
+        
+        let repeatitiveStudyMainNavigationController = UINavigationController()
+        self.repeatitiveStudyMainCoordinator = RepeatitiveStudyMainCoordinator(navigationController: repeatitiveStudyMainNavigationController)
         
         let chatNavigationController = UINavigationController()
         self.chatCoordinator = ChatCoordinator(
@@ -25,16 +28,13 @@ class MainCoordinator: NSObject, Coordinator {
             coreDataManager: coreDataManager
         )
         
-        let repeatitiveStudyMainNavigationController = UINavigationController()
-        self.repeatitiveStudyMainCoordinator = RepeatitiveStudyMainCoordinator(navigationController: repeatitiveStudyMainNavigationController)
-        
         let myPageNavigationController = UINavigationController()
         self.myPageCoordinator = MyPageCoordinator(navigationController: myPageNavigationController)
         
         tabBarController.viewControllers = [
             lectureNavigationController,
-            chatNavigationController,
             repeatitiveStudyMainNavigationController,
+            chatNavigationController,
             myPageNavigationController
         ]
         

@@ -2,7 +2,7 @@ import UIKit
 
 class LectureDateViewController: UIViewController {
 
-    weak var coordinator: LectureFlowCoordinator?
+    weak var coordinator: LectureCoordinator?
 
     private let datePicker: UIDatePicker = {
         let picker = UIDatePicker()
@@ -10,7 +10,8 @@ class LectureDateViewController: UIViewController {
         picker.datePickerMode = .date
         picker.preferredDatePickerStyle = .inline
         picker.translatesAutoresizingMaskIntoConstraints = false
-        picker.tintColor = UIColor(hex: "#FEDBD0")
+        picker.tintColor = UIColor(hex: "#442C2E")
+        picker.minimumDate = Date()
         return picker
     }()
 
@@ -40,14 +41,17 @@ class LectureDateViewController: UIViewController {
         button.backgroundColor = UIColor(hex: "#FEDBD0")
         button.layer.cornerRadius = 10
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.isEnabled = false
+        button.alpha = 0.5
         return button
     }()
 
     private var selectedTime: String?
 
+    private let availableTimes = ["08:00", "09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"]
+
     private lazy var timeButtons: [UIButton] = {
-        let times = ["08:00", "09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"]
-        return times.map { time in
+        return availableTimes.map { time in
             let button = UIButton(type: .system)
             button.setTitle(time, for: .normal)
             button.setTitleColor(UIColor(hex: "#442C2E"), for: .normal)
@@ -71,9 +75,17 @@ class LectureDateViewController: UIViewController {
 
         setupUI()
         setupConstraints()
+        datePicker.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
+        updateTimeButtonsAvailability()
     }
 
     private func setupUI() {
+        nextButton.addAction(UIAction {[weak self] _ in
+            guard let self = self else { return }
+            
+            self.coordinator?.showPayment(date: self.datePicker.date, time: self.selectedTime)
+        }, for: .touchUpInside)
+
         view.addSubview(titleLabel)
         view.addSubview(subtitleLabel)
         view.addSubview(datePicker)
@@ -104,17 +116,19 @@ class LectureDateViewController: UIViewController {
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
 
             subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
-            subtitleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            subtitleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
 
             datePicker.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 20),
             datePicker.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            datePicker.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            datePicker.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
 
             timeButtonStackView1.topAnchor.constraint(equalTo: datePicker.bottomAnchor, constant: 30),
-            timeButtonStackView1.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            timeButtonStackView1.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            timeButtonStackView1.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            timeButtonStackView1.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             timeButtonStackView1.heightAnchor.constraint(equalToConstant: 44),
 
             timeButtonStackView2.topAnchor.constraint(equalTo: timeButtonStackView1.bottomAnchor, constant: 10),
@@ -123,22 +137,61 @@ class LectureDateViewController: UIViewController {
             timeButtonStackView2.heightAnchor.constraint(equalToConstant: 44),
 
             nextButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
-            nextButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            nextButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            nextButton.heightAnchor.constraint(equalToConstant: 60),
+            nextButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            nextButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            nextButton.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
 
+    @objc private func dateChanged(_ sender: UIDatePicker) {
+        selectedTime = nil
+        updateTimeButtonsAvailability()
+        updateNextButtonState()
+    }
+
     @objc private func timeButtonTapped(_ sender: UIButton) {
+        guard sender.isEnabled else { return }
+
         timeButtons.forEach {
             $0.backgroundColor = .white
             $0.setTitleColor(UIColor(hex: "#442C2E"), for: .normal)
         }
         sender.backgroundColor = UIColor(hex: "#FEDBD0")
         selectedTime = sender.title(for: .normal)
+        updateNextButtonState()
     }
 
-    @objc private func nextButtonTapped() {
-        coordinator?.showPayment()
+    private func updateNextButtonState() {
+        let isTimeSelected = selectedTime != nil
+        nextButton.isEnabled = isTimeSelected
+        nextButton.alpha = isTimeSelected ? 1.0 : 0.5
+    }
+
+    private func updateTimeButtonsAvailability() {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        let selectedDate = calendar.startOfDay(for: datePicker.date)
+        let now = Date()
+        let limitDate = calendar.date(byAdding: .hour, value: 2, to: now)!
+
+        for (index, time) in availableTimes.enumerated() {
+            let components = time.split(separator: ":").compactMap { Int($0) }
+            guard components.count == 2 else { continue }
+
+            var dateComponents = calendar.dateComponents([.year, .month, .day], from: datePicker.date)
+            dateComponents.hour = components[0]
+            dateComponents.minute = components[1]
+
+            guard let timeDate = calendar.date(from: dateComponents) else { continue }
+
+            let button = timeButtons[index]
+            if selectedDate == today && timeDate < limitDate {
+                button.isEnabled = false
+                button.alpha = 0.3
+            } else {
+                button.isEnabled = true
+                button.alpha = 1.0
+            }
+        }
     }
 }
