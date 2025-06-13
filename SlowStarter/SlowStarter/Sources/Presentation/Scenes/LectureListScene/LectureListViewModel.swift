@@ -1,107 +1,40 @@
-//
-//  LectureListViewModel.swift
-//  SlowStarter
-//
-//  Created by 고요한 on 5/9/25.
-//
-
 import Foundation
 import UIKit
 
-struct LectureListViewModel {
-    
+final class LectureListViewModel {
     let title: String = "강의 리스트"
     let subtitle: String = "다양한 강의를 직접 경험하세요!"
     let locationText: String = "강남구"
     let searchBarText: String = "사는곳 또는 직무를 입력해 강의를 검색하세요."
     
-    private(set) var lectures: [Lecture] = [
-        Lecture(
-            lectureId: UUID().uuidString,
-            instructorId: UUID().uuidString,
-            title: "메시 선생님과 배우는 쿠킹클래스",
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nisl tincidunt eget nullam non. Quis hendrerit dolor magna eget est lorem ipsum dolor sit. Volutpat odio facilisis mauris sit amet massa. Commodo odio aenean sed adipiscing diam donec adipiscing tristique. Mi eget mauris pharetra et. Non tellus orci ac auctor augue. Elit at imperdiet dui accumsan sit. Ornare arcu dui vivamus arcu felis. Egestas integer eget aliquet nibh praesent. In hac habitasse platea dictumst quisque sagittis purus. Pulvinar elementum integer enim neque volutpat ac.",
-            thumbCount: 5602
-        ),
-        Lecture(
-            lectureId: UUID().uuidString,
-            instructorId: UUID().uuidString,
-            title: "향긋한 나만의 커피 만들기 (바리스타 기초)",
-            description: "집에서도 쉽게 따라 할 수 있는 홈 바리스타 기초 과정",
-            thumbCount: 3240
-        ),
-        Lecture(
-            lectureId: UUID().uuidString,
-            instructorId: UUID().uuidString,
-            title: "매콤달콤 제육볶음 만들기",
-            description: "누구나 좋아하는 제육볶음을 쉽고 맛있게 만드는 비법",
-            thumbCount: 4521
-        ),
-        Lecture(
-            lectureId: UUID().uuidString,
-            instructorId: UUID().uuidString,
-            title: "간단한 손바느질로 소품 만들기",
-            description: "바늘과 실만으로 뚝딱뚝딱! 나만의 개성 있는 소품 만들기",
-            thumbCount: 2890
-        ),
-        Lecture(
-            lectureId: UUID().uuidString,
-            instructorId: UUID().uuidString,
-            title: "쉬운 목공예, 연필꽂이 만들기",
-            description: "톱과 망치 없이 간단한 도구로 나무 연필꽂이 만들기",
-            thumbCount: 3156
-        ),
-        Lecture(
-            lectureId: UUID().uuidString,
-            instructorId: UUID().uuidString,
-            title: "기초 사진 촬영 따라 하기",
-            description: "스마트폰 카메라로 멋진 사진 찍는 방법 배우기",
-            thumbCount: 4102
-        ),
-        Lecture(
-            lectureId: UUID().uuidString,
-            instructorId: UUID().uuidString,
-            title: "신나는 텃밭 가꾸기",
-            description: "씨앗부터 수확까지! 직접 키우는 즐거움 배우기",
-            thumbCount: 2756
-        ),
-        Lecture(
-            lectureId: UUID().uuidString,
-            instructorId: UUID().uuidString,
-            title: "즐거운 종이접기 교실",
-            description: "손으로 조물조물! 재미있는 종이접기의 세계",
-            thumbCount: 3089
-        ),
-        Lecture(
-            lectureId: UUID().uuidString,
-            instructorId: UUID().uuidString,
-            title: "나만의 액세서리 만들기",
-            description: "개성을 뽐낼 수 있는 특별한 액세서리를 직접 만들어 보세요",
-            thumbCount: 3452
-        ),
-        Lecture(
-            lectureId: UUID().uuidString,
-            instructorId: UUID().uuidString,
-            title: "간단한 정리 수납 전문가 되기",
-            description: "주변을 깔끔하게 정리하는 노하우 배우기",
-            thumbCount: 4023
-        )
-    ]
-        
-    // MARK: - UI Style
-    let lectureListBackgroundColor: UIColor = .systemGray6
+    private(set) var lectures: [LectureDetail] = []
     
     // MARK: - Methods
-    mutating func incrementThumbCount(for lectureId: String) -> Int? {
-        guard let index = lectures.firstIndex(where: { $0.lectureId == lectureId }) else {
-            return nil
+    func fetchLectures(completion: @escaping () -> Void) {
+        Task {
+            do {
+                let lectures: [Lecture] = try await SupabaseDataManager.shared.fetchLectureList()
+                let images: [LectureIntroImage] = try await SupabaseDataManager.shared.fetchLectureimages()
+                let videos: [LectureIntroVideo] = try await SupabaseDataManager.shared.fetchLectureVideos()
+                
+                // 강의 ID 별로 이미지, 비디오 grouping
+                let imagesByLectureID = Dictionary(grouping: images) { $0.lectureId }
+                let videosByLectureID = Dictionary(grouping: videos) { $0.lectureId }
+                
+                for lecture in lectures {
+                    // 강의와 일치하는 이미지, 비디오 추가
+                    let detail: LectureDetail = LectureDetail(
+                        lecture: lecture,
+                        lecture_intro_images: imagesByLectureID[lecture.lectureId],
+                        lecture_intro_video: videosByLectureID[lecture.lectureId]?.first
+                    )
+                    
+                    self.lectures.append(detail) // 배열에 추가
+                    completion()
+                }
+            } catch {
+                
+            }
         }
-        
-        lectures[index].thumbCount += 1
-        return lectures[index].thumbCount
-    }
-    
-    func formatThumbCount(_ count: Int) -> String {
-        return String(format: "%,d", count)
     }
 }

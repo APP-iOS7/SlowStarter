@@ -270,7 +270,38 @@ class SupabaseDataManager {
         return try await databaseManager.fetchData(as: Lecture.self, select: "*")
     }
 
-
+    func fetchLectureList() async throws -> [Lecture] {
+        guard let databaseManager = databaseManager else {
+            throw DatabaseError.unknown
+        }
+        
+        return try await databaseManager.fetchJoinedData(
+            from: "lectures",
+            select: "*"
+        )
+    }
+    
+    func fetchLectureimages() async throws -> [LectureIntroImage] {
+        guard let databaseManager = databaseManager else {
+            throw DatabaseError.unknown
+        }
+        
+        return try await databaseManager.fetchJoinedData(
+            from: "lecture_intro_images",
+            select: "*"
+        )
+    }
+    
+    func fetchLectureVideos() async throws -> [LectureIntroVideo] {
+        guard let databaseManager = databaseManager else {
+            throw DatabaseError.unknown
+        }
+        
+        return try await databaseManager.fetchJoinedData(
+            from: "lecture_intro_videos",
+            select: "*"
+        )
+    }
 
     // MARK: - Storage
 

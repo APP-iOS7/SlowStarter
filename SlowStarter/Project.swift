@@ -99,7 +99,8 @@ let project = Project(
             dependencies: [
                 .external(name: "SnapKit", condition: .none),
                 .external(name:"Supabase", condition: .none),
-                .external(name: "Lottie", condition: .none)
+                .external(name: "Lottie", condition: .none),
+                .external(name: "Kingfisher", condition: .none)
             ]
         ),
         .target(

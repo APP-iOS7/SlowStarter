@@ -231,7 +231,19 @@ public class DataBaseManager: DataBaseManagerProtocol {
         }
     }
     
-    
+    func fetchJoinedData<T: Decodable>(from table: String, select: String) async throws -> [T] {
+        do {
+            let data: [T] = try await client
+                .from(table)
+                .select(select)
+                .execute()
+                .value
+            return data
+        } catch {
+            print("FETCH ERROR: \(error.localizedDescription)")
+            throw DatabaseError.unknown
+        }
+    }
     
     
     // MARK: - Create

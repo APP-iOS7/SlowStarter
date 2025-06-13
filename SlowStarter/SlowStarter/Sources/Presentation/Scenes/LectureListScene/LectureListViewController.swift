@@ -14,9 +14,6 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
     
     private var viewModel = LectureListViewModel()
     
-    private var lectureExpansionStates: [Bool] = []
-    // 각 강의의 확장 상태를 저장할 배열 추가
-    
     // MARK: - UI Components
     lazy private var titleLabel: UILabel = {
         let label = UILabel()
@@ -68,19 +65,25 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
         return tableView
     }()
     
+    private lazy var activityIndicator: UIActivityIndicatorView = {
+        let indicator: UIActivityIndicatorView = UIActivityIndicatorView()
+        indicator.center = self.view.center
+        indicator.style = UIActivityIndicatorView.Style.medium
+        indicator.color = UIColor.black
+        return indicator
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        self.navigationController?.navigationBar.isHidden = false
         
-        // 강의 개수만큼 확장 상태 배열 초기화
-        lectureExpansionStates = Array(repeating: false, count: viewModel.lectures.count)
-        
-        setupUI()
-        setupConstraints()
         tableView.delegate = self
         tableView.dataSource = self
         
-        self.navigationController?.navigationBar.isHidden = false
+        setupUI()
+        setupConstraints()
+        fetchLectures()
     }
     
     private func setupUI() {
@@ -88,6 +91,7 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
         view.addSubview(searchButton)
         view.addSubview(locationLabel)
         view.addSubview(tableView)
+        view.addSubview(activityIndicator)
     }
     
     private func setupConstraints() {
@@ -109,7 +113,19 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
+    
+    private func fetchLectures() {
+        activityIndicator.startAnimating()
+        
+        viewModel.fetchLectures { [weak self] in
+            DispatchQueue.main.async {
+                self?.activityIndicator.stopAnimating()
+                self?.tableView.reloadData()
+            }
+        }
+    }
 }
+
 // MARK: - UITableViewDataSource, UITableViewDelegate
 extension LectureListViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -120,10 +136,9 @@ extension LectureListViewController: UITableViewDataSource, UITableViewDelegate 
         guard let cell = tableView.dequeueReusableCell(withIdentifier: LectureCardCell.identifier, for: indexPath) as? LectureCardCell else {
             return UITableViewCell()
         }
+        
         cell.delegate = self
-        let lecture = viewModel.lectures[indexPath.row]
-        let isExpanded = lectureExpansionStates[indexPath.row]
-        cell.configure(with: lecture, isExpanded: isExpanded)
+        cell.detail = viewModel.lectures[indexPath.row]
         cell.selectionStyle = .none
         return cell
     }
@@ -134,27 +149,7 @@ extension LectureListViewController: UITableViewDataSource, UITableViewDelegate 
 }
 
 extension LectureListViewController {
-    func didTapThumb(in cell: LectureCardCell) {
-        guard let indexPath = tableView.indexPath(for: cell) else {
-            return
-        }
-        
-        let lectureId = viewModel.lectures[indexPath.row].lectureId
-        
-        // 엄지척 카운트 증가 및 업데이트
-        if viewModel.incrementThumbCount(for: lectureId) != nil {
-            // 해당 셀만 업데이트
-            if let updatedLecture = viewModel.lectures.first(where: { $0.lectureId == lectureId }) {
-                cell.configure(with: updatedLecture, isExpanded: lectureExpansionStates[indexPath.row])
-            }
-        }
+    func didTapShowDetail(lectureDetail: LectureDetail) {
+        coordinator?.showLectureDetail(lectureDetail)
     }
-    
-    func didTapShowDetail(in cell: LectureCardCell) {
-        coordinator?.showLectureDetail()
-    }
-}
-
-#Preview {
-    LectureListViewController()
 }

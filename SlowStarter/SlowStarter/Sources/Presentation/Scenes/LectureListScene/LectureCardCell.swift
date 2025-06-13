@@ -6,19 +6,21 @@
 //
 
 import UIKit
+import Kingfisher
 
 protocol LectureCardCellDelegate: AnyObject {
-    func didTapThumb(in cell: LectureCardCell)
-    func didTapShowDetail(in cell: LectureCardCell)
+    func didTapShowDetail(lectureDetail: LectureDetail)
 }
 
 class LectureCardCell: UITableViewCell {
-    
     static let identifier = "LectureCardCell"
-    
     weak var delegate: LectureCardCellDelegate?
     
-    private var lecture: Lecture?
+    var detail: LectureDetail? {
+        didSet {
+            configure()
+        }
+    }
     
     private let lectureImageView: UIImageView = {
         let imageView = UIImageView()
@@ -26,7 +28,6 @@ class LectureCardCell: UITableViewCell {
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 10
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.image = UIImage(named: "cookingClassWomanChef")
         imageView.isUserInteractionEnabled = true  // 이미지뷰 터치 활성화
         return imageView
     }()
@@ -34,7 +35,6 @@ class LectureCardCell: UITableViewCell {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 18)
-        //        label.textColor = .label
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -42,34 +42,6 @@ class LectureCardCell: UITableViewCell {
     private let priceLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 22, weight: .medium)
-        //        label.textColor = .label
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let thumbContainer: UIView = {
-        let view = UIView()
-        view.backgroundColor = .systemBackground
-        view.layer.cornerRadius = 15
-        view.isUserInteractionEnabled = true
-        view.backgroundColor = UIColor(red: 1.0, green: 0.86, blue: 0.82, alpha: 1.0)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    private let thumbIcon: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "hand.thumbsup")
-        imageView.tintColor = .black
-        imageView.contentMode = .scaleAspectFit
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
-    }()
-    
-    private let thumbCountLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 13, weight: .medium)
-        label.textAlignment = .right
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -101,14 +73,7 @@ class LectureCardCell: UITableViewCell {
         contentView.addSubview(lectureImageView)
         contentView.addSubview(titleLabel)
         contentView.addSubview(priceLabel)
-        contentView.addSubview(thumbContainer)
         contentView.addSubview(detailShowButton)
-        thumbContainer.addSubview(thumbIcon)
-        thumbContainer.addSubview(thumbCountLabel)
-        
-        // Add tap gesture to thumbContainer
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(thumbTapped))
-        thumbContainer.addGestureRecognizer(tapGesture)
     }
     
     private func setupConstraints() {
@@ -122,24 +87,11 @@ class LectureCardCell: UITableViewCell {
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             
-            priceLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
+            priceLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 5),
             priceLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-            priceLabel.trailingAnchor.constraint(equalTo: thumbContainer.leadingAnchor, constant: -20),
+            priceLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             
-            thumbContainer.centerYAnchor.constraint(equalTo: priceLabel.centerYAnchor),
-            thumbContainer.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
-            
-            thumbIcon.topAnchor.constraint(equalTo: thumbContainer.topAnchor, constant: 7),
-            thumbIcon.leadingAnchor.constraint(equalTo: thumbContainer.leadingAnchor, constant: 10),
-            thumbIcon.bottomAnchor.constraint(equalTo: thumbContainer.bottomAnchor, constant: -7),
-            thumbIcon.widthAnchor.constraint(equalToConstant: 20),
-            thumbIcon.heightAnchor.constraint(equalTo: thumbIcon.widthAnchor),
-            
-            thumbCountLabel.centerYAnchor.constraint(equalTo: thumbContainer.centerYAnchor),
-            thumbCountLabel.leadingAnchor.constraint(equalTo: thumbIcon.trailingAnchor, constant: 5),
-            thumbCountLabel.trailingAnchor.constraint(equalTo: thumbContainer.trailingAnchor, constant: -10),
-            
-            detailShowButton.topAnchor.constraint(equalTo: thumbContainer.bottomAnchor, constant: 10),
+            detailShowButton.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 10),
             detailShowButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             detailShowButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             detailShowButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -30),
@@ -156,18 +108,23 @@ class LectureCardCell: UITableViewCell {
         detailShowButton.addTarget(self, action: #selector(showDetailTapped), for: .touchUpInside)
     }
     
-    func configure(with lecture: Lecture, isExpanded: Bool) {
-        self.lecture = lecture
-        titleLabel.text = lecture.title
-        priceLabel.text = "KRW 99,000"
-        thumbCountLabel.text = String(format: "\(lecture.thumbCount)")
+    func configure() {
+        guard let detail = detail else { return }
+        
+        titleLabel.text = detail.lecture.title
+        
+        if let price = detail.lecture.price {
+            priceLabel.text = price.description + "원"
+        }
+        
+        if let image = detail.lecture_intro_images?.first,
+           let imageURL = image.imageURL {
+            lectureImageView.kf.setImage(with: URL(string: imageURL))
+        }
     }
     
     @objc private func showDetailTapped() {
-        delegate?.didTapShowDetail(in: self)
-    }
-    
-    @objc private func thumbTapped() {
-        delegate?.didTapThumb(in: self)
+        guard let detail = detail else { return }
+        delegate?.didTapShowDetail(lectureDetail: detail)
     }
 }
