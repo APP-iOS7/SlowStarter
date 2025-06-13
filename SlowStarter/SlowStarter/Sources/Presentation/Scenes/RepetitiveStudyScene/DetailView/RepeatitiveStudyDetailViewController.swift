@@ -22,11 +22,11 @@ import SnapKit
  
  5. 초기데이터 전달 방식 -> 주입
  
- 6.
- 
  */
 
 class RepeatLearnDetailViewController: UIViewController {
+    
+    let supabaseManager = SupabaseDataManager.shared
     
     // MARK: LectureData
     private var currentRepeatLearn: RepeatLearnData = RepeatLearnData(lectureTitle: "감자 썰기",
@@ -126,7 +126,10 @@ class RepeatLearnDetailViewController: UIViewController {
         
     }
     
-    
+    // MARK: - Data
+    private func fetchRepeatLearnDataList() {
+        supabaseManager.
+    }
     
     // MARK: - Video
     private func setupVideoPlayer() {
@@ -277,6 +280,6 @@ extension RepeatLearnDetailViewController: RepeatitiveTableViewCellDelegate {
 
 //
 //
-#Preview {
-    RepeatLearnDetailViewController(currentPlayingData: RepeatLearnData.sample)
-}
+//#Preview {
+//    RepeatLearnDetailViewController(currentPlayingData: RepeatLearnData.sample)
+//}

@@ -261,6 +261,14 @@ class SupabaseDataManager {
             conditionValue: currentUser.id
         )
     }
+    
+    func fetchLectures() async throws -> [Lecture] {
+        guard let databaseManager = databaseManager else {
+            throw DatabaseError.unknown
+        }
+        
+        return try await databaseManager.fetchData(as: Lecture.self, select: "*")
+    }
 
 
 

@@ -1,8 +1,9 @@
 import Foundation
+import SwiftUI
 import UIKit
 
 struct Assignment: Identifiable, Equatable, Comparable {
-    let id = UUID()
+    var id : String = UUID().uuidString
     var memo: String
     var image: UIImage
     let date: Date // 생성 시점에 날짜를 받도록 변경
@@ -49,4 +50,24 @@ struct Assignment: Identifiable, Equatable, Comparable {
             date: Date().addingTimeInterval(-86400 * Double.random(in: 1...10))
         )
     ]
+}
+
+
+extension Assignment {
+    func convertToAssignment(with userAssignment: UserAssignment) -> Assignment {
+        guard let urlString = userAssignment.imageURL, let url = URL(string: urlString) else {
+               // 둘 중 하나라도 실패하면 (문자열이 nil이거나, 유효한 URL 형식이 아니면)
+               // 여기서 함수 실행을 중단합니다.
+               print("Error: 유효하지 않은 URL 문자열이거나 nil입니다.")
+           }
+        
+        let imgUrl = URL(string: urlString)
+        let image: UIImage = AsyncImage(url: imgUrl)
+        let newAssignment = Assignment(id: userAssignment.id,
+                                       memo: userAssignment.description ?? "no memo",
+                                       image: <#T##UIImage#>,
+                                       date: userAssignment.submittedAt ?? Date())
+        return newAssignment
+    }
+    
 }

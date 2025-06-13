@@ -24,7 +24,7 @@ struct RepeatLearnData: Equatable {
     var lectureURL: URL
     var weeklyProgress: Int
     var assignments: [Assignment]
-    var dailyAssignmentChecked: Bool = false // 
+    var dailyAssignmentChecked: Bool = false //
     
     static let sampleDataset: [RepeatLearnData] = [
             RepeatLearnData(
@@ -89,7 +89,7 @@ struct RepeatLearnData: Equatable {
                 lectureDescription: "제작 과정 소개 / 기술 해설 / 10분 54초",
                 lectureURL: elephantsDream,
                 weeklyProgress: 2,
-                assignments: [Assignment.sampleAssignments[1], Assignment.sampleAssignments[2], Assignment.sampleAssignments[3]]
+                    assignments: [Assignment.sampleAssignments[1], Assignment.sampleAssignments[2], Assignment.sampleAssignments[3]]
             ),
             RepeatLearnData(
                 lectureTitle: "VFX 샷 만들기: For Bigger Blazes",
@@ -100,3 +100,44 @@ struct RepeatLearnData: Equatable {
             )
         ]
 }
+
+extension RepeatLearnData {
+    // 구성에 필요한 데이터
+    // lecture
+    /*
+     struct UserAssignment: Identifiable, Codable {
+         var userId: String
+         var vodId: String
+         var imageURL: String?
+         var description: String?
+         var submittedAt: Date?
+     }
+     struct VOD: Identifiable, Codable {
+         var vodId: String
+         var vodURL: String
+         var title: String?
+         var description: String?
+         var createdAt: Date?
+     */
+    
+    func generateRepeatLearnData(vod: VOD, userAssignments: [UserAssignment]) -> RepeatLearnData {
+        guard let url = URL(string: vod.vodURL) else {
+            print("no url")
+        }
+        
+        var assignments: [Assignment] = userAssignments.map { ua in
+            
+        }
+        
+        let newRepeatLearnData: RepeatLearnData = .init(lectureTitle: vod.title ?? "no title data",
+                                                        lectureDescription: vod.description ?? "no description data",
+                                                        lectureURL: url,
+                                                        weeklyProgress: 0,
+                                                        assignments: <#[Assignment]#>
+                                                        )
+            
+    }
+    
+}
+
+

@@ -114,16 +114,24 @@ class RepeatitiveTableViewCell: UITableViewCell {
                 
             } else if index == data.weeklyProgress {
                 // --- 상태 2: 인증 대기 (다음 차례) ---
-                // 파란색 테두리 버튼, 활성화
+                // 파란색 테두리 버튼, 비활성화
+                config = .tinted()
+                config.title = pointButtonTitles[index]
+                button.configuration = config
+                button.isEnabled = false
+                
+            } else if  index == data.weeklyProgress && data.dailyAssignmentChecked {
+                // --- 상태 4: 아직 인증되지 않은 미래 단계 ---
+                // 회색 테두리 버튼, 비활성화
                 config = .borderedProminent()
                 config.title = pointButtonTitles[index]
                 button.configuration = config
                 button.isEnabled = true
                 
             } else {
-                // --- 상태 3: 아직 인증되지 않은 미래 단계 ---
+                // --- 상태 4: 아직 인증되지 않은 미래 단계 ---
                 // 회색 테두리 버튼, 비활성화
-                config = .borderedTinted()
+                config = .gray()
                 config.title = pointButtonTitles[index]
                 button.configuration = config
                 button.isEnabled = false
