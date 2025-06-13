@@ -41,7 +41,7 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
     
     lazy private var locationLabel: UILabel = {
         let label = UILabel()
-        label.text = "현재위치: -"
+        label.text = ""
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont(name: "Pretendard-Regular", size: 16)
         label.textAlignment = .right
