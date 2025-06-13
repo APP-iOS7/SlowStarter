@@ -4,6 +4,8 @@ class LoginViewController: UIViewController {
     weak var coordinator: LoginCoordinator?
     private let viewModel = LoginViewModel()
     
+    var completion: (() -> Void)?
+    
     let idTextField = UITextField()
     let passwordTextField = UITextField()
     let loginButton = UIButton(type: .system)
@@ -82,7 +84,11 @@ class LoginViewController: UIViewController {
                 do {
                     try await self.viewModel.login(email: email, password: password)
                     self.setLoginButtonLoading(false)
-                    self.coordinator?.didFinishLogin()
+                    if self.completion == nil {
+                        self.coordinator?.didFinishLogin()
+                    } else {
+                        self.completion?()
+                    }
                 } catch {
                     self.setLoginButtonLoading(false)
                     self.showToast(message: "로그인 정보가 잘못되었습니다.")

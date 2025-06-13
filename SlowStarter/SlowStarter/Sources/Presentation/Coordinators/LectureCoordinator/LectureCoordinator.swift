@@ -4,6 +4,10 @@ class LectureCoordinator: Coordinator {
     internal var navigationController: UINavigationController
     private weak var tabBarController: UITabBarController?
     
+    var completion: (() -> Void)?
+    
+    private var childCoordinator: Coordinator?
+    
     init(navigationController: UINavigationController, tabBarController: UITabBarController? = nil) {
         self.navigationController = navigationController
         self.tabBarController = tabBarController
@@ -66,5 +70,18 @@ class LectureCoordinator: Coordinator {
 
             self.tabBarController?.selectedIndex = 1
         }
+    }
+    
+    func showLogin(_ completion: (() -> Void)? = nil) {
+        let coordinator = LoginCoordinator(navigationController: navigationController)
+        childCoordinator = coordinator
+        coordinator.start()
+    }
+    
+    func showLoginInLecture(_ completion: @escaping () -> Void) {
+        let coordinator = LoginCoordinator(navigationController: navigationController)
+        childCoordinator = coordinator
+        coordinator.start(completion)
+        
     }
 }

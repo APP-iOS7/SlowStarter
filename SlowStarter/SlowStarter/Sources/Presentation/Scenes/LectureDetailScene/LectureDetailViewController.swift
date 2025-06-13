@@ -207,7 +207,18 @@ class LectureDetailViewController: UIViewController {
         }, for: .touchUpInside)
         
         selectDateButton.addAction(UIAction { [weak self] _ in
-            self?.coordinator?.showLectureDateSelection()
+            guard let self = self else { return }
+                Task {
+                    if SupabaseDataManager.shared.getCurrentAuthenticatedUser() == nil {
+                        await MainActor.run {
+                            self.coordinator?.showLoginInLecture({
+                                self.coordinator?.showLectureDateSelection()
+                            })
+                        }
+                    } else {
+                        self.coordinator?.showLectureDateSelection()
+                    }
+                }
         }, for: .touchUpInside)
     }
     
