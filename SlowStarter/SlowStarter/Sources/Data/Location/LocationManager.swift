@@ -1,6 +1,4 @@
 import CoreLocation
-//import Contacts
-
 
 // MARK: - Error
 public enum LocationError: Error, LocalizedError {
@@ -40,20 +38,31 @@ public enum LocationError: Error, LocalizedError {
 
 // MARK: - LocationManager
 public final class LocationManager: NSObject {
-    public static let shared = LocationManager()
-    
     private let locationManager = CLLocationManager()
     private let geocoder = CLGeocoder()
     private var currentLocationCompletion: ((Result<CLLocation, LocationError>) -> Void)?
+    private var authorizationContinuation: CheckedContinuation<Void, Error>?
     
-    override private init() {
+    override init() {
         super.init()
         locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
     }
     
     /// 사용자에게 위치 권한을 요청
     public func requestAuthorization() {
         locationManager.requestWhenInUseAuthorization()
+    }
+    
+    func requestAuthorizationIfNeeded() async throws {
+        if authorizationStatus == .notDetermined {
+            try await withCheckedThrowingContinuation { continuation in
+                self.authorizationContinuation = continuation
+                self.requestAuthorization()
+            }
+        } else if authorizationStatus == .denied || authorizationStatus == .restricted {
+            throw LocationError.authorizationDenied
+        }
     }
     
     /// 현재 위치 권한 상태
@@ -64,6 +73,7 @@ public final class LocationManager: NSObject {
     /// 위치 권한을 확인 및 에러 처리
     private func checkAuthorizationStatus() throws {
         let status = authorizationStatus
+        
         guard status == .authorizedWhenInUse || status == .authorizedAlways else {
             switch status {
             case .denied:
@@ -216,11 +226,7 @@ public final class LocationManager: NSObject {
             }
         }
     }
-    
-    
 }
-
-// MARK: - Delegate
 
 extension LocationManager: CLLocationManagerDelegate {
     // 위치 갱신할 때 작동되는 델리게이트
@@ -233,9 +239,24 @@ extension LocationManager: CLLocationManagerDelegate {
         currentLocationCompletion = nil
     }
     
-    // 위치정보 가져오지 못했을 때 에러처리 델리게이트
+    // 위치 정보 가져오지 못했을 때 에러처리 델리게이트
     public func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         currentLocationCompletion?(.failure(.failedToGetLocation(error)))
         currentLocationCompletion = nil
+    }
+    
+    // 위치 권한이 허용되면 위치 정보 불러오기
+    public func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        if let continuation = authorizationContinuation {
+            switch manager.authorizationStatus {
+            case .authorizedWhenInUse, .authorizedAlways:
+                continuation.resume()
+            case .denied, .restricted:
+                continuation.resume(throwing: LocationError.authorizationDenied)
+            default:
+                break
+            }
+            authorizationContinuation = nil
+        }
     }
 }

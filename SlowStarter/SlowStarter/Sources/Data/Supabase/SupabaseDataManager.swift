@@ -267,10 +267,7 @@ class SupabaseDataManager {
             throw DatabaseError.unknown
         }
         
-        return try await databaseManager.fetchJoinedData(
-            from: "lectures",
-            select: "*"
-        )
+        return try await databaseManager.fetchData(as: Lecture.self)
     }
     
     func fetchLectureimages() async throws -> [LectureIntroImage] {
@@ -278,10 +275,7 @@ class SupabaseDataManager {
             throw DatabaseError.unknown
         }
         
-        return try await databaseManager.fetchJoinedData(
-            from: "lecture_intro_images",
-            select: "*"
-        )
+        return try await databaseManager.fetchData(as: LectureIntroImage.self)
     }
     
     func fetchLectureVideos() async throws -> [LectureIntroVideo] {
@@ -289,10 +283,46 @@ class SupabaseDataManager {
             throw DatabaseError.unknown
         }
         
-        return try await databaseManager.fetchJoinedData(
-            from: "lecture_intro_videos",
-            select: "*"
+        return try await databaseManager.fetchData(as: LectureIntroVideo.self)
+    }
+    
+    func searchLectureList(for keyword: String) async throws -> [Lecture] {
+        guard let databaseManager = databaseManager else {
+            throw DatabaseError.unknown
+        }
+        
+        return try await databaseManager.fetchData(
+            as: Lecture.self,
+            select: "*",
+            conditionColumn: "title",
+            conditionValue: keyword
         )
+    }
+    
+    func searchLectureImage(with id: String) async throws -> [LectureIntroImage] {
+        guard let databaseManager = databaseManager else {
+            throw DatabaseError.unknown
+        }
+        
+        return try await databaseManager.fetchById(
+            as: LectureIntroImage.self,
+            select: "*",
+            idColumn: "lecture_id",
+            idValue: id
+        )
+    }
+    
+    func searchLectureVideo(with id: String) async throws -> LectureIntroVideo {
+        guard let databaseManager = databaseManager else {
+            throw DatabaseError.unknown
+        }
+        
+        return try await databaseManager.fetchById(
+            as: LectureIntroVideo.self,
+            select: "*",
+            idColumn: "lecture_id",
+            idValue: id
+        )[0]
     }
 
     // MARK: - Storage
