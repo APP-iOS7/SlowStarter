@@ -41,7 +41,7 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
     
     lazy private var locationLabel: UILabel = {
         let label = UILabel()
-        label.text = "현재위치: \(viewModel.locationText)"
+        label.text = "현재위치: -"
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont(name: "Pretendard-Regular", size: 16)
         label.textAlignment = .right
@@ -79,6 +79,7 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
         setupConstraints()
         setSearchController()
         fetchLectures()
+        fetchLocationInfo()
     }
     
     private func setupUI() {
@@ -125,6 +126,16 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
             DispatchQueue.main.async {
                 self?.activityIndicator.stopAnimating()
                 self?.tableView.reloadData()
+            }
+        }
+    }
+    
+    private func fetchLocationInfo() {
+        viewModel.fetchLocationInfo { [weak self] in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                self.locationLabel.text = "현재위치: \(self.viewModel.locationText)"
             }
         }
     }
