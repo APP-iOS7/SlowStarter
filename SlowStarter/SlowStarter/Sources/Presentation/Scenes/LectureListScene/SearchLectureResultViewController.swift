@@ -9,6 +9,8 @@ import UIKit
 
 final class SearchLectureResultViewController: UIViewController {
     // MARK: - Properties
+    weak var coordinator: LectureCoordinator?
+    
     private let tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -122,11 +124,18 @@ extension SearchLectureResultViewController: UITableViewDataSource, UITableViewD
         
         // cell.delegate = self
         cell.detail = filteredLectures[indexPath.row]
+        cell.delegate = self
         cell.selectionStyle = .none
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+}
+
+extension SearchLectureResultViewController: LectureCardCellDelegate {
+    func didTapShowDetail(lectureDetail: LectureDetail) {
+        coordinator?.showLectureDetail(lectureDetail)
     }
 }

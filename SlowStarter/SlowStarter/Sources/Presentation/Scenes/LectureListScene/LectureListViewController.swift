@@ -177,7 +177,7 @@ extension LectureListViewController: UISearchResultsUpdating, UISearchController
             self?.resultController.startSearch()
         }
         
-        viewModel.searchLectures(for: keyword) { [weak self] lectures in 
+        viewModel.searchLectures(for: keyword) { [weak self] lectures in
             self?.resultController.updateResults(with: lectures)
         }
     }
