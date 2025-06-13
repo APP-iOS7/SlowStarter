@@ -17,9 +17,37 @@ final class SearchLectureResultViewController: UIViewController {
         return tableView
     }()
     
+    private lazy var emptyView: UIView = {
+        let view: UIView = UIView()
+        view.addSubview(emptyImageView)
+        view.addSubview(emptyLabel)
+        view.isHidden = true
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private let emptyImageView: UIImageView = {
+        let iv: UIImageView = UIImageView()
+        iv.image = UIImage(systemName: "xmark.circle")
+        iv.tintColor = UIColor(named: "MainColor")
+        iv.contentMode = .scaleAspectFit
+        iv.translatesAutoresizingMaskIntoConstraints = false
+        return iv
+    }()
+    
+    private let emptyLabel: UILabel = {
+        let label: UILabel = UILabel()
+        label.text = "검색 결과가 없습니다."
+        label.textColor = .lightGray
+        label.textAlignment = .center
+        label.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
     private lazy var activityIndicator: UIActivityIndicatorView = {
         let indicator: UIActivityIndicatorView = UIActivityIndicatorView()
-        indicator.center = self.tableView.center
+        indicator.center = tableView.center
         indicator.style = UIActivityIndicatorView.Style.medium
         indicator.color = UIColor.black
         return indicator
@@ -40,13 +68,27 @@ final class SearchLectureResultViewController: UIViewController {
     // MARK: - Funtions
     private func setConstraints() {
         view.addSubview(tableView)
+        view.addSubview(emptyView)
         view.addSubview(activityIndicator)
         
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor)
+            tableView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
+            
+            emptyView.centerXAnchor.constraint(equalTo: tableView.centerXAnchor),
+            emptyView.centerYAnchor.constraint(equalTo: tableView.centerYAnchor),
+            
+            emptyImageView.topAnchor.constraint(equalTo: emptyView.topAnchor),
+            emptyImageView.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor),
+            emptyImageView.widthAnchor.constraint(equalToConstant: 100),
+            emptyImageView.heightAnchor.constraint(equalToConstant: 100),
+            
+            emptyLabel.topAnchor.constraint(equalTo: emptyImageView.bottomAnchor, constant: 10),
+            emptyLabel.leadingAnchor.constraint(equalTo: emptyView.leadingAnchor),
+            emptyLabel.trailingAnchor.constraint(equalTo: emptyView.trailingAnchor),
+            emptyLabel.bottomAnchor.constraint(equalTo: emptyView.bottomAnchor)
         ])
     }
     
@@ -62,6 +104,7 @@ final class SearchLectureResultViewController: UIViewController {
         DispatchQueue.main.async { [weak self] in
             self?.tableView.reloadData()
             self?.activityIndicator.stopAnimating()
+            self?.emptyView.isHidden = !lectures.isEmpty
         }
     }
 }
