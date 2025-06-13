@@ -65,7 +65,7 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
     }()
     
     private var searchController: UISearchController?
-    private var resultController: SearchLectureResultViewController = SearchLectureResultViewController()
+    private var resultController = SearchLectureResultViewController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -105,19 +105,17 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
     
     private func setSearchController() {
         searchController = UISearchController(searchResultsController: resultController)
-        
         guard let searchController = searchController else { return }
         
-        searchController.searchResultsUpdater = self
+        searchController.view.backgroundColor = .white
         searchController.searchBar.delegate = self
-        searchController.delegate = self
-        
-        searchController.obscuresBackgroundDuringPresentation = false
-        searchController.hidesNavigationBarDuringPresentation = true
+        searchController.searchResultsUpdater = self
         searchController.searchBar.placeholder = "강의를 검색하세요."
         
         navigationItem.searchController = searchController
         definesPresentationContext = true
+        
+        resultController.coordinator = coordinator
     }
     
     private func fetchLectures() {
@@ -161,15 +159,7 @@ extension LectureListViewController {
 }
 
 // MARK: - Search Delegate
-extension LectureListViewController: UISearchResultsUpdating, UISearchControllerDelegate, UISearchBarDelegate {
-    func updateSearchResults(for searchController: UISearchController) {
-        
-    }
-    
-    func didDismissSearchController(_ searchController: UISearchController) {
-        
-    }
-    
+extension LectureListViewController: UISearchBarDelegate, UISearchResultsUpdating {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let keyword: String = searchBar.text, !keyword.isEmpty else { return }
         
@@ -180,5 +170,9 @@ extension LectureListViewController: UISearchResultsUpdating, UISearchController
         viewModel.searchLectures(for: keyword) { [weak self] lectures in
             self?.resultController.updateResults(with: lectures)
         }
+    }
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        resultController.updateResults(with: [], isSearching: true)
     }
 }

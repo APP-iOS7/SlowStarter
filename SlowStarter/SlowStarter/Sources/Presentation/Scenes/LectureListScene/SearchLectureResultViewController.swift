@@ -49,9 +49,9 @@ final class SearchLectureResultViewController: UIViewController {
     
     private lazy var activityIndicator: UIActivityIndicatorView = {
         let indicator: UIActivityIndicatorView = UIActivityIndicatorView()
-        indicator.center = tableView.center
-        indicator.style = UIActivityIndicatorView.Style.medium
-        indicator.color = UIColor.black
+        indicator.style = UIActivityIndicatorView.Style.large
+        indicator.color = .black
+        indicator.translatesAutoresizingMaskIntoConstraints = false
         return indicator
     }()
     
@@ -60,6 +60,7 @@ final class SearchLectureResultViewController: UIViewController {
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
         
         tableView.delegate = self
         tableView.dataSource = self
@@ -82,6 +83,9 @@ final class SearchLectureResultViewController: UIViewController {
             emptyView.centerXAnchor.constraint(equalTo: tableView.centerXAnchor),
             emptyView.centerYAnchor.constraint(equalTo: tableView.centerYAnchor),
             
+            activityIndicator.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: emptyView.centerYAnchor),
+            
             emptyImageView.topAnchor.constraint(equalTo: emptyView.topAnchor),
             emptyImageView.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor),
             emptyImageView.widthAnchor.constraint(equalToConstant: 100),
@@ -100,13 +104,13 @@ final class SearchLectureResultViewController: UIViewController {
         activityIndicator.startAnimating()
     }
     
-    func updateResults(with lectures: [LectureDetail]) {
+    func updateResults(with lectures: [LectureDetail], isSearching: Bool = false) {
         filteredLectures = lectures
         
         DispatchQueue.main.async { [weak self] in
             self?.tableView.reloadData()
             self?.activityIndicator.stopAnimating()
-            self?.emptyView.isHidden = !lectures.isEmpty
+            self?.emptyView.isHidden = !(lectures.isEmpty && !isSearching) // lectures가 비어있고 검색중이 아닐때 노출
         }
     }
 }

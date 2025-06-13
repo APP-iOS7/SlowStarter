@@ -175,7 +175,7 @@ public class DataBaseManager: DataBaseManagerProtocol {
     /// ```
     /// let users: [User] = try await networkManager.fetchData(as: User.self, select: "name, age", conditionColumn: "age", conditionValue: 30)
     /// ```
-    ///
+    /// conditionValue를 포함할 때 아이템을 가져옴
     func fetchData<T1: Decodable, T2: Decodable>(as type: T1.Type, select: String, conditionColumn: String, conditionValue: T2) async throws -> [T1] {
         let tableName: String
         do {
@@ -189,7 +189,6 @@ public class DataBaseManager: DataBaseManagerProtocol {
                 .from(tableName)
                 .select(select)
                 .ilike(conditionColumn, pattern: "%\(conditionValue)%")
-                // .eq(conditionColumn, value: conditionValue as! PostgrestFilterValue)
                 .execute()
                 .value
             
@@ -200,6 +199,7 @@ public class DataBaseManager: DataBaseManagerProtocol {
         }
     }
     
+    // id 기반 검색: 완전히 일치하는 아이템을 가져옴
     func fetchById<T: Decodable>(as type: T.Type, select: String, idColumn: String, idValue: String) async throws -> [T] {
         let tableName: String
         do {
