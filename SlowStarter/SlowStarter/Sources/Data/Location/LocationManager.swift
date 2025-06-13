@@ -1,6 +1,4 @@
 import CoreLocation
-//import Contacts
-
 
 // MARK: - Error
 public enum LocationError: Error, LocalizedError {

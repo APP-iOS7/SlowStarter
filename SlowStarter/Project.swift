@@ -51,6 +51,7 @@ let project = Project(
                     "SUPABASE_URL": "$(SUPABASE_URL)",
                     "NSCameraUsageDescription": "사진을 등록하기 위해 카메라 접근 권한이 필요합니다.",
                     "NSPhotoLibraryUsageDescription": "사진을 등록하기 위해 사진 앨범 접근 권한이 필요합니다.",
+                    "NSLocationWhenInUseUsageDescription": "이 앱은 위치 기반 서비스 제공을 위해 사용자의 위치를 사용합니다."
                 ]
             ),
             sources: [
