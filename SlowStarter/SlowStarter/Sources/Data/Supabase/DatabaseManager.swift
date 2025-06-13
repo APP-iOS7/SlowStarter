@@ -175,6 +175,7 @@ public class DataBaseManager: DataBaseManagerProtocol {
     /// ```
     /// let users: [User] = try await networkManager.fetchData(as: User.self, select: "name, age", conditionColumn: "age", conditionValue: 30)
     /// ```
+    ///
     func fetchData<T1: Decodable, T2: Decodable>(as type: T1.Type, select: String, conditionColumn: String, conditionValue: T2) async throws -> [T1] {
         let tableName: String
         do {
@@ -187,7 +188,31 @@ public class DataBaseManager: DataBaseManagerProtocol {
             let data: [T1] = try await client
                 .from(tableName)
                 .select(select)
-                .eq(conditionColumn, value: conditionValue as! PostgrestFilterValue)
+                .ilike(conditionColumn, pattern: "%\(conditionValue)%")
+                // .eq(conditionColumn, value: conditionValue as! PostgrestFilterValue)
+                .execute()
+                .value
+            
+            return data
+        } catch {
+            print("FETCH ERROR: \(error.localizedDescription)")
+            throw DatabaseError.unknown
+        }
+    }
+    
+    func fetchById<T: Decodable>(as type: T.Type, select: String, idColumn: String, idValue: String) async throws -> [T] {
+        let tableName: String
+        do {
+            tableName = try self.tableName(for: type)
+        } catch {
+            throw error
+        }
+        
+        do {
+            let data: [T] = try await client
+                .from(tableName)
+                .select(select)
+                .eq(idColumn, value: idValue as! PostgrestFilterValue)
                 .execute()
                 .value
             

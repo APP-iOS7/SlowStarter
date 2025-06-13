@@ -37,4 +37,32 @@ final class LectureListViewModel {
             }
         }
     }
+    
+    func searchLectures(for keyword: String, completion: @escaping ([LectureDetail]) -> Void) {
+        Task {
+            do {
+                var details: [LectureDetail] = []
+                let lectures: [Lecture] = try await SupabaseDataManager.shared.searchLectureList(for: keyword)
+                
+                for lecture in lectures {
+                    let images: [LectureIntroImage] =
+                        try await SupabaseDataManager.shared.searchLectureImage(with: lecture.lectureId)
+                    let video: LectureIntroVideo =
+                        try await SupabaseDataManager.shared.searchLectureVideo(with: lecture.lectureId)
+                    
+                    let detail: LectureDetail = LectureDetail(
+                        lecture: lecture,
+                        lecture_intro_images: images,
+                        lecture_intro_video: video
+                    )
+                    
+                    details.append(detail)
+                }
+                
+                completion(details)
+            } catch {
+                
+            }
+        }
+    }
 }
