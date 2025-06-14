@@ -1,15 +1,15 @@
 import Foundation
-import SwiftUI
 import UIKit
+import Kingfisher
 
 struct Assignment: Identifiable, Equatable, Comparable {
     var id : String = UUID().uuidString
     var memo: String
     var image: UIImage
     let date: Date // 생성 시점에 날짜를 받도록 변경
-
+    
     // MARK: - Comparable Protocol Conformance
-
+    
     // 1. Equatable 준수 (id가 같으면 같은 객체로 판단)
     static func == (lhs: Assignment, rhs: Assignment) -> Bool {
         return lhs.id == rhs.id
@@ -20,7 +20,7 @@ struct Assignment: Identifiable, Equatable, Comparable {
     static func < (lhs: Assignment, rhs: Assignment) -> Bool {
         return lhs.date < rhs.date
     }
-
+    
     // MARK: - Sample Data
     
     static let sampleAssignments: [Assignment] = [
@@ -54,18 +54,21 @@ struct Assignment: Identifiable, Equatable, Comparable {
 
 
 extension Assignment {
-    func convertToAssignment(with userAssignment: UserAssignment) -> Assignment {
+    func convertToAssignment(with userAssignment: UserAssignment) async throws -> Assignment {
         guard let urlString = userAssignment.imageURL, let url = URL(string: urlString) else {
-               // 둘 중 하나라도 실패하면 (문자열이 nil이거나, 유효한 URL 형식이 아니면)
-               // 여기서 함수 실행을 중단합니다.
-               print("Error: 유효하지 않은 URL 문자열이거나 nil입니다.")
-           }
+            // 둘 중 하나라도 실패하면 (문자열이 nil이거나, 유효한 URL 형식이 아니면)
+            // 여기서 함수 실행을 중단합니다.
+            print("Error: Invalid or nil URL string for assignment ID \(self.id)")
+            throw URLError(.badURL)
+        }
         
-        let imgUrl = URL(string: urlString)
-        let image: UIImage = AsyncImage(url: imgUrl)
+        let imageResult = try await KingfisherManager.shared.retrieveImage(with: url)
+        let downloadedImage: UIImage = imageResult.image
+        
+        
         let newAssignment = Assignment(id: userAssignment.id,
                                        memo: userAssignment.description ?? "no memo",
-                                       image: <#T##UIImage#>,
+                                       image: downloadedImage,
                                        date: userAssignment.submittedAt ?? Date())
         return newAssignment
     }

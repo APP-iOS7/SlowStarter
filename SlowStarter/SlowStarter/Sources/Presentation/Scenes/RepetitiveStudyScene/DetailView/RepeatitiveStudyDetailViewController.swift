@@ -127,9 +127,9 @@ class RepeatLearnDetailViewController: UIViewController {
     }
     
     // MARK: - Data
-    private func fetchRepeatLearnDataList() {
-        supabaseManager.
-    }
+//    private func fetchRepeatLearnDataList() {
+//        SupabaseDataManager.shared.fetchuser
+//    }
     
     // MARK: - Video
     private func setupVideoPlayer() {

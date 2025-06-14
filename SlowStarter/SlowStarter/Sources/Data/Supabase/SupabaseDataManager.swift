@@ -353,4 +353,7 @@ class SupabaseDataManager {
         }
         try await databaseManager.updateData(as: Users.self, toUpdateData: details, conditionColumn: "user_id", conditionValue: userId)
     }
+    
+    
+   
 }
