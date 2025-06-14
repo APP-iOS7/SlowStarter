@@ -291,7 +291,7 @@ class SupabaseDataManager {
             throw DatabaseError.unknown
         }
         
-        return try await databaseManager.fetchData(
+        return try await databaseManager.fetchDataIlike(
             as: Lecture.self,
             select: "*",
             conditionColumn: "title",
@@ -304,11 +304,11 @@ class SupabaseDataManager {
             throw DatabaseError.unknown
         }
         
-        return try await databaseManager.fetchById(
+        return try await databaseManager.fetchData(
             as: LectureIntroImage.self,
             select: "*",
-            idColumn: "lecture_id",
-            idValue: id
+            conditionColumn: "lecture_id",
+            conditionValue: id
         )
     }
     
@@ -317,11 +317,11 @@ class SupabaseDataManager {
             throw DatabaseError.unknown
         }
         
-        return try await databaseManager.fetchById(
+        return try await databaseManager.fetchData(
             as: LectureIntroVideo.self,
             select: "*",
-            idColumn: "lecture_id",
-            idValue: id
+            conditionColumn: "lecture_id",
+            conditionValue: id
         )[0]
     }
 

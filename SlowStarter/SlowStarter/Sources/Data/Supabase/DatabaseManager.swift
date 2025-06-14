@@ -177,6 +177,34 @@ public class DataBaseManager: DataBaseManagerProtocol {
     /// ```
     /// conditionValue를 포함할 때 아이템을 가져옴
     func fetchData<T1: Decodable, T2: Decodable>(as type: T1.Type, select: String, conditionColumn: String, conditionValue: T2) async throws -> [T1] {
+            let tableName: String
+            do {
+                tableName = try self.tableName(for: type)
+            } catch {
+                throw error
+            }
+            
+            do {
+                let data: [T1] = try await client
+                    .from(tableName)
+                    .select(select)
+                    .eq(conditionColumn, value: conditionValue as! PostgrestFilterValue)
+                    .execute()
+                    .value
+                
+                return data
+            } catch {
+                print("FETCH ERROR: \(error.localizedDescription)")
+                throw DatabaseError.unknown
+            }
+        }
+    
+    func fetchDataIlike<T1: Decodable, T2: Decodable>(
+        as type: T1.Type,
+        select: String,
+        conditionColumn: String,
+        conditionValue: T2
+    ) async throws -> [T1] {
         let tableName: String
         do {
             tableName = try self.tableName(for: type)

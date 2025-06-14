@@ -94,7 +94,7 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
             topStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             topStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             
-            locationLabel.centerYAnchor.constraint(equalTo: subtitleLabel.centerYAnchor),
+            locationLabel.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
             locationLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             
             tableView.topAnchor.constraint(equalTo: topStackView.bottomAnchor, constant: 30),
