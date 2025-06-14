@@ -329,6 +329,6 @@ extension SubmittedAssignmentViewController: AssignmentTableViewCellDelegate {
 
 //
 //
-#Preview {
-    SubmittedAssignmentViewController()
-}
+//#Preview {
+//    SubmittedAssignmentViewController()
+//}

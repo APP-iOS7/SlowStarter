@@ -54,23 +54,22 @@ struct Assignment: Identifiable, Equatable, Comparable {
 
 
 extension Assignment {
-    func convertToAssignment(with userAssignment: UserAssignment) async throws -> Assignment {
+    // ✅ (개선) UserAssignment -> Assignment 변환
+    // static 키워드를 붙여 타입 자체에서 호출할 수 있도록 변경
+    static func from(userAssignment: UserAssignment) async throws -> Assignment {
         guard let urlString = userAssignment.imageURL, let url = URL(string: urlString) else {
-            // 둘 중 하나라도 실패하면 (문자열이 nil이거나, 유효한 URL 형식이 아니면)
-            // 여기서 함수 실행을 중단합니다.
-            print("Error: Invalid or nil URL string for assignment ID \(self.id)")
-            throw URLError(.badURL)
+            throw URLError(.badURL, userInfo: [NSLocalizedDescriptionKey: "Invalid image URL"])
         }
         
-        let imageResult = try await KingfisherManager.shared.retrieveImage(with: url)
-        let downloadedImage: UIImage = imageResult.image
+        // Kingfisher를 사용해 비동기적으로 이미지 다운로드
+        let resource = KF.ImageResource(downloadURL: url)
+        let image = try await KingfisherManager.shared.retrieveImage(with: resource)
         
-        
-        let newAssignment = Assignment(id: userAssignment.id,
-                                       memo: userAssignment.description ?? "no memo",
-                                       image: downloadedImage,
-                                       date: userAssignment.submittedAt ?? Date())
-        return newAssignment
+        return Assignment(
+            id: userAssignment.id, // 서버의 ID를 그대로 사용
+            memo: userAssignment.description ?? "메모 없음",
+            image: image,
+            date: userAssignment.submittedAt ?? Date()
+        )
     }
-    
 }

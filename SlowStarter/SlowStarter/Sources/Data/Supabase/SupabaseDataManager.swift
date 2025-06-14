@@ -354,6 +354,49 @@ class SupabaseDataManager {
         try await databaseManager.updateData(as: Users.self, toUpdateData: details, conditionColumn: "user_id", conditionValue: userId)
     }
     
+    /// [Pass-through] 테이블의 데이터를 조회합니다.
+    /// - Parameters:
+    ///   - type: 조회할 모델 타입
+    ///   - select: 조회할 컬럼 문자열 (기본값: "*")
+    /// - Returns: 조회된 데이터 배열
+    func fetchData<T: Decodable>(as type: T.Type, select: String = "*") async throws -> [T] {
+        guard let databaseManager = databaseManager else {
+            throw DatabaseError.unknown
+        }
+        return try await databaseManager.fetchData(as: type, select: select)
+    }
+    // SupabaseDataManager.swift 에 추가된 함수
+    func fetchData<T1: Decodable, T2: Decodable>(as type: T1.Type, select: String, conditionColumn: String, conditionValue: T2) async throws -> [T1] {
+        guard let databaseManager = databaseManager else {
+            throw DatabaseError.unknown
+        }
+        return try await databaseManager.fetchData(as: type, select: select, conditionColumn: conditionColumn, conditionValue: conditionValue)
+    }
+
+    /// [Pass-through] 데이터 리스트를 한 번에 삽입합니다.
+    func insertListData<T: Encodable>(as type: T.Type, data: [T]) async throws {
+        guard let databaseManager = databaseManager else {
+            throw DatabaseError.unknown
+        }
+        try await databaseManager.insertListData(as: type, data: data)
+    }
+
+    /// [Pass-through] 특정 조건의 데이터를 업데이트합니다.
+    func updateData<T1: Encodable, T2: Encodable>(as type: T1.Type, toUpdateData: [String: Any], conditionColumn: String, conditionValue: T2) async throws {
+        guard let databaseManager = databaseManager else {
+            throw DatabaseError.unknown
+        }
+        try await databaseManager.updateData(as: type, toUpdateData: toUpdateData, conditionColumn: conditionColumn, conditionValue: conditionValue)
+    }
+
+    /// [Pass-through] 특정 조건의 데이터를 삭제합니다.
+    func deleteData<T1, T2: Encodable>(as type: T1.Type, conditionColumn: String, conditionValue: T2) async throws {
+        guard let databaseManager = databaseManager else {
+            throw DatabaseError.unknown
+        }
+        try await databaseManager.deleteData(as: type, conditionColumn: conditionColumn, conditionValue: conditionValue)
+    }
+   
     
    
 }

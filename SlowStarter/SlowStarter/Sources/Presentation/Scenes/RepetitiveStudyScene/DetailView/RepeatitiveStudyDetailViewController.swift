@@ -28,6 +28,9 @@ class RepeatLearnDetailViewController: UIViewController {
     
     let supabaseManager = SupabaseDataManager.shared
     
+    // ✅ (추가) 서버와 동기화를 위해 원본 과제 목록을 저장해둡니다.
+       private var originalAssignments: [UserAssignment] = []
+    
     // MARK: LectureData
     private var currentRepeatLearn: RepeatLearnData = RepeatLearnData(lectureTitle: "감자 썰기",
                                                                       lectureDescription: "기타 정보/기타 정보/기타 정보/ 영상길이",
@@ -37,7 +40,17 @@ class RepeatLearnDetailViewController: UIViewController {
     // MARK: - 비디오 컨트롤러
     private var videoPlayerViewController: VideoPlayerViewController = VideoPlayerViewController()
     
-    
+    // MARK: - Initializer
+       init(currentPlayingData: RepeatLearnData, allData: [RepeatLearnData]) {
+           self.currentRepeatLearn = currentPlayingData
+           self.repeatLearnListCellDataset = allData
+           // ✅ (추가) 현재 강의의 원본 과제를 저장 (UserAssignment 형태로 변환 필요)
+           // 이 예제에서는 RepeatLearnData의 assignments를 사용하지만, 실제로는 서버에서 받은 UserAssignment 원본이 필요합니다.
+           // 지금은 임시로 currentRepeatLearn의 과제를 원본이라 가정합니다.
+           self.originalAssignments = currentPlayingData.assignments.toUserAssignments() // 예시 변환 함수
+           
+           super.init(nibName: nil, bundle: nil)
+       }
     
     // MARK: test 용
     //    var currentPlayingData: RepeatLearnData?
