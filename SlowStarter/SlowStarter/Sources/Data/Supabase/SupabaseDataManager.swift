@@ -194,8 +194,8 @@ class SupabaseDataManager {
         guard let userId = authUser?.id else {
             throw LoginManagerError.userNotFound
         }
-
-        guard let user = try await databaseManager?.fetchData(
+        print(userId)
+        guard let user = try await databaseManager?.fetchForLoginData(
             as: Users.self,
             select: "*",
             conditionColumn: "user_id",

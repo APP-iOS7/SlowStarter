@@ -22,7 +22,6 @@ class LoginCoordinator: Coordinator {
         viewController.coordinator = self
         viewController.completion = { [weak self] in
             self?.navigationController.dismiss(animated: true) {
-                print("11111111")
                 self?.completion?()
             }
         }
