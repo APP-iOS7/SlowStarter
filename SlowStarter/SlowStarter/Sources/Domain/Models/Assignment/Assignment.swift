@@ -3,7 +3,7 @@ import UIKit
 import Kingfisher
 
 struct Assignment: Identifiable, Equatable, Comparable {
-    var id : String = UUID().uuidString
+    var id: String = UUID().uuidString
     var memo: String
     var image: UIImage
     let date: Date // 생성 시점에 날짜를 받도록 변경
@@ -52,23 +52,21 @@ struct Assignment: Identifiable, Equatable, Comparable {
     ]
 }
 
-
 extension Assignment {
-    // ✅ (개선) UserAssignment -> Assignment 변환
-    // static 키워드를 붙여 타입 자체에서 호출할 수 있도록 변경
     static func from(userAssignment: UserAssignment) async throws -> Assignment {
         guard let urlString = userAssignment.imageURL, let url = URL(string: urlString) else {
             throw URLError(.badURL, userInfo: [NSLocalizedDescriptionKey: "Invalid image URL"])
         }
         
-        // Kingfisher를 사용해 비동기적으로 이미지 다운로드
         let resource = KF.ImageResource(downloadURL: url)
-        let image = try await KingfisherManager.shared.retrieveImage(with: resource)
+        
+        // ✅ 한 줄로 결과에서 바로 .image 프로퍼티에 접근
+        let downloadedImage = try await KingfisherManager.shared.retrieveImage(with: resource).image
         
         return Assignment(
-            id: userAssignment.id, // 서버의 ID를 그대로 사용
+            id: userAssignment.id,
             memo: userAssignment.description ?? "메모 없음",
-            image: image,
+            image: downloadedImage,
             date: userAssignment.submittedAt ?? Date()
         )
     }

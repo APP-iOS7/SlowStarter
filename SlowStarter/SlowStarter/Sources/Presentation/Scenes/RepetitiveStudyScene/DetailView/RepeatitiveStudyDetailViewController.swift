@@ -32,25 +32,12 @@ class RepeatLearnDetailViewController: UIViewController {
        private var originalAssignments: [UserAssignment] = []
     
     // MARK: LectureData
-    private var currentRepeatLearn: RepeatLearnData = RepeatLearnData(lectureTitle: "감자 썰기",
-                                                                      lectureDescription: "기타 정보/기타 정보/기타 정보/ 영상길이",
-                                                                      lectureURL: bigbunny, weeklyProgress: 0,
-                                                                      assignments: Assignment.sampleAssignments) // 현재 재생되는 강의데이터
+    private var currentRepeatLearn: RepeatLearnData
     private var repeatLearnListCellDataset: [RepeatLearnData] // 강의리스트 생성용,
     // MARK: - 비디오 컨트롤러
     private var videoPlayerViewController: VideoPlayerViewController = VideoPlayerViewController()
     
-    // MARK: - Initializer
-       init(currentPlayingData: RepeatLearnData, allData: [RepeatLearnData]) {
-           self.currentRepeatLearn = currentPlayingData
-           self.repeatLearnListCellDataset = allData
-           // ✅ (추가) 현재 강의의 원본 과제를 저장 (UserAssignment 형태로 변환 필요)
-           // 이 예제에서는 RepeatLearnData의 assignments를 사용하지만, 실제로는 서버에서 받은 UserAssignment 원본이 필요합니다.
-           // 지금은 임시로 currentRepeatLearn의 과제를 원본이라 가정합니다.
-           self.originalAssignments = currentPlayingData.assignments.toUserAssignments() // 예시 변환 함수
-           
-           super.init(nibName: nil, bundle: nil)
-       }
+   
     
     // MARK: test 용
     //    var currentPlayingData: RepeatLearnData?
@@ -105,17 +92,11 @@ class RepeatLearnDetailViewController: UIViewController {
     }()
     
     // MARK: - Initializer
-    
-    init(currentPlayingData: RepeatLearnData) {
-        // 1단계: 현재 클래스의 저장 프로퍼티 초기화
-        self.currentRepeatLearn = currentPlayingData // 외부에서 주입받은 데이터로 초기화
-        self.repeatLearnListCellDataset = RepeatLearnData.sampleDataset       // 빈 배열로 초기화 (또는 다른 기본값)
-        // self.videoPlayerViewController 등 다른 let 프로퍼티는 선언 시점에 초기화됨
-        
-        // 2단계: 부모 클래스의 지정 초기화자 호출
-        super.init(nibName: nil, bundle: nil)
-    }
-    
+       init(currentPlayingData: RepeatLearnData, allData: [RepeatLearnData]) {
+           self.currentRepeatLearn = currentPlayingData
+           self.repeatLearnListCellDataset = allData
+           super.init(nibName: nil, bundle: nil)
+       }
     required init?(coder: NSCoder? = nil) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -156,7 +137,29 @@ class RepeatLearnDetailViewController: UIViewController {
             make.height.equalTo(view.snp.width).multipliedBy(9.0/16.0) // 16:9 비율
         }
     }
-    
+    // ✅ (구현) 서버에 변경사항을 저장하는 로직
+       private func saveChangesToServer() {
+           Task {
+               do {
+                   // 1. 과제 변경사항 동기화
+                   // 현재 UI에 표시된 과제 목록(currentRepeatLearn.assignments)을 서버와 동기화합니다.
+                   try await RepeatLearnService.shared.syncAssignments(
+                       for: currentRepeatLearn.vodId,
+                       with: currentRepeatLearn.assignments
+                   )
+                   
+                   // 2. 학습 진도(Progress) 동기화
+                   // 전체 강의 목록의 진행도 정보를 서버에 업데이트합니다.
+                   try await RepeatLearnService.shared.updateUserProgress(with: self.repeatLearnListCellDataset)
+                   
+                   print("모든 변경사항이 성공적으로 저장되었습니다.")
+                   
+               } catch {
+                   // 에러 처리 (예: 사용자에게 알림 표시)
+                   print("서버에 변경사항을 저장하는 중 오류 발생: \(error)")
+               }
+           }
+       }
     private func updateData(with cellData: RepeatLearnData) {
         self.currentRepeatLearn = cellData
         self.lectureTitleLabel.text = cellData.lectureTitle
