@@ -8,7 +8,6 @@
 import UIKit
 
 class LectureListViewController: UIViewController, LectureCardCellDelegate {
-    
     weak var coordinator: LectureCoordinator?
     // 코디네이터 주입을 위한 프로퍼티 추가
     
@@ -42,19 +41,11 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
     
     lazy private var locationLabel: UILabel = {
         let label = UILabel()
-        label.text = "현재위치: \(viewModel.locationText)"
+        label.text = ""
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont(name: "Pretendard-Regular", size: 16)
         label.textAlignment = .right
         return label
-    }()
-    
-    private lazy var searchButton: UIButton = {
-        let button: UIButton = UIButton(type: .system)
-        button.setImage(UIImage(systemName: "magnifyingglass"), for: .normal)
-        button.tintColor = .black
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
     }()
     
     private let tableView: UITableView = {
@@ -73,6 +64,9 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
         return indicator
     }()
     
+    private var searchController: UISearchController?
+    private var resultController = SearchLectureResultViewController()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -83,12 +77,13 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
         
         setupUI()
         setupConstraints()
+        setSearchController()
         fetchLectures()
+        fetchLocationInfo()
     }
     
     private func setupUI() {
         view.addSubview(topStackView)
-        view.addSubview(searchButton)
         view.addSubview(locationLabel)
         view.addSubview(tableView)
         view.addSubview(activityIndicator)
@@ -96,22 +91,32 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            topStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
+            topStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             topStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             
-            searchButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
-            searchButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
-            searchButton.widthAnchor.constraint(equalToConstant: 30),
-            searchButton.heightAnchor.constraint(equalTo: searchButton.widthAnchor),
-            
-            locationLabel.centerYAnchor.constraint(equalTo: subtitleLabel.centerYAnchor),
-            locationLabel.trailingAnchor.constraint(equalTo: searchButton.trailingAnchor),
+            locationLabel.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
+            locationLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             
             tableView.topAnchor.constraint(equalTo: topStackView.bottomAnchor, constant: 30),
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+    }
+    
+    private func setSearchController() {
+        searchController = UISearchController(searchResultsController: resultController)
+        guard let searchController = searchController else { return }
+        
+        searchController.view.backgroundColor = .white
+        searchController.searchBar.delegate = self
+        searchController.searchResultsUpdater = self
+        searchController.searchBar.placeholder = "강의를 검색하세요."
+        
+        navigationItem.searchController = searchController
+        definesPresentationContext = true
+        
+        resultController.coordinator = coordinator
     }
     
     private func fetchLectures() {
@@ -121,6 +126,16 @@ class LectureListViewController: UIViewController, LectureCardCellDelegate {
             DispatchQueue.main.async {
                 self?.activityIndicator.stopAnimating()
                 self?.tableView.reloadData()
+            }
+        }
+    }
+    
+    private func fetchLocationInfo() {
+        viewModel.fetchLocationInfo { [weak self] in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                self.locationLabel.text = "현재위치: \(self.viewModel.locationText)"
             }
         }
     }
@@ -151,5 +166,24 @@ extension LectureListViewController: UITableViewDataSource, UITableViewDelegate 
 extension LectureListViewController {
     func didTapShowDetail(lectureDetail: LectureDetail) {
         coordinator?.showLectureDetail(lectureDetail)
+    }
+}
+
+// MARK: - Search Delegate
+extension LectureListViewController: UISearchBarDelegate, UISearchResultsUpdating {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard let keyword: String = searchBar.text, !keyword.isEmpty else { return }
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.resultController.startSearch()
+        }
+        
+        viewModel.searchLectures(for: keyword) { [weak self] lectures in
+            self?.resultController.updateResults(with: lectures)
+        }
+    }
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        resultController.updateResults(with: [], isSearching: true)
     }
 }
