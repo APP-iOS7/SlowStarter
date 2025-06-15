@@ -55,6 +55,36 @@ class SubmittedAssignmentViewController: UIViewController {
         uploadButton.addAction(UIAction { [weak self] _ in
             self?.addNewAssignment()
         }, for: .touchUpInside)
+        
+        // ✅ '완료' 버튼 추가
+            navigationItem.rightBarButtonItem = UIBarButtonItem(
+                title: "완료",
+                style: .done,
+                target: self,
+                action: #selector(doneButtonTapped)
+            )
+            
+            // ✅ (선택사항) '취소' 버튼 추가
+            navigationItem.leftBarButtonItem = UIBarButtonItem(
+                title: "취소",
+                style: .plain,
+                target: self,
+                action: #selector(cancelButtonTapped)
+            )
+        
+    }
+    // ✅ 2. '완료' 버튼을 눌렀을 때만 데이터 업데이트 및 dismiss
+    @objc private func doneButtonTapped() {
+        // 현재 assignments 배열의 상태를 콜백을 통해 전달
+        onDataUpdated?(self.assignments)
+        // 뷰를 닫습니다.
+        dismiss(animated: true)
+    }
+
+    // ✅ (선택사항) '취소' 버튼 액션
+    @objc private func cancelButtonTapped() {
+        // 데이터 업데이트 없이 뷰만 닫습니다.
+        dismiss(animated: true)
     }
     
     // ✅ 2. 뷰가 사라지기 직전에 콜백을 호출하여 변경된 데이터를 전달

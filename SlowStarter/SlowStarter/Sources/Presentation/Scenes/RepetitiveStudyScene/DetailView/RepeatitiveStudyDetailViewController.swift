@@ -36,13 +36,7 @@ class RepeatLearnDetailViewController: UIViewController {
     private var repeatLearnListCellDataset: [RepeatLearnData] // 강의리스트 생성용,
     // MARK: - 비디오 컨트롤러
     private var videoPlayerViewController: VideoPlayerViewController = VideoPlayerViewController()
-    
-   
-    
-    // MARK: test 용
-    //    var currentPlayingData: RepeatLearnData?
-    
-    
+
     // MARK: - UI Properties
     private let lectureTitleLabel: UILabel = {
         let label = UILabel()
@@ -65,7 +59,7 @@ class RepeatLearnDetailViewController: UIViewController {
         button.setTitle("과제 제출하기", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
         button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = UIColor(red: 76/255, green: 175/255, blue: 80/255, alpha: 1.0) // 녹색
+        button.backgroundColor = UIColor(named: "PrimaryPeach")
         button.layer.cornerRadius = 8
         button.clipsToBounds = true
         // 'self' (현재 인스턴스)를 target으로 설정
@@ -208,29 +202,67 @@ class RepeatLearnDetailViewController: UIViewController {
            // self.repeatLearnTableView.reloadData()
        }
        
-       // [요청사항 2] 과제 업데이트를 처리하는 메서드
-       private func handleAssignmentsUpdate(_ updatedAssignments: [Assignment]) {
-           // 1. 현재 강의 데이터의 과제 목록 업데이트
-           self.currentRepeatLearn.assignments = updatedAssignments
-           
-           // 2. 전체 강의 목록(데이터 소스)에서 동일한 강의를 찾아 과제 목록 업데이트
-           if let index = repeatLearnListCellDataset.firstIndex(where: { $0.lectureTitle == self.currentRepeatLearn.lectureTitle }) {
-               self.repeatLearnListCellDataset[index].assignments = updatedAssignments
-               print("데이터 소스가 업데이트 되었습니다: \(self.repeatLearnListCellDataset[index].lectureTitle)")
-           }
-       }
-    @objc private func submitButtonTapped() {
-            let submittedVC = SubmittedAssignmentViewController()
+    // ✅ 과제 제출 완료 후 호출되는 콜백 처리 함수
+    private func handleAssignmentsUpdate(_ updatedAssignments: [Assignment]) {
+        // 1. 현재 강의 데이터의 과제 목록을 업데이트합니다.
+        self.currentRepeatLearn.assignments = updatedAssignments
+        
+        // 2. 전체 데이터 소스에서 현재 강의를 찾아 과제 목록과 '인증 상태'를 업데이트합니다.
+        guard let index = repeatLearnListCellDataset.firstIndex(where: { $0.vodId == self.currentRepeatLearn.vodId }) else {
+            // 데이터 소스에서 해당 강의를 찾지 못하면 아무것도 하지 않음
+            return
+        }
+        
+        // 데이터 모델 업데이트
+        repeatLearnListCellDataset[index].assignments = updatedAssignments
+        repeatLearnListCellDataset[index].dailyAssignmentChecked = true
+        
+        // 현재 재생 중인 데이터도 동기화
+        if currentRepeatLearn.vodId == repeatLearnListCellDataset[index].vodId {
+            self.currentRepeatLearn.dailyAssignmentChecked = true
+        }
+        
+        print("과제 업데이트 완료. '\(self.currentRepeatLearn.lectureTitle)' 강의가 인증 가능한 상태로 변경되었습니다.")
+        
+        // --- ✅ UI 업데이트 로직 수정 ---
+        
+        // 3. 업데이트가 필요한 셀의 IndexPath를 생성합니다.
+        let indexPathToUpdate = IndexPath(row: index, section: 0)
+        
+        // 4. 해당 IndexPath에 해당하는 셀이 현재 화면에 '보이는' 경우에만 직접 업데이트합니다.
+        //    만약 셀이 화면 밖에 있어 보이지 않는다면, cellForRow(at:)은 nil을 반환합니다.
+        //    하지만 괜찮습니다. 그런 셀은 나중에 스크롤되어 화면에 나타날 때,
+        //    tableView(_:cellForRowAt:) 메서드가 호출되면서 업데이트된 데이터로 그려지기 때문입니다.
+        if let cell = repeatLearnTableView.cellForRow(at: indexPathToUpdate) as? RepeatitiveTableViewCell {
             
-            // SubmittedVC가 닫힐 때 호출될 콜백 함수 설정
+            // ✅ [핵심] 해당 셀의 configure 메서드를 직접 호출하여 UI를 새로고침합니다.
+            print("화면에 보이는 셀(\(indexPathToUpdate.row))을 직접 업데이트합니다.")
+            let updatedData = repeatLearnListCellDataset[index]
+            cell.configure(with: updatedData)
+            
+        } else {
+            // ✅ 화면에 보이지 않는 셀은 나중에 자동으로 그려지므로, 여기서는 아무것도 할 필요가 없습니다.
+            print("업데이트할 셀(\(indexPathToUpdate.row))이 현재 화면에 보이지 않습니다. 스크롤 시 업데이트됩니다.")
+        }
+    }
+
+    @objc private func submitButtonTapped() {
+        let submittedVC = SubmittedAssignmentViewController()
+            
+            // 1. 현재 강의의 과제 데이터를 전달하여 초기화
+            submittedVC.updateData(with: self.currentRepeatLearn.assignments)
+            
+            // 2. 콜백 함수 설정
             submittedVC.onDataUpdated = { [weak self] updatedAssignments in
                 self?.handleAssignmentsUpdate(updatedAssignments)
             }
+                
+            // 3. ✅ UINavigationController로 감싸서 present
+            let navigationController = UINavigationController(rootViewController: submittedVC)
+            // iOS 13 이상에서는 기본값이 .automatic이라 카드 형태로 뜰 수 있으므로 .fullScreen으로 설정
+            navigationController.modalPresentationStyle = .fullScreen
             
-            // 현재 강의의 과제 데이터를 전달하여 SubmittedVC 초기화
-            submittedVC.updateData(with: self.currentRepeatLearn.assignments)
-            
-            present(submittedVC, animated: true)
+            present(navigationController, animated: true)
         }
 }
 
@@ -263,31 +295,37 @@ extension RepeatLearnDetailViewController: UITableViewDataSource, UITableViewDel
 
 // MARK: - RepeatitiveTableViewCellDelegate
 extension RepeatLearnDetailViewController: RepeatitiveTableViewCellDelegate {
-    // [요청사항 4, 5, 6] 셀의 포인트 버튼 탭 시 호출되는 메서드
+    
+    // ✅ 포인트 버튼이 눌렸을 때의 상태 변화 로직
     func repeatitiveCell(_ cell: RepeatitiveTableViewCell, didTapPointButtonAtIndex index: Int) {
         guard let indexPath = repeatLearnTableView.indexPath(for: cell) else { return }
         
-        // 1. 데이터 소스(repeatLearnListCellDataset)를 직접 수정합니다.
-        let newProgress = index + 1
+        let targetIndex = indexPath.row
         
-        // 이미 더 높은 단계의 progress가 완료되었거나 같은 단계를 또 누르면 무시
-        guard repeatLearnListCellDataset[indexPath.row].weeklyProgress < newProgress else {
-            return
+        // --- 1. 데이터 모델 업데이트 ---
+        
+        // weeklyProgress를 1 증가시킵니다. (예: 0 -> 1)
+        repeatLearnListCellDataset[targetIndex].weeklyProgress += 1
+        
+        // '인증 가능' 상태였던 것을 다시 '인증 대기' 상태로 되돌립니다.
+        // (다음 날의 과제를 기다리는 상태)
+        repeatLearnListCellDataset[targetIndex].dailyAssignmentChecked = false
+        
+        print("'\(repeatLearnListCellDataset[targetIndex].lectureTitle)' 강의의 진행도가 \(repeatLearnListCellDataset[targetIndex].weeklyProgress)로 업데이트되었습니다.")
+        
+        // --- 2. 현재 재생 중인 데이터도 동기화 ---
+        if repeatLearnListCellDataset[targetIndex].vodId == self.currentRepeatLearn.vodId {
+            self.currentRepeatLearn = repeatLearnListCellDataset[targetIndex]
         }
         
-        // 데이터 모델 업데이트
-        repeatLearnListCellDataset[indexPath.row].weeklyProgress = newProgress
+        // --- 3. UI 새로고침 ---
+        // 전체 테이블 뷰를 리로드하여 모든 셀의 버튼 상태
+        // (방금 완료된 셀은 '상태 1'로, 다음 셀은 '상태 2'로)를 업데이트합니다.
+        repeatLearnTableView.reloadData()
         
-        // 만약 현재 재생중인 강의와 같은 셀의 버튼을 눌렀다면, currentRepeatLearn도 업데이트
-        if repeatLearnListCellDataset[indexPath.row].lectureTitle == self.currentRepeatLearn.lectureTitle {
-            self.currentRepeatLearn.weeklyProgress = newProgress
-        }
-        
-        // 2. 변경된 데이터로 해당 셀의 UI만 새로고침합니다.
-        repeatLearnTableView.reloadRows(at: [indexPath], with: .fade)
+        // (서버 저장 로직은 viewWillDisappear에서 일괄 처리되므로 여기서는 호출하지 않습니다)
     }
 }
-
 //
 //
 //#Preview {
