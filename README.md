@@ -116,35 +116,35 @@ F --> G[과제 제출 및 보상]
   <!-- 첫 번째 행 -->
   <tr>
     <td align="center">
-      <strong>기능 1: 메인 학습 화면</strong><br><br>
-      <p>사용자가 수강 중인 강의 목록과 출석 현황을 한눈에 볼 수 있습니다.</p>
-      <img src="https://github.com/user-attachments/assets/ba341afd-b7d6-4eda-86dc-9c4cb1169414" width="300">
+      <strong> 반복학습 1: 영상재생 및 VOD 변경</strong><br><br>
+      <p> 테이블 뷰 선택시 영상이 변경되며 재생 가능합니다..</p>
+      <img src="https://github.com/user-attachments/assets/6ee41654-391b-409c-bd19-07d2a8a23581" width="300">
     </td>
     <td align="center">
-      <strong>기능 2: 학습 상세 및 영상 재생</strong><br><br>
-      <p>선택한 강의의 상세 정보와 함께 영상을 재생하고 학습 진도를 관리합니다.</p>
+      <strong> 반복학습 2: 과제제출 1</strong><br><br>
+      <p> 라이브러리의 사진으로 과제를 제출합니다. </p>
       <img src="https://github.com/user-attachments/assets/253cdf5e-0548-4340-92fc-64d2c338dd23" width="300">
     </td>
     <td align="center">
-      <strong>기능 3: 과제 제출</strong><br><br>
-      <p>과제 제출 화면으로 이동하여 사진과 메모를 통해 과제를 인증합니다.</p>
+      <strong>기능 3: 과제 제출 2 </strong><br><br>
+      <p> 사진을 촬영하여 과제를 제출합니다. </p>
       <img src="https://github.com/user-attachments/assets/fa6809ee-5eda-4a1e-95d2-7631452e542a" width="300">
     </td>
   </tr>
   <!-- 두 번째 행 -->
   <tr>
     <td align="center">
-      <strong>기능 4: 포인트 획득</strong><br><br>
-      <p>과제 인증 후, 활성화된 포인트 버튼을 눌러 학습 진도를 높입니다.</p>
-      <img src="https://github.com/user-attachments/assets/6ee41654-391b-409c-bd19-07d2a8a23581" width="300">
+      <strong>기능 4: 목록과 디테일 뷰 </strong><br><br>
+      <p>강의 목록에서 디테일 뷰로 진입하여 오리엔테이션 영상과 강의 이미지를 확인합니다. </p>
+      <img src="[https://github.com/user-attachments/assets/ba341afd-b7d6-4eda-86dc-9c4cb1169414](https://github.com/user-attachments/assets/9f6a56b8-0cb1-4aec-ae3f-5c97977f1974)" width="300">
     </td>
     <td align="center">
-      <strong>기능 5: 과제 수정 및 삭제</strong><br><br>
+      <strong>기능 5: 채팅 2</strong><br><br>
       <p>제출한 과제의 메모를 수정하거나, 필요 없는 과제를 삭제할 수 있습니다.</p>
       <img src="https://github.com/user-attachments/assets/420b5113-939a-4a89-8845-48b8f6942f62" width="300">
     </td>
     <td align="center">
-      <strong>기능 6: 출석 체크</strong><br><br>
+      <strong>기능 6: 채팅 3 </strong><br><br>
       <p>메인 화면에서 출석하기 버튼을 누르면 오늘의 스탬프가 채워집니다.</p>
       <img src="https://github.com/user-attachments/assets/11024388-15c5-4f6b-ba2f-ccc56de4083f" width="300">
     </td>
