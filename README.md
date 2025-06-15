@@ -136,7 +136,7 @@ F --> G[과제 제출 및 보상]
     <td align="center">
       <strong>기능 4: 목록과 디테일 뷰 </strong><br><br>
       <p>강의 목록에서 디테일 뷰로 진입하여 오리엔테이션 영상과 강의 이미지를 확인합니다. </p>
-      <img src= "![Image](https://github.com/user-attachments/assets/9f6a56b8-0cb1-4aec-ae3f-5c97977f1974)" width="300">
+      <img src= "https://github.com/user-attachments/assets/9f6a56b8-0cb1-4aec-ae3f-5c97977f1974" width="300">
     </td>
     <td align="center">
       <strong>기능 5: 채팅 2</strong><br><br>
