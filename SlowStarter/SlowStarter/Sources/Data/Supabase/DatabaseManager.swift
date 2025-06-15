@@ -149,6 +149,11 @@ public class DataBaseManager: DataBaseManagerProtocol {
                 .from(tableName)
                 .select(select, head: isOnlyCount, count: .exact)
                 .execute()
+            if let dataString = String(data: data.data, encoding: .utf8) {
+                        print("--- RAW JSON from \(tableName) (select: \"\(select)\") ---")
+                        print(dataString)
+                        print("---------------------------------------")
+                    }
             
             guard let count = data.count else {
                 throw DatabaseError.unknown

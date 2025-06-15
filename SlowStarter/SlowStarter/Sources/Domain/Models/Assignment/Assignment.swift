@@ -3,7 +3,9 @@ import UIKit
 import Kingfisher
 
 struct Assignment: Identifiable, Equatable, Comparable {
-    var id : String = UUID().uuidString
+
+    var id: String = UUID().uuidString
+
     var memo: String
     var image: UIImage
     let date: Date // 생성 시점에 날짜를 받도록 변경
@@ -54,23 +56,32 @@ struct Assignment: Identifiable, Equatable, Comparable {
 
 
 extension Assignment {
-    func convertToAssignment(with userAssignment: UserAssignment) async throws -> Assignment {
-        guard let urlString = userAssignment.imageURL, let url = URL(string: urlString) else {
-            // 둘 중 하나라도 실패하면 (문자열이 nil이거나, 유효한 URL 형식이 아니면)
-            // 여기서 함수 실행을 중단합니다.
-            print("Error: Invalid or nil URL string for assignment ID \(self.id)")
-            throw URLError(.badURL)
+    
+    // ✅ (수정) UserAssignment -> Assignment 변환 함수
+    static func from(userAssignment: UserAssignment) async -> Assignment { // ❌ throws 제거
+        
+        var finalImage: UIImage = UIImage(named: "sample_img") ?? UIImage() // 기본 이미지 설정
+        
+        // 1. imageURL이 유효한지 확인
+        if let urlString = userAssignment.imageURL, let url = URL(string: urlString) {
+            // 2. URL이 유효하다면 Kingfisher로 이미지 다운로드 시도
+            let resource = KF.ImageResource(downloadURL: url)
+            
+            // `try? await`를 사용하여 다운로드 실패 시 에러를 던지는 대신 nil을 반환하도록 함
+            if let result = try? await KingfisherManager.shared.retrieveImage(with: resource) {
+                // 다운로드 성공 시, 결과 이미지로 교체
+                finalImage = result.image
+            }
+            // 다운로드 실패 시에는 맨 처음에 설정한 기본 이미지가 그대로 사용됨
         }
         
-        let imageResult = try await KingfisherManager.shared.retrieveImage(with: url)
-        let downloadedImage: UIImage = imageResult.image
-        
-        
-        let newAssignment = Assignment(id: userAssignment.id,
-                                       memo: userAssignment.description ?? "no memo",
-                                       image: downloadedImage,
-                                       date: userAssignment.submittedAt ?? Date())
-        return newAssignment
+        // 3. 최종적으로 Assignment 객체를 생성하여 반환 (이제 이 함수는 절대 에러를 던지지 않음)
+        return Assignment(
+            id: userAssignment.id, // 서버의 ID를 그대로 사용
+            memo: userAssignment.description ?? "메모 없음",
+            image: finalImage,
+            date: userAssignment.submittedAt ?? Date()
+        )
     }
-    
+
 }
