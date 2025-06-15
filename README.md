@@ -113,20 +113,38 @@ F --> G[과제 제출 및 보상]
 > 📌 추후 앱 UI 및 시연 영상 추가 예정
 
 <table>
+   <!-- 목록 디테일 행 -->
+  <tr>
+    <td align="center">
+      <strong> 기능 1: 강의 내용 확인 </strong><br><br>
+      <p> 강의 내용을 오리엔테이션 영상과 이미지로 확인 가능</p>
+      <img src="https://github.com/user-attachments/assets/9f6a56b8-0cb1-4aec-ae3f-5c97977f1974" width="200">
+    </td>
+    <td align="center">
+      <strong> 기능 2: 강사 상담예약</strong><br><br>
+      <p> 강사와의 상담일정을 잡을 수 있습니다 </p>
+      <img src="https://github.com/user-attachments/assets/df067354-1bad-4edc-820d-e3597e5256e1" width="200">
+    </td>
+    <td align="center">
+      <strong>기능 3: 위치기반 강의 탐색 </strong><br><br>
+      <p> 현 위치 기반으로 수강 가능한 강의를 찾을 수 있습니다. </p>
+      <img src="https://github.com/user-attachments/assets/612f8f7f-003b-46dd-8b03-728a8dac25d6" width="200">
+    </td>
+  </tr>
   <!-- 첫 번째 행 -->
   <tr>
     <td align="center">
-      <strong> 반복학습 1: 영상재생 및 VOD 변경</strong><br><br>
+      <strong> 기능 4: 영상재생 및 VOD 변경</strong><br><br>
       <p> 테이블 뷰 선택시 영상이 변경되며 재생 가능합니다..</p>
       <img src="https://github.com/user-attachments/assets/6ee41654-391b-409c-bd19-07d2a8a23581" width="200">
     </td>
     <td align="center">
-      <strong> 반복학습 2: 과제제출 1</strong><br><br>
+      <strong> 기능 5: 과제제출 1</strong><br><br>
       <p> 라이브러리의 사진으로 과제를 제출합니다. </p>
       <img src="https://github.com/user-attachments/assets/253cdf5e-0548-4340-92fc-64d2c338dd23" width="200">
     </td>
     <td align="center">
-      <strong>기능 3: 과제 제출 2 </strong><br><br>
+      <strong>기능 6: 과제 제출 2 </strong><br><br>
       <p> 사진을 촬영하여 과제를 제출합니다. </p>
       <img src="https://github.com/user-attachments/assets/fa6809ee-5eda-4a1e-95d2-7631452e542a" width="200">
     </td>
@@ -134,19 +152,19 @@ F --> G[과제 제출 및 보상]
   <!-- 두 번째 행 -->
   <tr>
     <td align="center">
-      <strong>기능 4: 목록과 디테일 뷰 </strong><br><br>
-      <p>강의 목록에서 디테일 뷰로 진입하여 오리엔테이션 영상과 강의 이미지를 확인합니다. </p>
-      <img src= "https://github.com/user-attachments/assets/8cee58f2-cfc9-4fcb-bc6d-2d3a70327938" width="200">
-    </td>
-    <td align="center">
-      <strong>기능 5: AI와 채팅 </strong><br><br>
-      <p>제출한 과제의 메모를 수정하거나, 필요 없는 과제를 삭제할 수 있습니다.</p>
+      <strong>기능 7: AI와 채팅 </strong><br><br>
+      <p>AI기반의 챗봇과 대화하며 질문을 할 수 있습니다. </p>
       <img src="https://github.com/user-attachments/assets/aebf9b0f-f41f-42a0-9452-ec7b55d81c4f" width="200">
     </td>
     <td align="center">
-      <strong>기능 6: 채팅 요약 </strong><br><br>
-      <p>메인 화면에서 출석하기 버튼을 누르면 오늘의 스탬프가 채워집니다.</p>
-      <img src="https://github.com/user-attachments/assets/11024388-15c5-4f6b-ba2f-ccc56de4083f" width="200">
+      <strong>기능 8: 채팅 요약 </strong><br><br>
+      <p>긴 답변 내용을 이해하기 쉽게 요약해줍니다.  </p>
+      <img src= "https://github.com/user-attachments/assets/11024388-15c5-4f6b-ba2f-ccc56de4083f" width="200">
+    </td>
+    <td align="center">
+      <strong>기능 9: 과거 채팅 확인 </strong><br><br>
+      <p> 무한 스크롤을 통해서 자연스럽게 과거 채팅 내역을 확인 할 수 있게 합니다. </p>
+      <img src="https://github.com/user-attachments/assets/5b3737d4-4ef8-4421-957b-5433d5fbee10" width="200">
     </td>
   </tr>
 </table>
