@@ -31,6 +31,7 @@ class RepeatLearnDetailViewController: UIViewController {
     // ✅ (추가) 서버와 동기화를 위해 원본 과제 목록을 저장해둡니다.
        private var originalAssignments: [UserAssignment] = []
     
+
     // MARK: LectureData
     private var currentRepeatLearn: RepeatLearnData
     private var repeatLearnListCellDataset: [RepeatLearnData] // 강의리스트 생성용,

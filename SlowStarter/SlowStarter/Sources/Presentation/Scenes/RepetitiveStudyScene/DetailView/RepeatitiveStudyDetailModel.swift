@@ -28,6 +28,7 @@ struct RepeatLearnData: Equatable {
     var assignments: [Assignment]
     var dailyAssignmentChecked: Bool = false //
     
+
     //    static let sampleDataset: [RepeatLearnData] = [
     //        RepeatLearnData(
     //            lectureTitle: "Big Buck Bunny: 기본 애니메이션 원리",
@@ -135,5 +136,6 @@ extension RepeatLearnData {
             assignments: assignments,
             dailyAssignmentChecked: false
         )
+
     }
 }
