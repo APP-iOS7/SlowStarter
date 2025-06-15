@@ -159,11 +159,12 @@ class AssignmentTableViewCell: UITableViewCell {
             make.edges.equalToSuperview()
         }
         
+        // ✅ memoLabel: 상단은 imageBaseView, 하단은 dateLabel에 연결
         contentView.addSubview(memoLabel)
         memoLabel.snp.makeConstraints { make in
             make.top.equalTo(imageBaseView.snp.bottom).offset(12)
-            make.leading.trailing.equalToSuperview().inset(10)
-            // make.bottom.equalToSuperview().inset(10)
+            make.leading.trailing.equalToSuperview().inset(16)
+            // 하단 제약은 dateLabel이 결정하도록 여기서 설정하지 않음
         }
         
         contentView.addSubview(editTextField)
@@ -175,12 +176,13 @@ class AssignmentTableViewCell: UITableViewCell {
             
         }
         
+        // ✅ dateLabel: 상단은 memoLabel, 하단은 contentView에 연결 (가장 중요)
         contentView.addSubview(dateLabel)
         dateLabel.snp.makeConstraints { make in
-            
             make.top.equalTo(memoLabel.snp.bottom).offset(8)
-            make.trailing.equalToSuperview().inset(10)
-            make.bottom.equalToSuperview().inset(10)
+            make.trailing.equalToSuperview().inset(16)
+            // ✅ 이 제약조건이 셀의 최종 높이를 결정합니다.
+            make.bottom.equalToSuperview().inset(16)
         }
     }
     private func setupGestureRecognizer() {
@@ -201,10 +203,10 @@ class AssignmentTableViewCell: UITableViewCell {
         celltitleLabel.text = numbering
         dateLabel.text = assignment.date.formattedDateString
     }
-   // 이미지 업데이트
-        public func updateImageView(with image: UIImage) {
-            self.assignmentImageView.image = image
-        }
+    // 이미지 업데이트
+    public func updateImageView(with image: UIImage) {
+        self.assignmentImageView.image = image
+    }
     
     /// 셀을 편집 모드로 전환합니다.
     public func enterEditMode() {
@@ -243,7 +245,7 @@ class AssignmentTableViewCell: UITableViewCell {
         }
         
         // Inform the delegate that the edit mode has toggled, so it can update the table view layout
-         delegate?.assignmentCellDidToggleEditMode(in: self)
+        delegate?.assignmentCellDidToggleEditMode(in: self)
     }
 }
 
@@ -252,7 +254,7 @@ extension AssignmentTableViewCell: UITextFieldDelegate {
     // Allows finishing the edit by pressing the "Done" key on the keyboard
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder() // Hide keyboard
-       // toggleEditingState() // Trigger the "Finish Editing" logic
+        // toggleEditingState() // Trigger the "Finish Editing" logic
         return true
     }
 }

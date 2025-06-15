@@ -358,13 +358,13 @@ class RepetitiveLearningViewController: UIViewController {
         }
         
         if isCompleted {
-            circleView.backgroundColor = .black
+            circleView.backgroundColor = UIColor(named: "PrimaryPeach")
             circleView.layer.borderColor = UIColor.black.cgColor
             
             let completedLabel = UILabel()
             completedLabel.text = "완료"
             completedLabel.font = .systemFont(ofSize: 10, weight: .bold)
-            completedLabel.textColor = .white
+            completedLabel.textColor = .black
             completedLabel.textAlignment = .center
             
             circleView.addSubview(completedLabel)
@@ -380,8 +380,8 @@ class RepetitiveLearningViewController: UIViewController {
         
         let assignments = [
             ("돈초크 라멘 육수 우려내기 - 첫 복습", true),
-            ("반숙란 만들기 - 심화 과정", false),
-            ("꼬들꼬들한 라멘 면 만들기 - 중급 과정", false)
+            ("반숙란 만들기 - 심화 과정", true),
+            ("꼬들꼬들한 라멘 면 만들기 - 중급 과정", true)
         ]
         
         for (title, isPrimary) in assignments {
