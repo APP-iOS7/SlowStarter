@@ -141,7 +141,7 @@ F --> G[과제 제출 및 보상]
     <td align="center">
       <strong>기능 5: AI와 채팅 </strong><br><br>
       <p>제출한 과제의 메모를 수정하거나, 필요 없는 과제를 삭제할 수 있습니다.</p>
-      <img src="https://github.com/user-attachments/assets/420b5113-939a-4a89-8845-48b8f6942f62" width="200">
+      <img src="https://github.com/user-attachments/assets/aebf9b0f-f41f-42a0-9452-ec7b55d81c4f" width="200">
     </td>
     <td align="center">
       <strong>기능 6: 채팅 요약 </strong><br><br>
