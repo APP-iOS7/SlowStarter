@@ -55,5 +55,6 @@ extension RepeatLearnData {
             assignments: assignments,
             dailyAssignmentChecked: false
         )
+
     }
 }

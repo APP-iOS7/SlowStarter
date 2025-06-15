@@ -3,7 +3,9 @@ import UIKit
 import Kingfisher
 
 struct Assignment: Identifiable, Equatable, Comparable {
+
     var id: String = UUID().uuidString
+
     var memo: String
     var image: UIImage
     let date: Date // 생성 시점에 날짜를 받도록 변경
@@ -52,6 +54,7 @@ struct Assignment: Identifiable, Equatable, Comparable {
     ]
 }
 
+
 extension Assignment {
     
     // ✅ (수정) UserAssignment -> Assignment 변환 함수
@@ -80,4 +83,5 @@ extension Assignment {
             date: userAssignment.submittedAt ?? Date()
         )
     }
+
 }

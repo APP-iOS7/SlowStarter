@@ -269,7 +269,7 @@ class SupabaseDataManager {
         
         return try await databaseManager.fetchData(as: Lecture.self, select: "*")
     }
-    
+  
     func fetchLectureList() async throws -> [Lecture] {
         guard let databaseManager = databaseManager else {
             throw DatabaseError.unknown
@@ -384,6 +384,7 @@ class SupabaseDataManager {
         try await databaseManager.updateData(as: Users.self, toUpdateData: details, conditionColumn: "user_id", conditionValue: userId)
     }
     
+
     /// [Pass-through] 테이블의 데이터를 조회합니다.
     /// - Parameters:
     ///   - type: 조회할 모델 타입
