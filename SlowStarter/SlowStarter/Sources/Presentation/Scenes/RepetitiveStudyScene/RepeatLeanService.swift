@@ -15,52 +15,55 @@ class RepeatLearnService {
     
     /// Supabase에서 사용자의 VOD와 과제 정보를 가져와 RepeatLearnData 배열을 생성합니다.
     func fetchAndGenerateRepeatLearnData() async throws -> [RepeatLearnData] {
-        // 1. 현재 사용자 정보 가져오기
         guard let currentUser = supabaseManager.getCurrentAuthenticatedUser() else {
             throw LoginManagerError.userNotFound
         }
         let userId = currentUser.userId
         
-        // 2. 모든 VOD와 사용자의 모든 과제를 병렬로 가져오기
-        async let allVODs = supabaseManager.fetchData(as: VOD.self, select: "*")
-        async let userAssignments = supabaseManager.fetchData(
-            as: UserAssignment.self,
-            select: "*",
-            conditionColumn: "user_id",
-            conditionValue: userId
-        )
+        // 1. 사용자가 과제를 제출한 모든 기록을 가져옵니다.
+        let userAssignments = try await supabaseManager.fetchAssignmentOfUser(userId: userId)
         
-        let (vods, assignments) = try await (allVODs, userAssignments)
+        // 과제가 없으면 빈 배열을 반환하고 종료합니다.
+        guard !userAssignments.isEmpty else {
+            print("[Log] 사용자가 제출한 과제가 없습니다.")
+            return []
+        }
         
-        // 3. 과제들을 VOD ID를 키로 하는 딕셔너리로 그룹화하여 조회 성능 향상
-        let assignmentsByVodId = Dictionary(grouping: assignments, by: { $0.vodId })
+        // 2. 중복을 제거한 모든 관련 VOD ID 목록을 만듭니다.
+        let uniqueVodIds = Array(Set(userAssignments.map { $0.vodId }))
         
-        // 4. 각 VOD를 RepeatLearnData로 변환
-        // withTaskGroup을 사용하여 여러 VOD를 병렬로 처리합니다.
-        let repeatLearnDataList: [RepeatLearnData] = await withTaskGroup(of: RepeatLearnData?.self) { group in
+        // 3. 모든 관련 VOD 데이터를 한 번의 요청으로 가져옵니다.
+        //    (DataBaseManager에 'in' 필터 함수가 필요합니다. 여기서는 임시로 반복문으로 처리합니다.)
+        //    가장 좋은 방법은 'in' 필터 함수를 만드는 것입니다.
+        var allVODs: [VOD] = []
+        for vodId in uniqueVodIds {
+            let vods = try await supabaseManager.fetchData(as: VOD.self, select: "*", conditionColumn: "vod_id", conditionValue: vodId)
+            allVODs.append(contentsOf: vods)
+        }
+        
+        // 4. 과제들을 VOD ID로 그룹화합니다.
+        let assignmentsByVodId = Dictionary(grouping: userAssignments, by: { $0.vodId })
+        
+        // 5. 가져온 VOD들로 RepeatLearnData 목록을 병렬로 생성합니다.
+        let repeatLearnDataList = try await withThrowingTaskGroup(of: RepeatLearnData.self) { group in
             var results: [RepeatLearnData] = []
             
-            for vod in vods {
+            for vod in allVODs {
                 group.addTask {
-                    // 해당 VOD에 대한 과제 목록 찾기 (없으면 빈 배열)
+                    // 해당 VOD에 대한 과제 목록을 찾습니다.
                     let relatedAssignments = assignmentsByVodId[vod.vodId] ?? []
                     
-                    // 제공된 static 메서드를 사용하여 RepeatLearnData 생성
-                    return try? await RepeatLearnData.generate(from: vod, userAssignments: relatedAssignments)
+                    // VOD와 관련 과제들로 RepeatLearnData를 생성합니다.
+                    return try await RepeatLearnData.generate(from: vod, userAssignments: relatedAssignments)
                 }
             }
             
-            // 모든 작업의 결과를 수집
-            for await data in group {
-                if let validData = data {
-                    results.append(validData)
-                }
+            for try await data in group {
+                results.append(data)
             }
-            
             return results
         }
         
-        // 최종적으로 생성된 목록을 반환
         return repeatLearnDataList
     }
 }

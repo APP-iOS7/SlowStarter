@@ -53,20 +53,30 @@ struct Assignment: Identifiable, Equatable, Comparable {
 }
 
 extension Assignment {
-    static func from(userAssignment: UserAssignment) async throws -> Assignment {
-        guard let urlString = userAssignment.imageURL, let url = URL(string: urlString) else {
-            throw URLError(.badURL, userInfo: [NSLocalizedDescriptionKey: "Invalid image URL"])
+    
+    // ✅ (수정) UserAssignment -> Assignment 변환 함수
+    static func from(userAssignment: UserAssignment) async -> Assignment { // ❌ throws 제거
+        
+        var finalImage: UIImage = UIImage(named: "sample_img") ?? UIImage() // 기본 이미지 설정
+        
+        // 1. imageURL이 유효한지 확인
+        if let urlString = userAssignment.imageURL, let url = URL(string: urlString) {
+            // 2. URL이 유효하다면 Kingfisher로 이미지 다운로드 시도
+            let resource = KF.ImageResource(downloadURL: url)
+            
+            // `try? await`를 사용하여 다운로드 실패 시 에러를 던지는 대신 nil을 반환하도록 함
+            if let result = try? await KingfisherManager.shared.retrieveImage(with: resource) {
+                // 다운로드 성공 시, 결과 이미지로 교체
+                finalImage = result.image
+            }
+            // 다운로드 실패 시에는 맨 처음에 설정한 기본 이미지가 그대로 사용됨
         }
         
-        let resource = KF.ImageResource(downloadURL: url)
-        
-        // ✅ 한 줄로 결과에서 바로 .image 프로퍼티에 접근
-        let downloadedImage = try await KingfisherManager.shared.retrieveImage(with: resource).image
-        
+        // 3. 최종적으로 Assignment 객체를 생성하여 반환 (이제 이 함수는 절대 에러를 던지지 않음)
         return Assignment(
-            id: userAssignment.id,
+            id: userAssignment.id, // 서버의 ID를 그대로 사용
             memo: userAssignment.description ?? "메모 없음",
-            image: downloadedImage,
+            image: finalImage,
             date: userAssignment.submittedAt ?? Date()
         )
     }

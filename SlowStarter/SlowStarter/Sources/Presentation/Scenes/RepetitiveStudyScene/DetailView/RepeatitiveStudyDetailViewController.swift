@@ -116,7 +116,7 @@ class RepeatLearnDetailViewController: UIViewController {
         setupUI()
         setupLayOut()
         
-        self.updateData(with: self.currentRepeatLearn)
+        self.updateUI(with: self.currentRepeatLearn)
         
     }
     
@@ -160,12 +160,6 @@ class RepeatLearnDetailViewController: UIViewController {
                }
            }
        }
-    private func updateData(with cellData: RepeatLearnData) {
-        self.currentRepeatLearn = cellData
-        self.lectureTitleLabel.text = cellData.lectureTitle
-        self.lectureDescriptionLabel.text = cellData.lectureDescription
-        self.videoPlayerViewController.updateVideo(with: cellData.lectureURL)
-    }
     
     private func setupUI() {
         view.addSubview(lectureTitleLabel)

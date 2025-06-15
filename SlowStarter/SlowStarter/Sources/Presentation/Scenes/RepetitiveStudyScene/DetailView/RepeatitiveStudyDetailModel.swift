@@ -20,7 +20,6 @@ struct RepeatLearnData: Equatable {
     //                                        assignments: Assignment.sampleAssignments)
     //
     // ✅ 서버와 통신을 위한 고유 ID들 추가
-    var lectureId: String
     var vodId: String
     var lectureTitle: String
     var lectureDescription: String
@@ -128,7 +127,6 @@ extension RepeatLearnData {
         }
         
         return RepeatLearnData(
-            lectureId: vod.lectureId, // ✅ ID 주입
             vodId: vod.vodId,         // ✅ ID 주입
             lectureTitle: vod.title ?? "제목 없음",
             lectureDescription: vod.description ?? "설명 없음",
