@@ -59,7 +59,7 @@ class RepeatLearnDetailViewController: UIViewController {
         let button = UIButton(type: .custom)
         button.setTitle("과제 제출하기", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(.black, for: .normal)
         button.backgroundColor = UIColor(named: "PrimaryPeach")
         button.layer.cornerRadius = 8
         button.clipsToBounds = true
@@ -200,7 +200,7 @@ class RepeatLearnDetailViewController: UIViewController {
            self.lectureDescriptionLabel.text = data.lectureDescription
            self.videoPlayerViewController.updateVideo(with: data.lectureURL)
            // 테이블 뷰도 리로드하여 현재 선택된 강의에 대한 시각적 피드백(예: 배경색 변경)을 줄 수 있습니다.
-           // self.repeatLearnTableView.reloadData()
+           self.repeatLearnTableView.reloadData()
        }
        
     // ✅ 과제 제출 완료 후 호출되는 콜백 처리 함수
@@ -214,6 +214,9 @@ class RepeatLearnDetailViewController: UIViewController {
             return
         }
         
+        // 하루에 한번 체크되면 패스
+        if self.currentRepeatLearn.dailyAssignmentChecked { return }
+        
         // 데이터 모델 업데이트
         repeatLearnListCellDataset[index].assignments = updatedAssignments
         repeatLearnListCellDataset[index].dailyAssignmentChecked = true
@@ -224,6 +227,7 @@ class RepeatLearnDetailViewController: UIViewController {
         }
         
         print("과제 업데이트 완료. '\(self.currentRepeatLearn.lectureTitle)' 강의가 인증 가능한 상태로 변경되었습니다.")
+        print("현재 셀 상태 \n weeklyProgress: \(self.currentRepeatLearn.weeklyProgress) \n dailyAssignmentChecked: \(self.currentRepeatLearn.dailyAssignmentChecked)")
         
         // --- ✅ UI 업데이트 로직 수정 ---
         
@@ -322,7 +326,12 @@ extension RepeatLearnDetailViewController: RepeatitiveTableViewCellDelegate {
         // --- 3. UI 새로고침 ---
         // 전체 테이블 뷰를 리로드하여 모든 셀의 버튼 상태
         // (방금 완료된 셀은 '상태 1'로, 다음 셀은 '상태 2'로)를 업데이트합니다.
-        repeatLearnTableView.reloadData()
+        
+        if let tappedCell = repeatLearnTableView.cellForRow(at: indexPath) as? RepeatitiveTableViewCell {
+                   let updatedData = repeatLearnListCellDataset[targetIndex]
+                   tappedCell.configure(with: updatedData)
+                   print("탭한 셀(\(indexPath.row))의 UI를 '인증 완료' 상태로 업데이트합니다.")
+               }
         
         // (서버 저장 로직은 viewWillDisappear에서 일괄 처리되므로 여기서는 호출하지 않습니다)
     }

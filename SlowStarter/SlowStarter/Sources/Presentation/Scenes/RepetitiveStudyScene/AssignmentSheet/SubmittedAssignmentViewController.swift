@@ -73,26 +73,29 @@ class SubmittedAssignmentViewController: UIViewController {
             )
         
     }
-    // ✅ 2. '완료' 버튼을 눌렀을 때만 데이터 업데이트 및 dismiss
-    @objc private func doneButtonTapped() {
-        // 현재 assignments 배열의 상태를 콜백을 통해 전달
-        onDataUpdated?(self.assignments)
-        // 뷰를 닫습니다.
-        dismiss(animated: true)
-    }
+    // ✅ (추가) '완료' 버튼이 눌렸을 때 호출되는 메서드
+        @objc private func doneButtonTapped() {
+            print("완료 버튼 탭됨: 변경된 과제 데이터를 전달합니다.")
+            // 1. 설정된 onDataUpdated 클로저를 호출하여 변경된 최종 assignments 배열을 전달합니다.
+            onDataUpdated?(self.assignments)
+            
+            // 2. 현재 뷰 컨트롤러를 닫습니다.
+            dismiss(animated: true, completion: nil)
+        }
 
-    // ✅ (선택사항) '취소' 버튼 액션
-    @objc private func cancelButtonTapped() {
-        // 데이터 업데이트 없이 뷰만 닫습니다.
-        dismiss(animated: true)
-    }
+        // ✅ (추가) '취소' 버튼이 눌렸을 때 호출되는 메서드
+        @objc private func cancelButtonTapped() {
+            print("취소 버튼 탭됨: 변경사항 없이 뷰를 닫습니다.")
+            // 데이터 전달 없이 현재 뷰 컨트롤러만 닫습니다.
+            dismiss(animated: true, completion: nil)
+        }
     
     // ✅ 2. 뷰가 사라지기 직전에 콜백을 호출하여 변경된 데이터를 전달
         override func viewWillDisappear(_ animated: Bool) {
             super.viewWillDisappear(animated)
             
-            // 현재 assignments 배열의 상태를 콜백을 통해 전달
-            onDataUpdated?(self.assignments)
+//            // 현재 assignments 배열의 상태를 콜백을 통해 전달
+//            onDataUpdated?(self.assignments)
         }
     
     // 과제 인증 버튼 터치시 작동
