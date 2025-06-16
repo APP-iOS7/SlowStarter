@@ -66,6 +66,7 @@ class RepeatitiveTableViewCell: UITableViewCell {
         contentView.addSubview(titleLabel)
         contentView.addSubview(hstack)
         
+        
         titleLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().inset(16)
             make.top.equalToSuperview().inset(12) // 적절한 상단 여백
@@ -77,6 +78,8 @@ class RepeatitiveTableViewCell: UITableViewCell {
             make.trailing.equalToSuperview().inset(16)
             make.centerY.equalToSuperview()
         }
+        
+        
     }
     
     // --- Actions ---
@@ -91,44 +94,39 @@ class RepeatitiveTableViewCell: UITableViewCell {
         
         let overFlowAssignmentCount = data.assignments.count - 3
         self.totalAssignmentLabel.text = overFlowAssignmentCount > 0 ? "+\(overFlowAssignmentCount)" : ""
-        
+
         for (index, button) in pointButtons.enumerated() {
-            // ✅ 1. 각 상태에 맞는 configuration을 먼저 결정합니다.
-            var config = UIButton.Configuration.filled() // .filled 스타일을 기본으로 사용
+            var config = UIButton.Configuration.filled() // .filled를 기본 스타일로 사용
             config.title = pointButtonTitles[index]
+            config.cornerStyle = .capsule // 모든 버튼 모양 통일 (선택사항)
+            
+            // ⭐️ 각 상태에 따라 색상과 활성화 여부만 명확하게 변경합니다.
             
             if index == data.weeklyProgress && data.dailyAssignmentChecked {
-                // 상태 3: 인증 가능
-                config = .tinted() // .borderedProminent() 대신 .tinted()가 더 적합해 보입니다.
-                config.baseBackgroundColor = .systemBlue
+                // --- 상태 3: 인증 가능 (가장 중요) ---
+                config.baseBackgroundColor = .systemBlue     // 배경: 진한 파란색
+                config.baseForegroundColor = .white          // 텍스트: 흰색
                 button.isEnabled = true
                 
             } else if index == data.weeklyProgress {
-                // 상태 2: 인증 대기
-                config = .tinted()
-                config.baseBackgroundColor = .systemBlue
-                config.baseForegroundColor = .white
+                // --- 상태 2: 인증 대기 (다음 차례) ---
+                config.baseBackgroundColor = .systemBlue.withAlphaComponent(0.2) // 배경: 흐린 파란색
+                config.baseForegroundColor = .systemBlue     // 텍스트: 파란색
                 button.isEnabled = false
                 
             } else if index < data.weeklyProgress {
-                // --- 상태 1: 인증 완료 ---
-                // ✅ 명시적으로 색상 지정
-                config.baseBackgroundColor = .darkGray    // 배경: 중간 회색 (완료됨)
+                // --- 상태 1: 인증 완료 (과거) ---
+                config.baseBackgroundColor = .systemGray4    // 배경: 중간 회색
                 config.baseForegroundColor = .systemGray     // 텍스트: 어두운 회색
                 button.isEnabled = false
                 
             } else { // index > data.weeklyProgress
-                // --- 상태 4: 미도달 (미래 단계) ---
-                // ✅ 명시적으로 색상 지정
-                config.baseBackgroundColor = .systemBlue    // 배경: 매우 연한 회색 (미래)
-                config.baseForegroundColor = .systemGray2    // 텍스트: 연한 회색
+                // --- 상태 4: 미도달 (미래) ---
+                config.baseBackgroundColor = .systemGray6    // 배경: 매우 연한 회색
+                config.baseForegroundColor = .systemGray2    // 텍스트: 매우 연한 회색
                 button.isEnabled = false
             }
             
-            // ✅ 2. 결정된 configuration에 공통 속성인 title을 설정합니다.
-            config.title = pointButtonTitles[index]
-            
-            // ✅ 3. 최종 configuration을 버튼에 적용합니다.
             button.configuration = config
         }
     }
